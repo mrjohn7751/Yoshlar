@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/logic/youth/youth_detail_cubit.dart';
@@ -156,11 +156,13 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               IconButton(
                 icon: const Icon(Icons.copy, size: 18, color: Colors.grey),
                 tooltip: "Nusxalash",
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: '$lat,$lng'));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Koordinatalar nusxalandi")),
-                  );
+                onPressed: () async {
+                  final copied = await copyToClipboard('$lat,$lng');
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(copied ? "Koordinatalar nusxalandi" : "Nusxalab bo'lmadi")),
+                    );
+                  }
                 },
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),

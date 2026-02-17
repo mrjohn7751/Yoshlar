@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/officer_service.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:yoshlar/logic/officer/officer_cubit.dart';
 import 'package:yoshlar/logic/officer/officer_state.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/add_masul.dart';
@@ -325,17 +325,15 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           ),
           actions: [
             TextButton.icon(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(
-                  text: "Foydalanuvchi nomi: $username\nParol: $password",
-                ));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Nusxalandi!")),
+              onPressed: () async {
+                final copied = await copyToClipboard(
+                  "Foydalanuvchi nomi: $username\nParol: $password",
                 );
-                // Auto-clear clipboard after 60 seconds
-                Future.delayed(const Duration(seconds: 60), () {
-                  Clipboard.setData(const ClipboardData(text: ''));
-                });
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                  );
+                }
               },
               icon: const Icon(Icons.copy, size: 18),
               label: const Text("Nusxalash"),
@@ -416,17 +414,15 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           ),
           actions: [
             TextButton.icon(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(
-                  text: "Foydalanuvchi nomi: $username\nParol: $password",
-                ));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Nusxalandi!")),
+              onPressed: () async {
+                final copied = await copyToClipboard(
+                  "Foydalanuvchi nomi: $username\nParol: $password",
                 );
-                // Auto-clear clipboard after 60 seconds
-                Future.delayed(const Duration(seconds: 60), () {
-                  Clipboard.setData(const ClipboardData(text: ''));
-                });
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                  );
+                }
               },
               icon: const Icon(Icons.copy, size: 18),
               label: const Text("Nusxalash"),

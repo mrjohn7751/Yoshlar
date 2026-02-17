@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/auth_service.dart';
 import 'package:yoshlar/presentation/widgets/camera_capture.dart';
@@ -89,14 +89,16 @@ class _FaceResetDialogState extends State<FaceResetDialog> {
     }
   }
 
-  void _copyToClipboard(String text) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Nusxalandi"),
-        duration: Duration(seconds: 1),
-      ),
-    );
+  Future<void> _copyToClipboard(String text) async {
+    final copied = await copyToClipboard(text);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(copied ? "Nusxalandi" : "Nusxalab bo'lmadi"),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   @override

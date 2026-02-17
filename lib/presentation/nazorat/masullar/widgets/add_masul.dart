@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/service/api_client.dart';
@@ -489,17 +489,15 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(
-                text: "Foydalanuvchi nomi: $username\nParol: $password",
-              ));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Nusxalandi!")),
+            onPressed: () async {
+              final copied = await copyToClipboard(
+                "Foydalanuvchi nomi: $username\nParol: $password",
               );
-              // Auto-clear clipboard after 60 seconds
-              Future.delayed(const Duration(seconds: 60), () {
-                Clipboard.setData(const ClipboardData(text: ''));
-              });
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                );
+              }
             },
             icon: const Icon(Icons.copy, size: 18),
             label: const Text("Nusxalash"),
