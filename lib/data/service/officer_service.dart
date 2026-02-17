@@ -22,12 +22,27 @@ class OfficerService {
     return OfficerModel.fromJson(response['data']);
   }
 
+  /// null qiymatlarni filtrlash (multipart uchun)
+  Map<String, String> _toMultipartFields(Map<String, dynamic> data) {
+    final fields = <String, String>{};
+    data.forEach((k, v) {
+      if (v == null) return;
+      if (v is List) {
+        for (int i = 0; i < v.length; i++) {
+          fields['$k[$i]'] = v[i].toString();
+        }
+      } else {
+        fields[k] = v.toString();
+      }
+    });
+    return fields;
+  }
+
   Future<OfficerModel> createOfficer(Map<String, dynamic> data, {Uint8List? photoBytes}) async {
     if (photoBytes != null) {
-      final fields = data.map((k, v) => MapEntry(k, v.toString()));
       final response = await _client.multipartPostWithBytes(
         '/officers',
-        fields: fields,
+        fields: _toMultipartFields(data),
         fileBytes: {'photo': photoBytes},
       );
       return OfficerModel.fromJson(response['data']);
@@ -43,10 +58,9 @@ class OfficerService {
   }) async {
     Map<String, dynamic> response;
     if (photoBytes != null) {
-      final fields = data.map((k, v) => MapEntry(k, v.toString()));
       response = await _client.multipartPostWithBytes(
         '/officers',
-        fields: fields,
+        fields: _toMultipartFields(data),
         fileBytes: {'photo': photoBytes},
       );
     } else {
@@ -60,10 +74,9 @@ class OfficerService {
 
   Future<OfficerModel> updateOfficer(int id, Map<String, dynamic> data, {Uint8List? photoBytes}) async {
     if (photoBytes != null) {
-      final fields = data.map((k, v) => MapEntry(k, v.toString()));
       final response = await _client.multipartPostWithBytes(
         '/officers/$id',
-        fields: fields,
+        fields: _toMultipartFields(data),
         fileBytes: {'photo': photoBytes},
       );
       return OfficerModel.fromJson(response['data']);
@@ -74,12 +87,16 @@ class OfficerService {
 
   Future<Map<String, dynamic>> resetPassword(int officerId) async {
     final response = await _client.post('/officers/$officerId/reset-password');
-    return response['credentials'] as Map<String, dynamic>;
+    final creds = response['credentials'];
+    if (creds == null) throw ApiException("Credential ma'lumotlari topilmadi", 0);
+    return Map<String, dynamic>.from(creds);
   }
 
   Future<Map<String, dynamic>> generateCredentials(int officerId) async {
     final response = await _client.post('/officers/$officerId/generate-credentials');
-    return response['credentials'] as Map<String, dynamic>;
+    final creds = response['credentials'];
+    if (creds == null) throw ApiException("Credential ma'lumotlari topilmadi", 0);
+    return Map<String, dynamic>.from(creds);
   }
 
   Future<void> deleteOfficer(int id) async {

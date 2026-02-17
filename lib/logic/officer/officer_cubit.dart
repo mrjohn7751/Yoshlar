@@ -30,7 +30,7 @@ class OfficerCubit extends Cubit<OfficerState> {
       emit(OfficerLoading());
       final officers = await _officerService.getOfficers();
       final myOfficer = officers.cast<OfficerModel?>().firstWhere(
-        (o) => o!.userId == userId,
+        (o) => o?.userId == userId,
         orElse: () => null,
       );
       if (myOfficer == null) {

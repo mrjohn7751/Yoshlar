@@ -624,6 +624,18 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
         .toList();
 
     final regionId = _regions.firstWhere((r) => r['name'] == _selectedRegion)['id'];
+
+    // Xavf darajasini backend formatiga o'girish
+    String? riskLevelApi;
+    if (_selectedRiskLevel != null) {
+      const riskMap = {
+        'Past xavf': 'past',
+        "O'rta xavf": 'orta',
+        'Yuqori xavf': 'yuqori',
+      };
+      riskLevelApi = riskMap[_selectedRiskLevel];
+    }
+
     final data = {
       'name': _nameController.text,
       'phone': _phoneController.text.isNotEmpty ? _phoneController.text : null,
@@ -633,7 +645,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       'location': _locationController.text,
       'status': _selectedEducation,
       'activity': _selectedEmployment,
-      'riskLevel': _selectedRiskLevel,
+      'riskLevel': riskLevelApi,
       'tags': selectedTags,
     };
 
