@@ -25,7 +25,6 @@ class ExcelParseError {
 /// 6: Ta'lim → status
 /// 7: Bandlik → activity
 /// 8: Xavf darajasi → riskLevel
-/// 9: Toifalar → tags (comma-separated)
 ExcelParseResult parseExcelBytes(Uint8List bytes) {
   final excel = Excel.decodeBytes(bytes);
   final rows = <Map<String, dynamic>>[];
@@ -71,11 +70,6 @@ ExcelParseResult parseExcelBytes(Uint8List bytes) {
       continue;
     }
 
-    final tagsStr = _getCellString(row, 9);
-    final tags = tagsStr.isNotEmpty
-        ? tagsStr.split(',').map((t) => t.trim()).where((t) => t.isNotEmpty).toList()
-        : <String>[];
-
     rows.add({
       'name': name,
       'phone': _getCellString(row, 1),
@@ -86,7 +80,6 @@ ExcelParseResult parseExcelBytes(Uint8List bytes) {
       'status': _getCellString(row, 6),
       'activity': _getCellString(row, 7),
       'riskLevel': _getCellString(row, 8),
-      'tags': tags,
     });
   }
 

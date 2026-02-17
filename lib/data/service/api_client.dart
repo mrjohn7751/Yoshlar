@@ -8,9 +8,9 @@ import 'package:http_parser/http_parser.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
-  // Android emulator: 10.0.2.2, Chrome/Linux: localhost
-  static const String baseUrl = 'http://localhost:8000/api';
-  static const String storageUrl = 'http://localhost:8000/storage';
+  // Production: yoshlarnazorati.uz, Local: localhost:3000
+  static const String baseUrl = 'http://yoshlarnazorati.uz/api';
+  static const String storageUrl = 'http://yoshlarnazorati.uz/storage';
 
   final FlutterSecureStorage _storage;
   void Function()? onUnauthorized;
@@ -225,5 +225,6 @@ class ApiException implements Exception {
 String safeErrorMessage(Object e) {
   if (e is ApiException) return e.message;
   if (e is TimeoutException) return "So'rov vaqti tugadi. Qaytadan urinib ko'ring.";
-  return "Xatolik yuz berdi. Qaytadan urinib ko'ring.";
+  if (e is FormatException) return "Server javobini o'qib bo'lmadi. CORS yoki server xatosi.";
+  return "Xatolik yuz berdi: ${e.runtimeType} - $e";
 }
