@@ -19,19 +19,31 @@ class ApiClient {
   ApiClient(this._storage);
 
   Future<void> init() async {
-    _token = await _storage.read(key: 'auth_token');
+    try {
+      _token = await _storage.read(key: 'auth_token');
+    } catch (_) {
+      _token = null;
+    }
   }
 
   String? get token => _token;
 
   Future<void> saveToken(String token) async {
-    await _storage.write(key: 'auth_token', value: token);
     _token = token;
+    try {
+      await _storage.write(key: 'auth_token', value: token);
+    } catch (_) {
+      // Secure storage may fail on some platforms - token is still in memory
+    }
   }
 
   Future<void> removeToken() async {
-    await _storage.delete(key: 'auth_token');
     _token = null;
+    try {
+      await _storage.delete(key: 'auth_token');
+    } catch (_) {
+      // Ignore storage errors
+    }
   }
 
   bool get hasToken => _token != null;

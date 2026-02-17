@@ -13,9 +13,16 @@ class AuthService {
       'login': email,
       'password': password,
     });
-    final token = response['token'] as String;
-    await _client.saveToken(token);
-    return AuthUser.fromJson(response['user']);
+    final token = response['token'];
+    if (token == null) {
+      throw ApiException("Server javobida token topilmadi", 0);
+    }
+    await _client.saveToken(token.toString());
+    final userData = response['user'];
+    if (userData == null) {
+      throw ApiException("Server javobida foydalanuvchi topilmadi", 0);
+    }
+    return AuthUser.fromJson(Map<String, dynamic>.from(userData));
   }
 
   Future<void> logout() async {
@@ -28,7 +35,11 @@ class AuthService {
 
   Future<AuthUser> me() async {
     final response = await _client.get('/auth/me');
-    return AuthUser.fromJson(response['user']);
+    final userData = response['user'];
+    if (userData == null) {
+      throw ApiException("Foydalanuvchi ma'lumoti topilmadi", 0);
+    }
+    return AuthUser.fromJson(Map<String, dynamic>.from(userData));
   }
 
   Future<AuthUser> updateProfile({
@@ -45,7 +56,11 @@ class AuthService {
       body['new_password_confirmation'] = newPasswordConfirmation;
     }
     final response = await _client.put('/auth/profile', body: body);
-    return AuthUser.fromJson(response['user']);
+    final userData = response['user'];
+    if (userData == null) {
+      throw ApiException("Profil ma'lumoti topilmadi", 0);
+    }
+    return AuthUser.fromJson(Map<String, dynamic>.from(userData));
   }
 
   Future<Map<String, dynamic>> faceReset({
