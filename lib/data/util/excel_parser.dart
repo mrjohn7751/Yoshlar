@@ -24,7 +24,6 @@ class ExcelParseError {
 /// 5: Manzil → location
 /// 6: Ta'lim → status
 /// 7: Bandlik → activity
-/// 8: Xavf darajasi → riskLevel
 ExcelParseResult parseExcelBytes(Uint8List bytes) {
   final excel = Excel.decodeBytes(bytes);
   final rows = <Map<String, dynamic>>[];
@@ -79,21 +78,10 @@ ExcelParseResult parseExcelBytes(Uint8List bytes) {
       'location': _getCellString(row, 5),
       'status': _getCellString(row, 6),
       'activity': _getCellString(row, 7),
-      'riskLevel': _mapRiskLevel(_getCellString(row, 8)),
     });
   }
 
   return ExcelParseResult(rows: rows, errors: errors);
-}
-
-/// Xavf darajasini backend formatiga o'girish
-String? _mapRiskLevel(String value) {
-  if (value.isEmpty) return null;
-  final lower = value.toLowerCase().trim();
-  if (lower.contains('past')) return 'past';
-  if (lower.contains('orta') || lower.contains("o'rta")) return 'orta';
-  if (lower.contains('yuqori')) return 'yuqori';
-  return value; // noma'lum qiymat - backend o'zi tekshiradi
 }
 
 String _getCellString(List<Data?> row, int index) {

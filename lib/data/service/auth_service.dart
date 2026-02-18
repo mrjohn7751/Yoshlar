@@ -63,6 +63,19 @@ class AuthService {
     return AuthUser.fromJson(Map<String, dynamic>.from(userData));
   }
 
+  Future<AuthUser> updateProfilePhoto(Uint8List photoBytes) async {
+    final response = await _client.multipartPostWithBytes(
+      '/auth/profile/photo',
+      fileBytes: {'photo': photoBytes},
+      fileFieldName: 'photo',
+    );
+    final userData = response['user'];
+    if (userData == null) {
+      throw ApiException("Profil ma'lumoti topilmadi", 0);
+    }
+    return AuthUser.fromJson(Map<String, dynamic>.from(userData));
+  }
+
   Future<Map<String, dynamic>> faceReset({
     required String username,
     required Uint8List selfieBytes,

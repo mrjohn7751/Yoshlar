@@ -12,9 +12,6 @@ class DatabaseSeeder extends Seeder
             RegionSeeder::class,
             CategorySeeder::class,
             UserSeeder::class,
-            OfficerSeeder::class,
-            YouthSeeder::class,
-            ActivitySeeder::class,
         ]);
     }
 }

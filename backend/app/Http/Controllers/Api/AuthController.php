@@ -7,8 +7,10 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -80,6 +82,30 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Profil muvaffaqiyatli yangilandi.',
+            'user' => new UserResource($user),
+        ]);
+    }
+
+    public function updatePhoto(Request $request): JsonResponse
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+        ]);
+
+        $user = auth()->user();
+
+        // Eski rasmni o'chirish
+        if ($user->photo) {
+            Storage::disk('public')->delete($user->photo);
+        }
+
+        $path = $request->file('photo')->store('users', 'public');
+        $user->photo = $path;
+        $user->save();
+        $user->load('officer');
+
+        return response()->json([
+            'message' => 'Rasm muvaffaqiyatli yangilandi.',
             'user' => new UserResource($user),
         ]);
     }

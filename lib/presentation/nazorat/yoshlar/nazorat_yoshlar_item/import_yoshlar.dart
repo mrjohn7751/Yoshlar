@@ -123,7 +123,7 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Ustunlar tartibi: F.I.Sh, Telefon, Jinsi, Tug'ilgan sana,\nTuman, Manzil, Ta'lim, Bandlik, Xavf darajasi",
+                    "Ustunlar tartibi: F.I.Sh, Telefon, Jinsi, Tug'ilgan sana,\nTuman, Manzil, Ta'lim, Bandlik",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
@@ -230,7 +230,6 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                         DataColumn(label: Text('Manzil', style: TextStyle(fontWeight: FontWeight.bold))),
                         DataColumn(label: Text("Ta'lim", style: TextStyle(fontWeight: FontWeight.bold))),
                         DataColumn(label: Text('Bandlik', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Xavf', style: TextStyle(fontWeight: FontWeight.bold))),
                       ],
                       rows: _parsedRows.asMap().entries.map((entry) {
                         final i = entry.key;
@@ -245,7 +244,6 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                           DataCell(Text(r['location'] ?? '')),
                           DataCell(Text(r['status'] ?? '')),
                           DataCell(Text(r['activity'] ?? '')),
-                          DataCell(Text(r['riskLevel'] ?? '')),
                         ]);
                       }).toList(),
                     ),

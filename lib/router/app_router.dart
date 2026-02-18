@@ -18,6 +18,7 @@ import 'package:yoshlar/presentation/splash/splash_page.dart';
 import 'package:yoshlar/presentation/yoshlar/main/add_activity/add_activity.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_item_screen.dart/history_screen.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_screen.dart';
+import 'package:yoshlar/presentation/nazorat/profile/nazorat_profile_screen.dart';
 import 'package:yoshlar/presentation/yoshlar/profile/profile_screen.dart';
 
 class AppRouter {
@@ -74,6 +75,11 @@ class AppRouter {
         name: DashboardPage.routeName,
         path: '/nazorat_dashboard',
         routes: [
+          GoRoute(
+            name: NazoratProfileScreen.routeName,
+            path: 'profile',
+            builder: (context, state) => const NazoratProfileScreen(),
+          ),
           GoRoute(
             name: NazoratYoshlarHistory.routeName,
             path: 'nazorat_history',

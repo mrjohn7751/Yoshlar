@@ -9,6 +9,7 @@ import 'package:yoshlar/presentation/nazorat/jarayonlar/nazorat_jarayon_screen.d
 import 'package:yoshlar/presentation/nazorat/main/main.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/nazorat_masul_screen.dart';
 import 'package:yoshlar/presentation/nazorat/history/password_reset_history.dart';
+import 'package:yoshlar/presentation/nazorat/profile/nazorat_profile_screen.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -83,6 +84,30 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
+      actions: [
+        GestureDetector(
+          onTap: () {
+            context.goNamed(NazoratProfileScreen.routeName);
+          },
+          child: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              final user = state is AuthAuthenticated ? state.user : null;
+              final photoUrl = user?.displayPhotoUrl;
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.blue.shade50,
+                  backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                  child: photoUrl == null
+                      ? Icon(Icons.person, color: Colors.blue.shade700, size: 20)
+                      : null,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

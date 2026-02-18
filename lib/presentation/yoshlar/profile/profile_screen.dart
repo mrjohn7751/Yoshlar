@@ -253,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildPhotoCard() {
     final authState = context.read<AuthCubit>().state;
     final user = authState is AuthAuthenticated ? authState.user : null;
-    final photoUrl = user?.officerPhotoUrl;
+    final photoUrl = user?.displayPhotoUrl;
 
     return Container(
       width: double.infinity,
@@ -303,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             "@${user?.username ?? user?.email ?? ''}",
             style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
-          if (!user!.officerPhoto) ...[
+          if (!user!.hasDisplayPhoto) ...[
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

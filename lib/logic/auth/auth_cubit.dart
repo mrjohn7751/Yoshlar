@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/auth_service.dart';
@@ -63,6 +65,15 @@ class AuthCubit extends Cubit<AuthState> {
       } catch (_) {
         // If me() also fails, stay in error state
       }
+    }
+  }
+
+  Future<void> updateProfilePhoto(Uint8List photoBytes) async {
+    try {
+      final user = await _authService.updateProfilePhoto(photoBytes);
+      emit(AuthAuthenticated(user));
+    } catch (e) {
+      rethrow;
     }
   }
 

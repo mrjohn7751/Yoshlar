@@ -22,6 +22,10 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 
+    // Profile (username/parol o'zgartirish va rasm yuklash - ikkala rol)
+    Route::put('/auth/profile', [AuthController::class, 'updateProfile'])->middleware('throttle:sensitive');
+    Route::post('/auth/profile/photo', [AuthController::class, 'updatePhoto'])->middleware('throttle:sensitive');
+
     // Categories & Regions (faqat o'qish)
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/regions', [RegionController::class, 'index']);
@@ -85,6 +89,4 @@ Route::middleware(['auth:sanctum', 'masul', 'throttle:api'])->group(function () 
     Route::post('/youths/{youth}/activities', [ActivityController::class, 'store']);
     Route::post('/activities/{activity}/images', [ActivityController::class, 'uploadImages']);
 
-    // Profile (username/parol o'zgartirish)
-    Route::put('/auth/profile', [AuthController::class, 'updateProfile'])->middleware('throttle:sensitive');
 });
