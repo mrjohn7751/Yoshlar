@@ -6,29 +6,27 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     /**
-     * Noto'g'ri photo qiymatlarni (0, 1, empty string) NULL ga o'zgartirish.
+     * "/" belgisi bo'lmagan barcha noto'g'ri photo qiymatlarni NULL ga o'zgartirish.
+     * Haqiqiy fayl yo'li har doim "youths/xxx.jpg" yoki "officers/xxx.jpg" ko'rinishida bo'ladi.
      */
     public function up(): void
     {
-        // Youths jadvalidagi noto'g'ri photo qiymatlarni tozalash
+        // Youths: photo ustunida "/" yo'q bo'lsa - noto'g'ri qiymat
         DB::table('youths')
-            ->where('photo', '0')
-            ->orWhere('photo', '1')
-            ->orWhere('photo', '')
+            ->whereNotNull('photo')
+            ->where('photo', 'NOT LIKE', '%/%')
             ->update(['photo' => null]);
 
-        // Officers jadvalidagi noto'g'ri photo qiymatlarni tozalash
+        // Officers: photo ustunida "/" yo'q bo'lsa - noto'g'ri qiymat
         DB::table('officers')
-            ->where('photo', '0')
-            ->orWhere('photo', '1')
-            ->orWhere('photo', '')
+            ->whereNotNull('photo')
+            ->where('photo', 'NOT LIKE', '%/%')
             ->update(['photo' => null]);
 
-        // Users jadvalidagi noto'g'ri photo qiymatlarni tozalash
+        // Users: photo ustunida "/" yo'q bo'lsa - noto'g'ri qiymat
         DB::table('users')
-            ->where('photo', '0')
-            ->orWhere('photo', '1')
-            ->orWhere('photo', '')
+            ->whereNotNull('photo')
+            ->where('photo', 'NOT LIKE', '%/%')
             ->update(['photo' => null]);
     }
 

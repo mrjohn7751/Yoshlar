@@ -17,6 +17,20 @@ class Officer extends Model
         'photo',
     ];
 
+    /**
+     * Photo maydoniga faqat haqiqiy fayl yo'lini saqlash.
+     */
+    public function setPhotoAttribute($value): void
+    {
+        if ($value === null) {
+            $this->attributes['photo'] = null;
+        } elseif (is_string($value) && str_contains($value, '/')) {
+            $this->attributes['photo'] = $value;
+        } else {
+            $this->attributes['photo'] = null;
+        }
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
