@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 /// Rasm yuklanmasa URL va xato sababini KO'RSATADIGAN debug widget.
-/// Har doim bosish mumkin - URL va xatolik haqida to'liq ma'lumot beradi.
+/// rawBackendValue - backend qaytargan xom qiymat (filtrlashdan oldin).
 class DebugNetworkImage extends StatelessWidget {
   final String? imageUrl;
+  final String? rawBackendValue;
   final double height;
   final double width;
   final BorderRadius? borderRadius;
@@ -11,6 +12,7 @@ class DebugNetworkImage extends StatelessWidget {
   const DebugNetworkImage({
     super.key,
     required this.imageUrl,
+    this.rawBackendValue,
     this.height = 80,
     this.width = 80,
     this.borderRadius,
@@ -23,7 +25,13 @@ class DebugNetworkImage extends StatelessWidget {
     // URL null yoki bo'sh - SABAB KO'RSATILADI
     if (url == null || url.isEmpty) {
       return GestureDetector(
-        onTap: () => _showInfoDialog(context, url, 'Backend rasm yo\'lini qaytarmadi (null)'),
+        onTap: () => _showInfoDialog(
+          context,
+          url,
+          'Backend qaytargan xom qiymat: "${rawBackendValue ?? "NULL"}"\n\n'
+          'resolveImageUrl natijasi: NULL\n\n'
+          'Sabab: ${_nullReason()}',
+        ),
         child: Container(
           height: height,
           width: width,
@@ -35,9 +43,15 @@ class DebugNetworkImage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.image_not_supported, size: 22, color: Colors.orange.shade400),
+              Icon(Icons.image_not_supported, size: 20, color: Colors.orange.shade400),
               const SizedBox(height: 2),
-              Text('URL: null', style: TextStyle(fontSize: 8, color: Colors.orange.shade600)),
+              Text(
+                'raw: ${rawBackendValue ?? "null"}',
+                style: TextStyle(fontSize: 7, color: Colors.orange.shade600),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
               Text('bosing', style: TextStyle(fontSize: 8, color: Colors.orange.shade400)),
             ],
           ),
@@ -69,7 +83,12 @@ class DebugNetworkImage extends StatelessWidget {
         },
         errorBuilder: (context, error, stackTrace) {
           return GestureDetector(
-            onTap: () => _showInfoDialog(context, url, error.toString()),
+            onTap: () => _showInfoDialog(
+              context,
+              url,
+              'Xatolik: ${error.toString()}\n\n'
+              'Backend xom qiymat: "${rawBackendValue ?? "?"}"',
+            ),
             child: Container(
               height: height,
               width: width,
@@ -103,6 +122,19 @@ class DebugNetworkImage extends StatelessWidget {
     );
   }
 
+  String _nullReason() {
+    final raw = rawBackendValue;
+    if (raw == null) return 'Backend photo/image maydonini null qaytardi (bazada photo ustuni bo\'sh)';
+    if (raw.isEmpty) return 'Backend bo\'sh string qaytardi';
+    if (raw == '0' || raw == '1' || raw == 'true' || raw == 'false') {
+      return 'Backend noto\'g\'ri qiymat qaytardi: "$raw" (bu fayl yo\'li emas)';
+    }
+    if (!raw.contains('/')) {
+      return 'Backend "$raw" qaytardi - bu to\'g\'ri fayl yo\'li emas (/ belgisi yo\'q)';
+    }
+    return 'Noma\'lum sabab';
+  }
+
   void _showInfoDialog(BuildContext context, String? url, String info) {
     showDialog(
       context: context,
@@ -123,12 +155,27 @@ class DebugNetworkImage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: SelectableText(
-                  url ?? 'NULL (backend rasm yo\'lini qaytarmadi)',
+                  url ?? 'NULL',
                   style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
                 ),
               ),
               const SizedBox(height: 12),
-              const Text('Xatolik/Sabab:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              const Text('Backend xom qiymat:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              const SizedBox(height: 4),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: SelectableText(
+                  rawBackendValue ?? 'NULL (backend bu maydonni qaytarmagan)',
+                  style: TextStyle(fontSize: 12, fontFamily: 'monospace', color: Colors.blue.shade700),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text('Tafsilot:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               const SizedBox(height: 4),
               Container(
                 width: double.infinity,

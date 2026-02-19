@@ -11,6 +11,49 @@ use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\RegionController;
 use App\Http\Controllers\Api\YouthController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+// Debug: bazadagi photo qiymatlarini tekshirish (vaqtinchalik)
+Route::get('/debug/photos', function () {
+    $youths = \App\Models\Youth::select('id', 'full_name', 'photo')
+        ->latest()->limit(20)->get()
+        ->map(fn($y) => [
+            'id' => $y->id,
+            'name' => $y->full_name,
+            'photo_raw' => $y->photo,
+            'photo_type' => gettype($y->photo),
+            'photo_is_null' => $y->photo === null,
+            'has_slash' => $y->photo ? str_contains((string)$y->photo, '/') : false,
+        ]);
+
+    $officers = \App\Models\Officer::select('id', 'full_name', 'photo')
+        ->latest()->limit(20)->get()
+        ->map(fn($o) => [
+            'id' => $o->id,
+            'name' => $o->full_name,
+            'photo_raw' => $o->photo,
+            'photo_type' => gettype($o->photo),
+            'photo_is_null' => $o->photo === null,
+            'has_slash' => $o->photo ? str_contains((string)$o->photo, '/') : false,
+        ]);
+
+    // Diskdagi fayllar
+    $youthFiles = Storage::disk('public')->exists('youths')
+        ? Storage::disk('public')->files('youths')
+        : [];
+    $officerFiles = Storage::disk('public')->exists('officers')
+        ? Storage::disk('public')->files('officers')
+        : [];
+
+    return response()->json([
+        'youths_db' => $youths,
+        'officers_db' => $officers,
+        'youth_files_on_disk' => $youthFiles,
+        'officer_files_on_disk' => $officerFiles,
+        'storage_path' => storage_path('app/public'),
+        'symlink_exists' => file_exists(public_path('storage')),
+    ]);
+});
 
 // Auth (ochiq)
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');

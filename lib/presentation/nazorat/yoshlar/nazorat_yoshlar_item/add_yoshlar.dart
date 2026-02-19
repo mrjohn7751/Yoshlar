@@ -38,6 +38,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   Uint8List? _photoBytes;
   String? _existingPhotoUrl;
+  String? _existingRawImage;
   final ImagePicker _picker = ImagePicker();
 
   static const List<Map<String, dynamic>> _regions = [
@@ -92,6 +93,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
       // Set photo
       _existingPhotoUrl = youth.image;
+      _existingRawImage = youth.rawImage;
 
       // Set categories
       for (final tag in youth.tags) {
@@ -202,6 +204,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
                       borderRadius: BorderRadius.circular(40),
                       child: DebugNetworkImage(
                         imageUrl: _existingPhotoUrl,
+                        rawBackendValue: _existingRawImage,
                         height: 80,
                         width: 80,
                         borderRadius: BorderRadius.circular(40),

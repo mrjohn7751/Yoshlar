@@ -11,6 +11,7 @@ class OfficerModel {
   final int? regionId;
   final String? phone;
   final String? photo;
+  final String? rawPhoto; // Backend qaytargan xom qiymat (debug uchun)
   final int youthsCount;
 
   OfficerModel({
@@ -23,6 +24,7 @@ class OfficerModel {
     this.regionId,
     this.phone,
     this.photo,
+    this.rawPhoto,
     this.youthsCount = 0,
   });
 
@@ -39,6 +41,7 @@ class OfficerModel {
       regionId: json['region_id'],
       phone: json['phone'],
       photo: ApiClient.resolveImageUrl(json['photo']),
+      rawPhoto: (json['_debug_photo_raw'] ?? json['photo'])?.toString(),
       youthsCount: json['youthsCount'] ?? 0,
     );
   }

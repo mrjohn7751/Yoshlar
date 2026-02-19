@@ -8,6 +8,7 @@ class UserModel {
   final String name;
   final String? phone;
   final String? image;
+  final String? rawImage; // Backend qaytargan xom qiymat (debug uchun)
   final String birthDate;
   final String gender;
   final String location;
@@ -28,6 +29,7 @@ class UserModel {
     required this.name,
     this.phone,
     this.image,
+    this.rawImage,
     required this.birthDate,
     required this.gender,
     required this.location,
@@ -54,6 +56,7 @@ class UserModel {
       name: json['name'] ?? '',
       phone: json['phone'],
       image: ApiClient.resolveImageUrl(json['image']),
+      rawImage: (json['_debug_photo_raw'] ?? json['image'])?.toString(),
       birthDate: json['birthDate'] ?? '',
       gender: json['gender'] ?? '',
       location: json['location'] ?? '',

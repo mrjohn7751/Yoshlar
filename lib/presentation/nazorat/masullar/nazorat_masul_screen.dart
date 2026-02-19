@@ -131,6 +131,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
             children: [
               DebugNetworkImage(
                 imageUrl: officer.photo,
+                rawBackendValue: officer.rawPhoto,
                 height: 80,
                 width: 80,
               ),

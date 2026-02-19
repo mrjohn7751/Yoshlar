@@ -39,6 +39,7 @@ class NazoratUserCardWidget extends StatelessWidget {
                   children: [
                     DebugNetworkImage(
                       imageUrl: user.image,
+                      rawBackendValue: user.rawImage,
                       height: 80,
                       width: 80,
                     ),
