@@ -14,8 +14,10 @@ class ApiClient {
 
   /// Nisbiy yo'ldan to'liq rasm URL yasaydi.
   /// Agar allaqachon to'liq URL bo'lsa, o'zgartirmaydi.
-  static String? resolveImageUrl(String? path) {
-    if (path == null || path.isEmpty) return null;
+  static String? resolveImageUrl(dynamic value) {
+    if (value == null || value is bool || value is num) return null;
+    final path = value.toString();
+    if (path.isEmpty || path == 'true' || path == 'false') return null;
     if (path.startsWith('http')) return path;
     return '$storageUrl/$path';
   }
