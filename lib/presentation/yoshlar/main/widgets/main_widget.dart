@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:yoshlar/data/model/user.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/youth_service.dart';
+import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
 class UserCardWidget extends StatelessWidget {
   final UserModel user;
@@ -37,17 +38,10 @@ class UserCardWidget extends StatelessWidget {
               width: double.infinity,
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: user.image != null && user.image!.startsWith('http')
-                        ? Image.network(
-                            user.image!,
-                            height: 80,
-                            width: 80,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, e, st) => _defaultAvatar(),
-                          )
-                        : _defaultAvatar(),
+                  DebugNetworkImage(
+                    imageUrl: user.image,
+                    height: 80,
+                    width: 80,
                   ),
                   const SizedBox(width: 12),
                   Expanded(

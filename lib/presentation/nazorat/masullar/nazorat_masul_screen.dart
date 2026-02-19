@@ -9,6 +9,7 @@ import 'package:yoshlar/logic/officer/officer_cubit.dart';
 import 'package:yoshlar/logic/officer/officer_state.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/add_masul.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/masul_yoshlar.dart';
+import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
 class NazoratMasulScreen extends StatefulWidget {
   const NazoratMasulScreen({super.key});
@@ -128,17 +129,10 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: officer.photo != null && officer.photo!.startsWith('http')
-                    ? Image.network(
-                        officer.photo!,
-                        height: 80,
-                        width: 80,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, e, st) => _defaultAvatar(),
-                      )
-                    : _defaultAvatar(),
+              DebugNetworkImage(
+                imageUrl: officer.photo,
+                height: 80,
+                width: 80,
               ),
               const SizedBox(width: 12),
               Expanded(

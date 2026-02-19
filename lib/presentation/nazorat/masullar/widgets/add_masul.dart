@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/logic/officer/officer_cubit.dart';
+import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
 class AddOfficerScreen extends StatefulWidget {
   static const String routeName = 'add_masul';
@@ -212,33 +213,50 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
   }
 
   Widget _buildImageUpload() {
-    ImageProvider? imageProvider;
-    if (_photoBytes != null) {
-      imageProvider = MemoryImage(_photoBytes!);
-    } else if (_existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http')) {
-      imageProvider = NetworkImage(_existingPhotoUrl!);
-    }
-
-    final hasImage = imageProvider != null;
+    final hasLocalPhoto = _photoBytes != null;
+    final hasNetworkPhoto = _existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http');
+    final hasImage = hasLocalPhoto || hasNetworkPhoto;
 
     return Column(
       children: [
         GestureDetector(
           onTap: _pickPhoto,
-          child: CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.blue.shade50,
-            backgroundImage: imageProvider,
-            child: !hasImage
-                ? Icon(
-                    Icons.person_outline,
-                    size: 40,
-                    color: Colors.blue.shade300,
-                  )
-                : null,
-          ),
+          child: hasLocalPhoto
+              ? CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.blue.shade50,
+                  backgroundImage: MemoryImage(_photoBytes!),
+                )
+              : hasNetworkPhoto
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: DebugNetworkImage(
+                        imageUrl: _existingPhotoUrl,
+                        height: 80,
+                        width: 80,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    )
+                  : CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.blue.shade50,
+                      child: Icon(
+                        Icons.person_outline,
+                        size: 40,
+                        color: Colors.blue.shade300,
+                      ),
+                    ),
         ),
         const SizedBox(height: 8),
+        if (_existingPhotoUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(
+              'URL: ${_existingPhotoUrl!.length > 60 ? '...${_existingPhotoUrl!.substring(_existingPhotoUrl!.length - 60)}' : _existingPhotoUrl}',
+              style: TextStyle(fontSize: 9, color: Colors.grey.shade500),
+              textAlign: TextAlign.center,
+            ),
+          ),
         TextButton(
           onPressed: _pickPhoto,
           style: TextButton.styleFrom(

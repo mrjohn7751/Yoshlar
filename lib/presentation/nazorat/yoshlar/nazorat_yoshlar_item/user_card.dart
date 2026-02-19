@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/user.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/add_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/nazorat_yoshlar_history.dart';
+import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
 class NazoratUserCardWidget extends StatelessWidget {
   final UserModel user;
@@ -36,17 +37,10 @@ class NazoratUserCardWidget extends StatelessWidget {
                 width: double.infinity,
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: user.image != null && user.image!.startsWith('http')
-                          ? Image.network(
-                              user.image!,
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, e, st) => _defaultAvatar(),
-                            )
-                          : _defaultAvatar(),
+                    DebugNetworkImage(
+                      imageUrl: user.image,
+                      height: 80,
+                      width: 80,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
