@@ -86,9 +86,10 @@ class YouthListCubit extends Cubit<YouthListState> {
     loadYouths();
   }
 
-  Future<void> createYouth(Map<String, dynamic> data, {Uint8List? imageBytes}) async {
-    await _youthService.createYouth(data, imageBytes: imageBytes);
+  Future<Map<String, dynamic>?> createYouth(Map<String, dynamic> data, {Uint8List? imageBytes}) async {
+    final response = await _youthService.createYouthRaw(data, imageBytes: imageBytes);
     loadYouths();
+    return response['_debug'] as Map<String, dynamic>?;
   }
 
   Future<void> updateYouth(int id, Map<String, dynamic> data, {Uint8List? imageBytes}) async {

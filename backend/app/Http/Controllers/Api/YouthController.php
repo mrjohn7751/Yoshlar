@@ -60,17 +60,45 @@ class YouthController extends Controller
 
     public function store(StoreYouthRequest $request): JsonResponse
     {
+        $debug = [];
+
         try {
-            $data = $this->mapFrontendFields($request->validated());
+            $debug['step'] = '1_validated';
+            $validated = $request->validated();
+            $debug['validated_keys'] = array_keys($validated);
+            $debug['has_file_image'] = $request->hasFile('image');
+            $debug['all_files'] = array_keys($request->allFiles());
+
+            $data = $this->mapFrontendFields($validated);
+            $debug['step'] = '2_mapped';
+            $debug['mapped_keys'] = array_keys($data);
 
             if ($request->hasFile('image')) {
-                $data['photo'] = $request->file('image')->store('youths', 'public');
+                $storedPath = $request->file('image')->store('youths', 'public');
+                $debug['step'] = '3_stored';
+                $debug['stored_path'] = $storedPath;
+                $debug['stored_type'] = gettype($storedPath);
+                $data['photo'] = $storedPath;
+            } else {
+                $debug['step'] = '3_no_file';
             }
 
             $categoryIds = $this->resolveCategoryIds($request);
             unset($data['tags'], $data['category_ids'], $data['image']);
 
+            $debug['step'] = '4_before_create';
+            $debug['data_has_photo'] = array_key_exists('photo', $data);
+            $debug['data_photo_value'] = $data['photo'] ?? 'NOT_SET';
+
             $youth = Youth::create($data);
+
+            $debug['step'] = '5_created';
+            $debug['youth_id'] = $youth->id;
+            $debug['youth_photo_after_create'] = $youth->photo;
+
+            // Bazadan qayta o'qish
+            $youth->refresh();
+            $debug['youth_photo_after_refresh'] = $youth->photo;
 
             if (!empty($categoryIds)) {
                 $youth->categories()->sync($categoryIds);
@@ -81,13 +109,14 @@ class YouthController extends Controller
             return response()->json([
                 'message' => 'Yosh muvaffaqiyatli qo\'shildi.',
                 'data' => new YouthResource($youth),
+                '_debug' => $debug,
             ], 201);
         } catch (\Exception $e) {
+            $debug['error'] = $e->getMessage();
+            $debug['error_file'] = $e->getFile() . ':' . $e->getLine();
             return response()->json([
                 'message' => 'Xatolik: ' . $e->getMessage(),
-                '_debug_error' => $e->getMessage(),
-                '_debug_file' => $e->getFile() . ':' . $e->getLine(),
-                '_debug_data_keys' => array_keys($data ?? []),
+                '_debug' => $debug,
             ], 500);
         }
     }

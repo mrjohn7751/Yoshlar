@@ -66,16 +66,19 @@ class YouthService {
     return fields;
   }
 
-  Future<UserModel> createYouth(Map<String, dynamic> data, {Uint8List? imageBytes}) async {
+  Future<Map<String, dynamic>> createYouthRaw(Map<String, dynamic> data, {Uint8List? imageBytes}) async {
     if (imageBytes != null) {
-      final response = await _client.multipartPostWithBytes(
+      return await _client.multipartPostWithBytes(
         '/youths',
         fields: _toMultipartFields(data),
         fileBytes: {'image': imageBytes},
       );
-      return UserModel.fromJson(response['data']);
     }
-    final response = await _client.post('/youths', body: data);
+    return await _client.post('/youths', body: data);
+  }
+
+  Future<UserModel> createYouth(Map<String, dynamic> data, {Uint8List? imageBytes}) async {
+    final response = await createYouthRaw(data, imageBytes: imageBytes);
     return UserModel.fromJson(response['data']);
   }
 

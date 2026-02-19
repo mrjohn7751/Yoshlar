@@ -674,7 +674,26 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       if (widget.isEditing) {
         await context.read<YouthListCubit>().updateYouth(widget.existingYouth!.id!, data, imageBytes: _photoBytes);
       } else {
-        await context.read<YouthListCubit>().createYouth(data, imageBytes: _photoBytes);
+        final debug = await context.read<YouthListCubit>().createYouth(data, imageBytes: _photoBytes);
+        // Debug: server natijasini ko'rsatish
+        if (mounted && debug != null) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Rasm Debug (server javobi)'),
+              content: SingleChildScrollView(
+                child: SelectableText(debug.toString()),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () { Navigator.pop(ctx); Navigator.pop(context); },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
