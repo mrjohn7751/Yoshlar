@@ -99,7 +99,13 @@ class AuthController extends Controller
             Storage::disk('public')->delete($user->photo);
         }
 
+        Storage::disk('public')->makeDirectory('users');
         $path = $request->file('photo')->store('users', 'public');
+        if ($path === false) {
+            $fileName = uniqid() . '.jpg';
+            $request->file('photo')->move(Storage::disk('public')->path('users'), $fileName);
+            $path = 'users/' . $fileName;
+        }
         $user->photo = $path;
         $user->save();
         $user->load('officer');

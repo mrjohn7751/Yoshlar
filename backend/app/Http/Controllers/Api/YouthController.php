@@ -12,6 +12,7 @@ use App\Models\Youth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -74,10 +75,32 @@ class YouthController extends Controller
             $debug['mapped_keys'] = array_keys($data);
 
             if ($request->hasFile('image')) {
+                // Papka mavjudligini tekshirish va yaratish
+                Storage::disk('public')->makeDirectory('youths');
+
                 $storedPath = $request->file('image')->store('youths', 'public');
                 $debug['step'] = '3_stored';
                 $debug['stored_path'] = $storedPath;
                 $debug['stored_type'] = gettype($storedPath);
+
+                if ($storedPath === false) {
+                    // Storage xatosi - batafsil ma'lumot
+                    $debug['storage_error'] = true;
+                    $debug['storage_path'] = Storage::disk('public')->path('youths');
+                    $debug['storage_writable'] = is_writable(Storage::disk('public')->path('youths'));
+                    $debug['storage_exists'] = Storage::disk('public')->exists('youths');
+                    $debug['file_valid'] = $request->file('image')->isValid();
+                    $debug['file_size'] = $request->file('image')->getSize();
+                    $debug['file_error'] = $request->file('image')->getError();
+
+                    // Muqobil usul: move orqali saqlash
+                    $fileName = uniqid() . '.jpg';
+                    $destinationPath = Storage::disk('public')->path('youths');
+                    $request->file('image')->move($destinationPath, $fileName);
+                    $storedPath = 'youths/' . $fileName;
+                    $debug['fallback_path'] = $storedPath;
+                }
+
                 $data['photo'] = $storedPath;
             } else {
                 $debug['step'] = '3_no_file';
@@ -140,7 +163,14 @@ class YouthController extends Controller
                 if ($youth->photo) {
                     Storage::disk('public')->delete($youth->photo);
                 }
-                $data['photo'] = $request->file('image')->store('youths', 'public');
+                Storage::disk('public')->makeDirectory('youths');
+                $storedPath = $request->file('image')->store('youths', 'public');
+                if ($storedPath === false) {
+                    $fileName = uniqid() . '.jpg';
+                    $request->file('image')->move(Storage::disk('public')->path('youths'), $fileName);
+                    $storedPath = 'youths/' . $fileName;
+                }
+                $data['photo'] = $storedPath;
             }
 
             $categoryIds = $this->resolveCategoryIds($request);
@@ -183,7 +213,14 @@ class YouthController extends Controller
             Storage::disk('public')->delete($youth->photo);
         }
 
-        $youth->photo = $request->file('image')->store('youths', 'public');
+        Storage::disk('public')->makeDirectory('youths');
+        $storedPath = $request->file('image')->store('youths', 'public');
+        if ($storedPath === false) {
+            $fileName = uniqid() . '.jpg';
+            $request->file('image')->move(Storage::disk('public')->path('youths'), $fileName);
+            $storedPath = 'youths/' . $fileName;
+        }
+        $youth->photo = $storedPath;
         $youth->save();
 
         $youth->load(['region', 'categories', 'officers']);

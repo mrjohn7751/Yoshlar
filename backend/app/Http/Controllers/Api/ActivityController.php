@@ -8,6 +8,7 @@ use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Models\Youth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -89,9 +90,15 @@ class ActivityController extends Controller
             'images.*' => ['image', 'mimes:jpeg,png,jpg', 'max:5120'],
         ]);
 
+        Storage::disk('public')->makeDirectory('activities');
         $uploaded = [];
         foreach (request()->file('images') as $image) {
             $path = $image->store('activities', 'public');
+            if ($path === false) {
+                $fileName = uniqid() . '.jpg';
+                $image->move(Storage::disk('public')->path('activities'), $fileName);
+                $path = 'activities/' . $fileName;
+            }
             $uploaded[] = $activity->images()->create(['path' => $path]);
         }
 

@@ -62,9 +62,14 @@ class OfficerController extends Controller
 
         // Fayl bo'lmasa photo kalitini o'chirib tashlash
         if ($request->hasFile('photo')) {
+            Storage::disk('public')->makeDirectory('officers');
             $storedPath = $request->file('photo')->store('officers', 'public');
+            if ($storedPath === false) {
+                $fileName = uniqid() . '.jpg';
+                $request->file('photo')->move(Storage::disk('public')->path('officers'), $fileName);
+                $storedPath = 'officers/' . $fileName;
+            }
             $debug['stored_path'] = $storedPath;
-            $debug['stored_type'] = gettype($storedPath);
             $data['photo'] = $storedPath;
         } else {
             unset($data['photo']);
@@ -133,7 +138,14 @@ class OfficerController extends Controller
             if ($officer->photo) {
                 Storage::disk('public')->delete($officer->photo);
             }
-            $data['photo'] = $request->file('photo')->store('officers', 'public');
+            Storage::disk('public')->makeDirectory('officers');
+            $storedPath = $request->file('photo')->store('officers', 'public');
+            if ($storedPath === false) {
+                $fileName = uniqid() . '.jpg';
+                $request->file('photo')->move(Storage::disk('public')->path('officers'), $fileName);
+                $storedPath = 'officers/' . $fileName;
+            }
+            $data['photo'] = $storedPath;
         } else {
             unset($data['photo']);
         }
