@@ -67,7 +67,7 @@ class YouthController extends Controller
         }
 
         $categoryIds = $this->resolveCategoryIds($request);
-        unset($data['tags'], $data['category_ids']);
+        unset($data['tags'], $data['category_ids'], $data['image']);
 
         $youth = Youth::create($data);
 
@@ -105,7 +105,7 @@ class YouthController extends Controller
         }
 
         $categoryIds = $this->resolveCategoryIds($request);
-        unset($data['tags'], $data['category_ids']);
+        unset($data['tags'], $data['category_ids'], $data['image']);
 
         $youth->update($data);
 

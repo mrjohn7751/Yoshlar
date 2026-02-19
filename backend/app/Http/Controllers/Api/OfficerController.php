@@ -55,8 +55,11 @@ class OfficerController extends Controller
             unset($data['region']);
         }
 
+        // Fayl bo'lmasa photo kalitini o'chirib tashlash
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('officers', 'public');
+        } else {
+            unset($data['photo']);
         }
 
         // Auto-generate credentials for the officer
@@ -115,6 +118,8 @@ class OfficerController extends Controller
                 Storage::disk('public')->delete($officer->photo);
             }
             $data['photo'] = $request->file('photo')->store('officers', 'public');
+        } else {
+            unset($data['photo']);
         }
 
         $officer->update($data);

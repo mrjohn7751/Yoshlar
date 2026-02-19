@@ -18,9 +18,9 @@ class UserResource extends JsonResource
             'role' => $this->role,
             'officer_id' => $this->officer?->id,
             'photo' => $this->photo ? true : false,
-            'photo_url' => $this->photo,
+            'photo_url' => $this->photo && str_contains((string) $this->photo, '/') ? $this->photo : null,
             'officer_photo' => $this->officer?->photo ? true : false,
-            'officer_photo_url' => $this->officer?->photo,
+            'officer_photo_url' => $this->officer?->photo && str_contains((string) $this->officer->photo, '/') ? $this->officer->photo : null,
             'created_at' => $this->created_at,
         ];
     }

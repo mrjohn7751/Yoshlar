@@ -12,7 +12,7 @@ class ActivityImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => $this->path,
+            'url' => $this->path && str_contains((string) $this->path, '/') ? $this->path : null,
             'created_at' => $this->created_at,
         ];
     }

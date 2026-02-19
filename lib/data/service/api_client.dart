@@ -14,10 +14,13 @@ class ApiClient {
 
   /// Nisbiy yo'ldan to'liq rasm URL yasaydi.
   /// Agar allaqachon to'liq URL bo'lsa, o'zgartirmaydi.
+  /// "0", "1", bool, va boshqa noto'g'ri qiymatlarni filtrlaydi.
   static String? resolveImageUrl(dynamic value) {
     if (value == null || value is bool || value is num) return null;
     final path = value.toString();
-    if (path.isEmpty || path == 'true' || path == 'false') return null;
+    if (path.isEmpty) return null;
+    // Haqiqiy fayl yo'li "/" belgisini o'z ichiga olishi kerak (masalan: youths/xxx.jpg)
+    if (!path.contains('/')) return null;
     if (path.startsWith('http')) return path;
     return '$storageUrl/$path';
   }

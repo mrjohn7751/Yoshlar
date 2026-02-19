@@ -31651,7 +31651,8 @@ _.d=d},
 RJ(a){var s
 if(a==null||A.pV(a)||typeof a=="number")return null
 s=J.cM(a)
-if(s.length===0||s==="true"||s==="false")return null
+if(s.length===0)return null
+if(!B.c.p(s,"/"))return null
 if(B.c.bv(s,"http"))return s
 return"http://yoshlarnazorati.uz/storage/"+s},
 ty(a,b){return new A.DS(a)},
