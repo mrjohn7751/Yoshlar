@@ -38,11 +38,6 @@ class OfficerController extends Controller
 
     public function store(StoreOfficerRequest $request): JsonResponse
     {
-        $debug = [];
-        $debug['has_file_photo'] = $request->hasFile('photo');
-        $debug['all_files'] = array_keys($request->allFiles());
-        $debug['validated_keys'] = array_keys($request->validated());
-
         $data = $request->validated();
 
         // fullName -> full_name
@@ -60,7 +55,6 @@ class OfficerController extends Controller
             unset($data['region']);
         }
 
-        // Fayl bo'lmasa photo kalitini o'chirib tashlash
         if ($request->hasFile('photo')) {
             Storage::disk('public')->makeDirectory('officers');
             $storedPath = $request->file('photo')->store('officers', 'public');
@@ -69,15 +63,10 @@ class OfficerController extends Controller
                 $request->file('photo')->move(Storage::disk('public')->path('officers'), $fileName);
                 $storedPath = 'officers/' . $fileName;
             }
-            $debug['stored_path'] = $storedPath;
             $data['photo'] = $storedPath;
         } else {
             unset($data['photo']);
-            $debug['photo_skipped'] = 'no file received';
         }
-
-        $debug['data_has_photo'] = array_key_exists('photo', $data);
-        $debug['data_photo_value'] = $data['photo'] ?? 'NOT_SET';
 
         // Auto-generate credentials for the officer
         $credentialGenerator = new CredentialGenerator();
@@ -102,8 +91,6 @@ class OfficerController extends Controller
         });
 
         $officer->refresh();
-        $debug['officer_photo_in_db'] = $officer->photo;
-
         $officer->load(['region', 'user']);
 
         return response()->json([
@@ -113,7 +100,6 @@ class OfficerController extends Controller
                 'username' => $username,
                 'password' => $plainPassword,
             ],
-            '_debug' => $debug,
         ], 201);
     }
 

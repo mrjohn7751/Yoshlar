@@ -20,7 +20,6 @@ class OfficerResource extends JsonResource
             'region_id' => $this->region_id,
             'phone' => $this->phone,
             'photo' => $this->photo && str_contains((string) $this->photo, '/') ? $this->photo : null,
-            '_debug_photo_raw' => $this->photo,
             'youthsCount' => $this->whenCounted('youths'),
             'created_at' => $this->created_at,
         ];

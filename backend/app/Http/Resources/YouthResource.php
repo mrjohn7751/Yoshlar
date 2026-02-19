@@ -15,7 +15,6 @@ class YouthResource extends JsonResource
             'name' => $this->full_name,
             'phone' => $this->phone,
             'image' => $this->photo && str_contains((string) $this->photo, '/') ? $this->photo : null,
-            '_debug_photo_raw' => $this->photo,
             'birthDate' => $this->birth_date?->format('Y-m-d'),
             'gender' => $this->gender,
             'location' => $this->address,

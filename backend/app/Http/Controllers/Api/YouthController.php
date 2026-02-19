@@ -12,7 +12,6 @@ use App\Models\Youth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -61,87 +60,35 @@ class YouthController extends Controller
 
     public function store(StoreYouthRequest $request): JsonResponse
     {
-        $debug = [];
+        $validated = $request->validated();
+        $data = $this->mapFrontendFields($validated);
 
-        try {
-            $debug['step'] = '1_validated';
-            $validated = $request->validated();
-            $debug['validated_keys'] = array_keys($validated);
-            $debug['has_file_image'] = $request->hasFile('image');
-            $debug['all_files'] = array_keys($request->allFiles());
-
-            $data = $this->mapFrontendFields($validated);
-            $debug['step'] = '2_mapped';
-            $debug['mapped_keys'] = array_keys($data);
-
-            if ($request->hasFile('image')) {
-                // Papka mavjudligini tekshirish va yaratish
-                Storage::disk('public')->makeDirectory('youths');
-
-                $storedPath = $request->file('image')->store('youths', 'public');
-                $debug['step'] = '3_stored';
-                $debug['stored_path'] = $storedPath;
-                $debug['stored_type'] = gettype($storedPath);
-
-                if ($storedPath === false) {
-                    // Storage xatosi - batafsil ma'lumot
-                    $debug['storage_error'] = true;
-                    $debug['storage_path'] = Storage::disk('public')->path('youths');
-                    $debug['storage_writable'] = is_writable(Storage::disk('public')->path('youths'));
-                    $debug['storage_exists'] = Storage::disk('public')->exists('youths');
-                    $debug['file_valid'] = $request->file('image')->isValid();
-                    $debug['file_size'] = $request->file('image')->getSize();
-                    $debug['file_error'] = $request->file('image')->getError();
-
-                    // Muqobil usul: move orqali saqlash
-                    $fileName = uniqid() . '.jpg';
-                    $destinationPath = Storage::disk('public')->path('youths');
-                    $request->file('image')->move($destinationPath, $fileName);
-                    $storedPath = 'youths/' . $fileName;
-                    $debug['fallback_path'] = $storedPath;
-                }
-
-                $data['photo'] = $storedPath;
-            } else {
-                $debug['step'] = '3_no_file';
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->makeDirectory('youths');
+            $storedPath = $request->file('image')->store('youths', 'public');
+            if ($storedPath === false) {
+                $fileName = uniqid() . '.jpg';
+                $request->file('image')->move(Storage::disk('public')->path('youths'), $fileName);
+                $storedPath = 'youths/' . $fileName;
             }
-
-            $categoryIds = $this->resolveCategoryIds($request);
-            unset($data['tags'], $data['category_ids'], $data['image']);
-
-            $debug['step'] = '4_before_create';
-            $debug['data_has_photo'] = array_key_exists('photo', $data);
-            $debug['data_photo_value'] = $data['photo'] ?? 'NOT_SET';
-
-            $youth = Youth::create($data);
-
-            $debug['step'] = '5_created';
-            $debug['youth_id'] = $youth->id;
-            $debug['youth_photo_after_create'] = $youth->photo;
-
-            // Bazadan qayta o'qish
-            $youth->refresh();
-            $debug['youth_photo_after_refresh'] = $youth->photo;
-
-            if (!empty($categoryIds)) {
-                $youth->categories()->sync($categoryIds);
-            }
-
-            $youth->load(['region', 'categories']);
-
-            return response()->json([
-                'message' => 'Yosh muvaffaqiyatli qo\'shildi.',
-                'data' => new YouthResource($youth),
-                '_debug' => $debug,
-            ], 201);
-        } catch (\Exception $e) {
-            $debug['error'] = $e->getMessage();
-            $debug['error_file'] = $e->getFile() . ':' . $e->getLine();
-            return response()->json([
-                'message' => 'Xatolik: ' . $e->getMessage(),
-                '_debug' => $debug,
-            ], 500);
+            $data['photo'] = $storedPath;
         }
+
+        $categoryIds = $this->resolveCategoryIds($request);
+        unset($data['tags'], $data['category_ids'], $data['image']);
+
+        $youth = Youth::create($data);
+
+        if (!empty($categoryIds)) {
+            $youth->categories()->sync($categoryIds);
+        }
+
+        $youth->load(['region', 'categories']);
+
+        return response()->json([
+            'message' => 'Yosh muvaffaqiyatli qo\'shildi.',
+            'data' => new YouthResource($youth),
+        ], 201);
     }
 
     public function show(Youth $youth): JsonResponse
@@ -191,8 +138,6 @@ class YouthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Xatolik: ' . $e->getMessage(),
-                '_debug_error' => $e->getMessage(),
-                '_debug_file' => $e->getFile() . ':' . $e->getLine(),
             ], 500);
         }
     }

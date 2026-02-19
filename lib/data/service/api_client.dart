@@ -237,14 +237,8 @@ class ApiClient {
       onUnauthorized?.call();
     }
 
-    final message = body['message']
-        ?? body['_debug_error']
-        ?? 'Server xatosi (${response.statusCode})';
-    final debugInfo = body['_debug_file'] ?? '';
-    final fullMessage = debugInfo.toString().isNotEmpty
-        ? '$message [$debugInfo]'
-        : message.toString();
-    throw ApiException(fullMessage, response.statusCode);
+    final message = body['message'] ?? 'Server xatosi (${response.statusCode})';
+    throw ApiException(message.toString(), response.statusCode);
   }
 }
 
