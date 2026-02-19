@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Rasm yuklanmasa URL va xato sababini ko'rsatadigan debug widget.
+/// Rasm yuklanmasa URL va xato sababini KO'RSATADIGAN debug widget.
+/// Har doim bosish mumkin - URL va xatolik haqida to'liq ma'lumot beradi.
 class DebugNetworkImage extends StatelessWidget {
   final String? imageUrl;
   final double height;
@@ -19,9 +20,29 @@ class DebugNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final url = imageUrl;
 
-    // URL null yoki bo'sh
+    // URL null yoki bo'sh - SABAB KO'RSATILADI
     if (url == null || url.isEmpty) {
-      return _placeholder('Rasm yo\'q');
+      return GestureDetector(
+        onTap: () => _showInfoDialog(context, url, 'Backend rasm yo\'lini qaytarmadi (null)'),
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: Colors.orange.shade50,
+            borderRadius: borderRadius ?? BorderRadius.circular(12),
+            border: Border.all(color: Colors.orange.shade300),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.image_not_supported, size: 22, color: Colors.orange.shade400),
+              const SizedBox(height: 2),
+              Text('URL: null', style: TextStyle(fontSize: 8, color: Colors.orange.shade600)),
+              Text('bosing', style: TextStyle(fontSize: 8, color: Colors.orange.shade400)),
+            ],
+          ),
+        ),
+      );
     }
 
     return ClipRRect(
@@ -48,25 +69,32 @@ class DebugNetworkImage extends StatelessWidget {
         },
         errorBuilder: (context, error, stackTrace) {
           return GestureDetector(
-            onTap: () => _showErrorDialog(context, url, error),
+            onTap: () => _showInfoDialog(context, url, error.toString()),
             child: Container(
               height: height,
               width: width,
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
                 borderRadius: borderRadius ?? BorderRadius.circular(12),
-                border: Border.all(color: Colors.red.shade200),
+                border: Border.all(color: Colors.red.shade300),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.broken_image, color: Colors.red.shade300, size: 24),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Xato',
-                    style: TextStyle(color: Colors.red.shade400, fontSize: 10),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.broken_image, color: Colors.red.shade400, size: 20),
+                    const SizedBox(height: 2),
+                    Text(
+                      url.length > 30 ? '...${url.substring(url.length - 30)}' : url,
+                      style: TextStyle(fontSize: 7, color: Colors.red.shade500),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text('bosing', style: TextStyle(fontSize: 8, color: Colors.red.shade400)),
+                  ],
+                ),
               ),
             ),
           );
@@ -75,53 +103,43 @@ class DebugNetworkImage extends StatelessWidget {
     );
   }
 
-  Widget _placeholder(String text) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: borderRadius ?? BorderRadius.circular(12),
-      ),
-      child: const Icon(Icons.person, size: 40, color: Colors.blue),
-    );
-  }
-
-  void _showErrorDialog(BuildContext context, String url, Object error) {
+  void _showInfoDialog(BuildContext context, String? url, String info) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Rasm yuklanmadi', style: TextStyle(fontSize: 16)),
+        title: const Text('Rasm Debug', style: TextStyle(fontSize: 16)),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('URL:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              const Text('Rasm URL:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               const SizedBox(height: 4),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: SelectableText(
-                  url,
-                  style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+                  url ?? 'NULL (backend rasm yo\'lini qaytarmadi)',
+                  style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
                 ),
               ),
               const SizedBox(height: 12),
-              const Text('Xatolik:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+              const Text('Xatolik/Sabab:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
               const SizedBox(height: 4),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: SelectableText(
-                  error.toString(),
-                  style: TextStyle(fontSize: 11, color: Colors.red.shade700),
+                  info,
+                  style: TextStyle(fontSize: 12, color: Colors.red.shade700),
                 ),
               ),
             ],
