@@ -60,27 +60,36 @@ class YouthController extends Controller
 
     public function store(StoreYouthRequest $request): JsonResponse
     {
-        $data = $this->mapFrontendFields($request->validated());
+        try {
+            $data = $this->mapFrontendFields($request->validated());
 
-        if ($request->hasFile('image')) {
-            $data['photo'] = $request->file('image')->store('youths', 'public');
+            if ($request->hasFile('image')) {
+                $data['photo'] = $request->file('image')->store('youths', 'public');
+            }
+
+            $categoryIds = $this->resolveCategoryIds($request);
+            unset($data['tags'], $data['category_ids'], $data['image']);
+
+            $youth = Youth::create($data);
+
+            if (!empty($categoryIds)) {
+                $youth->categories()->sync($categoryIds);
+            }
+
+            $youth->load(['region', 'categories']);
+
+            return response()->json([
+                'message' => 'Yosh muvaffaqiyatli qo\'shildi.',
+                'data' => new YouthResource($youth),
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Xatolik: ' . $e->getMessage(),
+                '_debug_error' => $e->getMessage(),
+                '_debug_file' => $e->getFile() . ':' . $e->getLine(),
+                '_debug_data_keys' => array_keys($data ?? []),
+            ], 500);
         }
-
-        $categoryIds = $this->resolveCategoryIds($request);
-        unset($data['tags'], $data['category_ids'], $data['image']);
-
-        $youth = Youth::create($data);
-
-        if (!empty($categoryIds)) {
-            $youth->categories()->sync($categoryIds);
-        }
-
-        $youth->load(['region', 'categories']);
-
-        return response()->json([
-            'message' => 'Yosh muvaffaqiyatli qo\'shildi.',
-            'data' => new YouthResource($youth),
-        ], 201);
     }
 
     public function show(Youth $youth): JsonResponse
@@ -95,30 +104,38 @@ class YouthController extends Controller
 
     public function update(UpdateYouthRequest $request, Youth $youth): JsonResponse
     {
-        $data = $this->mapFrontendFields($request->validated());
+        try {
+            $data = $this->mapFrontendFields($request->validated());
 
-        if ($request->hasFile('image')) {
-            if ($youth->photo) {
-                Storage::disk('public')->delete($youth->photo);
+            if ($request->hasFile('image')) {
+                if ($youth->photo) {
+                    Storage::disk('public')->delete($youth->photo);
+                }
+                $data['photo'] = $request->file('image')->store('youths', 'public');
             }
-            $data['photo'] = $request->file('image')->store('youths', 'public');
+
+            $categoryIds = $this->resolveCategoryIds($request);
+            unset($data['tags'], $data['category_ids'], $data['image']);
+
+            $youth->update($data);
+
+            if ($categoryIds !== null) {
+                $youth->categories()->sync($categoryIds);
+            }
+
+            $youth->load(['region', 'categories']);
+
+            return response()->json([
+                'message' => 'Yosh muvaffaqiyatli yangilandi.',
+                'data' => new YouthResource($youth),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Xatolik: ' . $e->getMessage(),
+                '_debug_error' => $e->getMessage(),
+                '_debug_file' => $e->getFile() . ':' . $e->getLine(),
+            ], 500);
         }
-
-        $categoryIds = $this->resolveCategoryIds($request);
-        unset($data['tags'], $data['category_ids'], $data['image']);
-
-        $youth->update($data);
-
-        if ($categoryIds !== null) {
-            $youth->categories()->sync($categoryIds);
-        }
-
-        $youth->load(['region', 'categories']);
-
-        return response()->json([
-            'message' => 'Yosh muvaffaqiyatli yangilandi.',
-            'data' => new YouthResource($youth),
-        ]);
     }
 
     public function updatePhoto(Request $request, Youth $youth): JsonResponse

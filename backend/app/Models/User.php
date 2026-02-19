@@ -35,9 +35,7 @@ class User extends Authenticatable
 
     public function setPhotoAttribute($value): void
     {
-        if ($value === null) {
-            $this->attributes['photo'] = null;
-        } elseif (is_string($value) && str_contains($value, '/')) {
+        if (is_string($value) && str_contains($value, '/')) {
             $this->attributes['photo'] = $value;
         } else {
             $this->attributes['photo'] = null;

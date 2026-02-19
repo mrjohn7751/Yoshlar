@@ -218,9 +218,15 @@ class ApiClient {
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
-    final body = response.body.isNotEmpty
-        ? jsonDecode(response.body) as Map<String, dynamic>
-        : <String, dynamic>{};
+    Map<String, dynamic> body;
+    try {
+      body = response.body.isNotEmpty
+          ? jsonDecode(response.body) as Map<String, dynamic>
+          : <String, dynamic>{};
+    } catch (_) {
+      // Non-JSON response (e.g. HTML error page)
+      body = <String, dynamic>{};
+    }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return body;
@@ -231,8 +237,14 @@ class ApiClient {
       onUnauthorized?.call();
     }
 
-    final message = body['message'] ?? 'Xatolik yuz berdi';
-    throw ApiException(message.toString(), response.statusCode);
+    final message = body['message']
+        ?? body['_debug_error']
+        ?? 'Server xatosi (${response.statusCode})';
+    final debugInfo = body['_debug_file'] ?? '';
+    final fullMessage = debugInfo.toString().isNotEmpty
+        ? '$message [$debugInfo]'
+        : message.toString();
+    throw ApiException(fullMessage, response.statusCode);
   }
 }
 
