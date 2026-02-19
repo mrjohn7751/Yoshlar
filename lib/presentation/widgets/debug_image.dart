@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 /// Rasm yuklash widgeti. Rasm bo'lmasa default avatar ko'rsatadi.
 class DebugNetworkImage extends StatelessWidget {
   final String? imageUrl;
-  final String? rawBackendValue;
   final double height;
   final double width;
   final BorderRadius? borderRadius;
@@ -11,7 +10,6 @@ class DebugNetworkImage extends StatelessWidget {
   const DebugNetworkImage({
     super.key,
     required this.imageUrl,
-    this.rawBackendValue,
     this.height = 80,
     this.width = 80,
     this.borderRadius,

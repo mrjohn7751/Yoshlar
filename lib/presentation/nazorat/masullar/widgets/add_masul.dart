@@ -33,7 +33,6 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
 
   Uint8List? _photoBytes;
   String? _existingPhotoUrl;
-  String? _existingRawPhoto;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -46,7 +45,6 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
       _selectedPosition = officer.position;
       _selectedRegion = officer.region?.name;
       _existingPhotoUrl = officer.photo;
-      _existingRawPhoto = officer.rawPhoto;
     }
   }
 
@@ -234,7 +232,6 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                       borderRadius: BorderRadius.circular(40),
                       child: DebugNetworkImage(
                         imageUrl: _existingPhotoUrl,
-                        rawBackendValue: _existingRawPhoto,
                         height: 80,
                         width: 80,
                         borderRadius: BorderRadius.circular(40),
