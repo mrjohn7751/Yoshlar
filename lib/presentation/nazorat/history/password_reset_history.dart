@@ -47,8 +47,7 @@ class _PasswordResetHistoryScreenState
     });
 
     try {
-      final response =
-          await context.read<AuthService>().getResetLogs(page: 1);
+      final response = await context.read<AuthService>().getResetLogs(page: 1);
       final data = (response['data'] as List)
           .map((e) => e as Map<String, dynamic>)
           .toList();
@@ -80,8 +79,9 @@ class _PasswordResetHistoryScreenState
 
     try {
       final nextPage = _currentPage + 1;
-      final response =
-          await context.read<AuthService>().getResetLogs(page: nextPage);
+      final response = await context.read<AuthService>().getResetLogs(
+        page: nextPage,
+      );
       final data = (response['data'] as List)
           .map((e) => e as Map<String, dynamic>)
           .toList();
@@ -119,8 +119,7 @@ class _PasswordResetHistoryScreenState
                   ),
                   Text(
                     "Yuz orqali tiklangan parollar",
-                    style:
-                        TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                 ],
               ),
@@ -132,57 +131,54 @@ class _PasswordResetHistoryScreenState
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
               : _error != null
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(_error!,
-                              style: const TextStyle(color: Colors.red)),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: _loadLogs,
-                            child: const Text("Qayta yuklash"),
-                          ),
-                        ],
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(_error!, style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: _loadLogs,
+                        child: const Text("Qayta yuklash"),
                       ),
-                    )
-                  : _logs.isEmpty
-                      ? const Center(
-                          child: Text("Parol tiklash tarixi mavjud emas"))
-                      : RefreshIndicator(
-                          onRefresh: _loadLogs,
-                          child: ListView.separated(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _logs.length +
-                                (_isLoadingMore || !_hasMore ? 1 : 0),
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              if (index == _logs.length) {
-                                if (_isLoadingMore) {
-                                  return const Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Center(
-                                        child: CircularProgressIndicator()),
-                                  );
-                                }
-                                return Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Center(
-                                    child: Text(
-                                      "Barcha yozuvlar ko'rsatildi",
-                                      style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          fontSize: 13),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return _buildLogCard(_logs[index]);
-                            },
+                    ],
+                  ),
+                )
+              : _logs.isEmpty
+              ? const Center(child: Text("Parol tiklash tarixi mavjud emas"))
+              : RefreshIndicator(
+                  onRefresh: _loadLogs,
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount:
+                        _logs.length + (_isLoadingMore || !_hasMore ? 1 : 0),
+                    separatorBuilder: (_, index) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      if (index == _logs.length) {
+                        if (_isLoadingMore) {
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Center(
+                            child: Text(
+                              "Barcha yozuvlar ko'rsatildi",
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 13,
+                              ),
+                            ),
                           ),
-                        ),
+                        );
+                      }
+                      return _buildLogCard(_logs[index]);
+                    },
+                  ),
+                ),
         ),
       ],
     );
@@ -223,7 +219,11 @@ class _PasswordResetHistoryScreenState
               color: Colors.orange.shade50,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(Icons.lock_reset, color: Colors.orange.shade700, size: 22),
+            child: Icon(
+              Icons.lock_reset,
+              color: Colors.orange.shade700,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -240,8 +240,11 @@ class _PasswordResetHistoryScreenState
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.person_outline,
-                        size: 14, color: Colors.grey.shade500),
+                    Icon(
+                      Icons.person_outline,
+                      size: 14,
+                      color: Colors.grey.shade500,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       username,
@@ -259,8 +262,11 @@ class _PasswordResetHistoryScreenState
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.language,
-                            size: 12, color: Colors.grey.shade400),
+                        Icon(
+                          Icons.language,
+                          size: 12,
+                          color: Colors.grey.shade400,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           ipAddress,
@@ -273,8 +279,11 @@ class _PasswordResetHistoryScreenState
                     ),
                     Row(
                       children: [
-                        Icon(Icons.access_time,
-                            size: 12, color: Colors.grey.shade400),
+                        Icon(
+                          Icons.access_time,
+                          size: 12,
+                          color: Colors.grey.shade400,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           formattedDate,

@@ -79,11 +79,13 @@ class UserCardWidget extends StatelessWidget {
                 spacing: 6,
                 runSpacing: 6,
                 children: user.tags
-                    .map((tag) => _buildCardButton(
-                          Icons.admin_panel_settings_outlined,
-                          tag,
-                          Colors.black,
-                        ))
+                    .map(
+                      (tag) => _buildCardButton(
+                        Icons.admin_panel_settings_outlined,
+                        tag,
+                        Colors.black,
+                      ),
+                    )
                     .toList(),
               ),
             const SizedBox(height: 4),
@@ -98,11 +100,16 @@ class UserCardWidget extends StatelessWidget {
                       );
                     },
                     icon: const Icon(Icons.edit, size: 16),
-                    label: const Text("Tahrirlash", style: TextStyle(fontSize: 13)),
+                    label: const Text(
+                      "Tahrirlash",
+                      style: TextStyle(fontSize: 13),
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.blue,
                       side: BorderSide(color: Colors.blue.shade200),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   ),
@@ -116,8 +123,13 @@ class UserCardWidget extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.green,
                       side: BorderSide(color: Colors.green.shade200),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
                     ),
                   ),
                 ],
@@ -156,18 +168,6 @@ class UserCardWidget extends StatelessWidget {
         );
       }
     }
-  }
-
-  Widget _defaultAvatar() {
-    return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Icon(Icons.person, size: 40, color: Colors.blue),
-    );
   }
 
   Widget _infoRow(IconData icon, String text) {

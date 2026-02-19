@@ -54,10 +54,13 @@ class _ProcessBodyState extends State<ProcessBody> {
   Widget build(BuildContext context) {
     return BlocBuilder<ActivityListCubit, ActivityListState>(
       builder: (context, state) {
-        final activities = state is ActivityListLoaded ? state.activities : <Activity>[];
+        final activities = state is ActivityListLoaded
+            ? state.activities
+            : <Activity>[];
         final total = state is ActivityListLoaded ? state.total : 0;
         final isLoading = state is ActivityListLoading;
-        final isLoadingMore = state is ActivityListLoaded && state.isLoadingMore;
+        final isLoadingMore =
+            state is ActivityListLoaded && state.isLoadingMore;
 
         return Column(
           children: [
@@ -75,11 +78,17 @@ class _ProcessBodyState extends State<ProcessBody> {
                         children: [
                           const Text(
                             "Ishlash jarayonlari",
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Text(
                             "Jami: $total ta jarayon",
-                            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                            ),
                           ),
                         ],
                       ),
@@ -97,35 +106,43 @@ class _ProcessBodyState extends State<ProcessBody> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : state is ActivityListError
-                      ? Center(child: Text(state.message))
-                      : activities.isEmpty
-                          ? const Center(child: Text("Jarayonlar topilmadi"))
-                          : ListView.separated(
-                              controller: _scrollController,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: activities.length + (isLoadingMore || !(state as ActivityListLoaded).hasMorePages ? 1 : 0),
-                              separatorBuilder: (_, __) => const SizedBox(height: 12),
-                              itemBuilder: (context, index) {
-                                if (index == activities.length) {
-                                  if (isLoadingMore) {
-                                    return const Padding(
-                                      padding: EdgeInsets.all(16),
-                                      child: Center(child: CircularProgressIndicator()),
-                                    );
-                                  }
-                                  return const Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Center(
-                                      child: Text(
-                                        "Barcha jarayonlar ko'rsatildi",
-                                        style: TextStyle(color: Colors.grey, fontSize: 13),
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return _buildProcessCard(activities[index]);
-                              },
+                  ? Center(child: Text(state.message))
+                  : activities.isEmpty
+                  ? const Center(child: Text("Jarayonlar topilmadi"))
+                  : ListView.separated(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount:
+                          activities.length +
+                          (isLoadingMore ||
+                                  !(state as ActivityListLoaded).hasMorePages
+                              ? 1
+                              : 0),
+                      separatorBuilder: (_, i) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        if (index == activities.length) {
+                          if (isLoadingMore) {
+                            return const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: Text(
+                                "Barcha jarayonlar ko'rsatildi",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ),
+                          );
+                        }
+                        return _buildProcessCard(activities[index]);
+                      },
+                    ),
             ),
           ],
         );
@@ -155,10 +172,12 @@ class _ProcessBodyState extends State<ProcessBody> {
               value: null,
               child: Text("Barcha mas'ullar"),
             ),
-            ..._officers.map((o) => DropdownMenuItem<int?>(
-                  value: o.id,
-                  child: Text(o.fullName, overflow: TextOverflow.ellipsis),
-                )),
+            ..._officers.map(
+              (o) => DropdownMenuItem<int?>(
+                value: o.id,
+                child: Text(o.fullName, overflow: TextOverflow.ellipsis),
+              ),
+            ),
           ],
           onChanged: (value) {
             setState(() => _selectedOfficerId = value);
@@ -170,7 +189,6 @@ class _ProcessBodyState extends State<ProcessBody> {
   }
 
   Widget _buildProcessCard(Activity activity) {
-    final isCompleted = activity.status == ActivityStatus.bajarilgan;
     final officerName = activity.officer?.fullName ?? "Noma'lum";
     final youthName = activity.youthName ?? "Noma'lum";
 
@@ -197,7 +215,11 @@ class _ProcessBodyState extends State<ProcessBody> {
                 color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(Icons.chat_bubble_outline, color: Colors.blue.shade700, size: 22),
+              child: Icon(
+                Icons.chat_bubble_outline,
+                color: Colors.blue.shade700,
+                size: 22,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -205,7 +227,7 @@ class _ProcessBodyState extends State<ProcessBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
@@ -228,61 +250,70 @@ class _ProcessBodyState extends State<ProcessBody> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: isCompleted ? Colors.green.shade50 : Colors.orange.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isCompleted ? Colors.green.shade200 : Colors.orange.shade200,
-                          ),
-                        ),
-                        child: Text(
-                          isCompleted ? "Bajarilgan" : "Rejalashtirilgan",
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: isCompleted ? Colors.green.shade700 : Colors.orange.shade700,
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      //   decoration: BoxDecoration(
+                      //     color: isCompleted ? Colors.green.shade50 : Colors.orange.shade50,
+                      //     borderRadius: BorderRadius.circular(12),
+                      //     border: Border.all(
+                      //       color: isCompleted ? Colors.green.shade200 : Colors.orange.shade200,
+                      //     ),
+                      //   ),
+                      //   child: Text(
+                      //     isCompleted ? "Bajarilgan" : "Rejalashtirilgan",
+                      //     style: TextStyle(
+                      //       fontSize: 10,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: isCompleted ? Colors.green.shade700 : Colors.orange.shade700,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   if (activity.description.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
                       activity.description,
-                      style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  if (activity.result.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Natija:",
-                            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                          ),
-                          Text(
-                            activity.result,
-                            style: const TextStyle(fontSize: 13, color: Colors.black87),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  // if (activity.result.isNotEmpty) ...[
+                  //   const SizedBox(height: 8),
+                  //   Container(
+                  //     width: double.infinity,
+                  //     padding: const EdgeInsets.all(8),
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.grey.shade50,
+                  //       borderRadius: BorderRadius.circular(8),
+                  //     ),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Text(
+                  //           "Natija:",
+                  //           style: TextStyle(
+                  //             fontSize: 11,
+                  //             color: Colors.grey.shade500,
+                  //           ),
+                  //         ),
+                  //         Text(
+                  //           activity.result,
+                  //           style: const TextStyle(
+                  //             fontSize: 13,
+                  //             color: Colors.black87,
+                  //           ),
+                  //           maxLines: 2,
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ],
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -290,17 +321,27 @@ class _ProcessBodyState extends State<ProcessBody> {
                       Expanded(
                         child: Text(
                           officerName,
-                          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade500,
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Row(
                         children: [
-                          Icon(Icons.access_time, size: 12, color: Colors.grey.shade400),
+                          Icon(
+                            Icons.access_time,
+                            size: 12,
+                            color: Colors.grey.shade400,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             activity.dateWithTime,
-                            style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade500,
+                            ),
                           ),
                         ],
                       ),

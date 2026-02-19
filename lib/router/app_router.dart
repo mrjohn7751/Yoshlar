@@ -6,10 +6,12 @@ import 'package:yoshlar/logic/auth/auth_cubit.dart';
 import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/main.dart';
 import 'package:yoshlar/presentation/auth/auth_page.dart';
+import 'package:yoshlar/presentation/nazorat/main/widgets/yoshlar_item_filter.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/add_masul.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/attacht_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/widgets/masul_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/nazorat_screen.dart';
+import 'package:yoshlar/presentation/nazorat/profile/nazorat_profile_screen.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/add_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/history_into_page.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/import_yoshlar.dart';
@@ -18,7 +20,6 @@ import 'package:yoshlar/presentation/splash/splash_page.dart';
 import 'package:yoshlar/presentation/yoshlar/main/add_activity/add_activity.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_item_screen.dart/history_screen.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_screen.dart';
-import 'package:yoshlar/presentation/nazorat/profile/nazorat_profile_screen.dart';
 import 'package:yoshlar/presentation/yoshlar/profile/profile_screen.dart';
 
 class AppRouter {
@@ -76,6 +77,16 @@ class AppRouter {
         path: '/nazorat_dashboard',
         routes: [
           GoRoute(
+            name: MainYoshlarFilterScreen.routeName,
+            path: 'main_yoshlar',
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              return MainYoshlarFilterScreen(
+                gender: extra?['gender'] as String? ?? "Barcha jinslar",
+              );
+            },
+          ),
+          GoRoute(
             name: NazoratProfileScreen.routeName,
             path: 'profile',
             builder: (context, state) => const NazoratProfileScreen(),
@@ -116,6 +127,7 @@ class AppRouter {
             path: 'add_masul',
             builder: (context, state) => const AddOfficerScreen(),
           ),
+
           GoRoute(
             name: AddOfficerScreen.editRouteName,
             path: 'edit_masul',

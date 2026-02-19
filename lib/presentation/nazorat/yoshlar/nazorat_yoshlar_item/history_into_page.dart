@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:yoshlar/data/service/api_client.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:yoshlar/logic/youth/youth_detail_cubit.dart';
 import 'package:yoshlar/logic/youth/youth_detail_state.dart';
 
@@ -24,7 +23,9 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
   void initState() {
     super.initState();
     if (widget.activityId != null) {
-      context.read<ActivityDetailCubit>().loadActivityDetail(widget.activityId!);
+      context.read<ActivityDetailCubit>().loadActivityDetail(
+        widget.activityId!,
+      );
     }
   }
 
@@ -76,19 +77,33 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                         const SizedBox(height: 16),
                         _buildInfoCard("Sarlavha", activity.title),
                         const SizedBox(height: 16),
-                        _buildInfoCard("Tavsif", activity.description.isNotEmpty ? activity.description : "-"),
-                        if (activity.result.isNotEmpty) ...[
-                          const SizedBox(height: 16),
-                          _buildInfoCard("Natija", activity.result),
-                        ],
+                        _buildInfoCard(
+                          "Tavsif",
+                          activity.description.isNotEmpty
+                              ? activity.description
+                              : "-",
+                        ),
+                        // if (activity.result.isNotEmpty) ...[
+                        //   const SizedBox(height: 16),
+                        //   _buildInfoCard("Natija", activity.result),
+                        // ],
                         const SizedBox(height: 16),
-                        if (activity.latitude != null && activity.longitude != null)
-                          _buildLocationCard(activity.latitude!, activity.longitude!),
-                        if (activity.latitude != null) const SizedBox(height: 16),
-                        if (activity.officer != null) _buildOfficerCard(activity.officer!),
-                        if (activity.officer != null) const SizedBox(height: 16),
-                        if (activity.images.isNotEmpty) _buildImageGallery(activity.images),
-                        if (activity.images.isNotEmpty) const SizedBox(height: 16),
+                        if (activity.latitude != null &&
+                            activity.longitude != null)
+                          _buildLocationCard(
+                            activity.latitude!,
+                            activity.longitude!,
+                          ),
+                        if (activity.latitude != null)
+                          const SizedBox(height: 16),
+                        if (activity.officer != null)
+                          _buildOfficerCard(activity.officer!),
+                        if (activity.officer != null)
+                          const SizedBox(height: 16),
+                        if (activity.images.isNotEmpty)
+                          _buildImageGallery(activity.images),
+                        if (activity.images.isNotEmpty)
+                          const SizedBox(height: 16),
                         _buildCommentsSection(comments),
                       ],
                     ),
@@ -129,7 +144,8 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
   }
 
   Widget _buildLocationCard(double lat, double lng) {
-    final googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final googleMapsUrl =
+        'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     final coordsText = '${lat.toStringAsFixed(5)}, ${lng.toStringAsFixed(5)}';
 
     return Container(
@@ -150,7 +166,10 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               Expanded(
                 child: Text(
                   coordsText,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               IconButton(
@@ -160,7 +179,13 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                   final copied = await copyToClipboard('$lat,$lng');
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(copied ? "Koordinatalar nusxalandi" : "Nusxalab bo'lmadi")),
+                      SnackBar(
+                        content: Text(
+                          copied
+                              ? "Koordinatalar nusxalandi"
+                              : "Nusxalab bo'lmadi",
+                        ),
+                      ),
                     );
                   }
                 },
@@ -173,13 +198,21 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication),
+              onPressed: () => launchUrl(
+                Uri.parse(googleMapsUrl),
+                mode: LaunchMode.externalApplication,
+              ),
               icon: const Icon(Icons.map, size: 16),
-              label: const Text("Google Maps da ochish", style: TextStyle(fontSize: 13)),
+              label: const Text(
+                "Google Maps da ochish",
+                style: TextStyle(fontSize: 13),
+              ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.blue,
                 side: BorderSide(color: Colors.blue.shade200),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 padding: const EdgeInsets.symmetric(vertical: 10),
               ),
             ),
@@ -214,7 +247,10 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                 children: [
                   Text(
                     officer.fullName,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     officer.position,
@@ -266,7 +302,9 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                       : null,
                 ),
                 child: img.url.isEmpty
-                    ? const Center(child: Icon(Icons.broken_image, color: Colors.grey))
+                    ? const Center(
+                        child: Icon(Icons.broken_image, color: Colors.grey),
+                      )
                     : null,
               );
             }).toList(),
@@ -297,14 +335,16 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
           if (comments.isEmpty)
             const Text("Izohlar yo'q", style: TextStyle(color: Colors.grey))
           else
-            ...comments.map((c) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _buildCommentItem(
-                c.user?.name ?? "Noma'lum",
-                c.createdAt,
-                c.body,
+            ...comments.map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _buildCommentItem(
+                  c.user?.name ?? "Noma'lum",
+                  c.createdAt,
+                  c.body,
+                ),
               ),
-            )),
+            ),
         ],
       ),
     );

@@ -2,10 +2,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/service/api_client.dart';
+import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:yoshlar/logic/officer/officer_cubit.dart';
 import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
@@ -84,7 +84,9 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.isEditing ? "Mas'ulni tahrirlash" : "Yangi mas'ul qo'shish",
+              widget.isEditing
+                  ? "Mas'ulni tahrirlash"
+                  : "Yangi mas'ul qo'shish",
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -123,19 +125,33 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                     _buildDropdown(
                       label: "Lavozim *",
                       hint: "Lavozimni tanlang",
-                      items: ["Bosh mutaxassis", "Katta inspektor", "Mutaxassis", "Inspektor"],
+                      items: [
+                        "Bosh mutaxassis",
+                        "Hudud prokurori",
+                        "Mutaxassis",
+                        "Inspektor",
+                      ],
                       value: _selectedPosition,
-                      onChanged: (val) => setState(() => _selectedPosition = val),
+                      onChanged: (val) =>
+                          setState(() => _selectedPosition = val),
                     ),
                     const SizedBox(height: 16),
                     _buildDropdown(
                       label: "Hudud *",
                       hint: "Hududni tanlang",
                       items: [
-                        "Jizzax shahar", "Arnasoy tumani", "Baxmal tumani",
-                        "G'allaorol tumani", "Do'stlik tumani", "Sharof Rashidov tumani",
-                        "Zomin tumani", "Zarbdor tumani", "Zafarobod tumani",
-                        "Mirzacho'l tumani", "Paxtakor tumani", "Forish tumani",
+                        "Jizzax shahar",
+                        "Arnasoy tumani",
+                        "Baxmal tumani",
+                        "G'allaorol tumani",
+                        "Do'stlik tumani",
+                        "Sharof Rashidov tumani",
+                        "Zomin tumani",
+                        "Zarbdor tumani",
+                        "Zafarobod tumani",
+                        "Mirzacho'l tumani",
+                        "Paxtakor tumani",
+                        "Forish tumani",
                         "Yangiobod tumani",
                       ],
                       value: _selectedRegion,
@@ -144,7 +160,8 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                   ],
                 ),
               ),
-              if (widget.isEditing && widget.existingOfficer?.username != null) ...[
+              if (widget.isEditing &&
+                  widget.existingOfficer?.username != null) ...[
                 const SizedBox(height: 16),
                 _buildCardWrapper(
                   title: "Kirish ma'lumotlari",
@@ -161,7 +178,11 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.person_outline, size: 20, color: Colors.blue.shade400),
+                            Icon(
+                              Icons.person_outline,
+                              size: 20,
+                              color: Colors.blue.shade400,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               "@${widget.existingOfficer!.username}",
@@ -214,7 +235,8 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
 
   Widget _buildImageUpload() {
     final hasLocalPhoto = _photoBytes != null;
-    final hasNetworkPhoto = _existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http');
+    final hasNetworkPhoto =
+        _existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http');
     final hasImage = hasLocalPhoto || hasNetworkPhoto;
 
     return Column(
@@ -228,24 +250,24 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                   backgroundImage: MemoryImage(_photoBytes!),
                 )
               : hasNetworkPhoto
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: DebugNetworkImage(
-                        imageUrl: _existingPhotoUrl,
-                        height: 80,
-                        width: 80,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.blue.shade50,
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 40,
-                        color: Colors.blue.shade300,
-                      ),
-                    ),
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: DebugNetworkImage(
+                    imageUrl: _existingPhotoUrl,
+                    height: 80,
+                    width: 80,
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.blue.shade50,
+                  child: Icon(
+                    Icons.person_outline,
+                    size: 40,
+                    color: Colors.blue.shade300,
+                  ),
+                ),
         ),
         const SizedBox(height: 8),
         if (_existingPhotoUrl != null)
@@ -372,7 +394,9 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                 style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
               ),
               icon: const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-              items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              items: items
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
               onChanged: onChanged,
             ),
           ),
@@ -410,7 +434,10 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
                   )
                 : Text(widget.isEditing ? "Yangilash" : "Saqlash"),
             style: ElevatedButton.styleFrom(
@@ -513,7 +540,9 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
               );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                  SnackBar(
+                    content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi"),
+                  ),
                 );
               }
             },

@@ -76,10 +76,10 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       _phoneController.text = youth.phone ?? '';
       _birthDateController.text = youth.birthDate;
       _locationController.text = youth.location;
-      _selectedGender = youth.gender.isNotEmpty ? youth.gender : null;
-      _selectedEducation = youth.status.isNotEmpty ? youth.status : null;
+      _selectedGender = youth.gender.isNotEmpty ? youth.gender : "Erkak";
+      _selectedEducation = youth.status.isNotEmpty ? youth.status : "O'rta";
       _selectedEmployment = youth.activity.isNotEmpty ? youth.activity : null;
-      _selectedRiskLevel = youth.riskLevel.isNotEmpty ? youth.riskLevel : null;
+      _selectedRiskLevel = youth.riskLevel.isNotEmpty ? youth.riskLevel : "";
 
       // Set region
       if (youth.region != null) {
@@ -149,7 +149,9 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               ),
             ),
             Text(
-              isEdit ? widget.existingYouth!.name : "Barcha majburiy maydonlarni to'ldiring",
+              isEdit
+                  ? widget.existingYouth!.name
+                  : "Barcha majburiy maydonlarni to'ldiring",
               style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
@@ -184,7 +186,8 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   Widget _buildImageUpload() {
     final hasLocalPhoto = _photoBytes != null;
-    final hasNetworkPhoto = _existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http');
+    final hasNetworkPhoto =
+        _existingPhotoUrl != null && _existingPhotoUrl!.startsWith('http');
     final hasImage = hasLocalPhoto || hasNetworkPhoto;
 
     return Column(
@@ -193,29 +196,29 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
           onTap: _pickPhoto,
           child: hasLocalPhoto
               ? CircleAvatar(
-                  radius: 40,
+                  radius: 12,
                   backgroundColor: Colors.blue.shade50,
                   backgroundImage: MemoryImage(_photoBytes!),
                 )
               : hasNetworkPhoto
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: DebugNetworkImage(
-                        imageUrl: _existingPhotoUrl,
-                        height: 80,
-                        width: 80,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.blue.shade50,
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 40,
-                        color: Colors.blue.shade300,
-                      ),
-                    ),
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: DebugNetworkImage(
+                    imageUrl: _existingPhotoUrl,
+                    height: 80,
+                    width: 80,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 12,
+                  backgroundColor: Colors.blue.shade50,
+                  child: Icon(
+                    Icons.person_outline,
+                    size: 40,
+                    color: Colors.blue.shade300,
+                  ),
+                ),
         ),
         const SizedBox(height: 8),
         if (_existingPhotoUrl != null)
@@ -315,7 +318,17 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               Expanded(
                 child: _buildDropdown(
                   label: "Ta'lim holati",
-                  items: ["O'qimoqda", "Bitirgan", "O'qimayapti"],
+                  items: [
+                    "Maktab oʼquvchisi",
+                    "Litsey o'quvchisi",
+                    "Kollej o'quvchisi",
+                    "Texnikum o'quvchisi",
+                    "Oliy ta'lim talabasi",
+                    "O'rta",
+                    "O'rta maxsus",
+                    "Oliy",
+                    "Boshqa",
+                  ],
                   value: _selectedEducation,
                   onChanged: (val) => setState(() => _selectedEducation = val),
                 ),
@@ -324,7 +337,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               Expanded(
                 child: _buildDropdown(
                   label: "Bandlik holati",
-                  items: ["Ishsiz", "Ishlamoqda"],
+                  items: ["Ishsiz", "Ishlaydi", "Ta'lim oladi", "Boshqa"],
                   value: _selectedEmployment,
                   onChanged: (val) => setState(() => _selectedEmployment = val),
                 ),
@@ -332,12 +345,6 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          _buildDropdown(
-            label: "Xavf darajasi",
-            items: ["Past xavf", "O'rta xavf", "Yuqori xavf"],
-            value: _selectedRiskLevel,
-            onChanged: (val) => setState(() => _selectedRiskLevel = val),
-          ),
         ],
       ),
     );
@@ -398,7 +405,10 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
                   )
                 : Text(
                     widget.isEditing ? "Yangilash" : "Saqlash",
@@ -627,7 +637,10 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
   Future<void> _saveData() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (_nameController.text.isEmpty || _selectedGender == null || _birthDateController.text.isEmpty || _selectedRegion == null) {
+    if (_nameController.text.isEmpty ||
+        _selectedGender == null ||
+        _birthDateController.text.isEmpty ||
+        _selectedRegion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Majburiy maydonlarni to'ldiring")),
       );
@@ -641,7 +654,9 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
         .map((e) => e.key)
         .toList();
 
-    final regionId = _regions.firstWhere((r) => r['name'] == _selectedRegion)['id'];
+    final regionId = _regions.firstWhere(
+      (r) => r['name'] == _selectedRegion,
+    )['id'];
 
     // Xavf darajasini backend formatiga o'girish
     String? riskLevelApi;
@@ -669,16 +684,25 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
     try {
       if (widget.isEditing) {
-        await context.read<YouthListCubit>().updateYouth(widget.existingYouth!.id!, data, imageBytes: _photoBytes);
+        await context.read<YouthListCubit>().updateYouth(
+          widget.existingYouth!.id!,
+          data,
+          imageBytes: _photoBytes,
+        );
       } else {
-        await context.read<YouthListCubit>().createYouth(data, imageBytes: _photoBytes);
+        await context.read<YouthListCubit>().createYouth(
+          data,
+          imageBytes: _photoBytes,
+        );
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.isEditing
-                ? "Yosh muvaffaqiyatli yangilandi!"
-                : "Yosh muvaffaqiyatli qo'shildi!"),
+            content: Text(
+              widget.isEditing
+                  ? "Yosh muvaffaqiyatli yangilandi!"
+                  : "Yosh muvaffaqiyatli qo'shildi!",
+            ),
           ),
         );
         Navigator.pop(context);

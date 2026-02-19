@@ -78,13 +78,16 @@ class NazoratUserCardWidget extends StatelessWidget {
                   spacing: 6,
                   runSpacing: 6,
                   children: user.tags
-                      .map((tag) => _buildCardButton(
-                            Icons.admin_panel_settings_outlined,
-                            tag,
-                            Colors.black,
-                          ))
+                      .map(
+                        (tag) => _buildCardButton(
+                          Icons.admin_panel_settings_outlined,
+                          tag,
+                          Colors.black,
+                        ),
+                      )
                       .toList(),
                 ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
@@ -96,11 +99,16 @@ class NazoratUserCardWidget extends StatelessWidget {
                         );
                       },
                       icon: const Icon(Icons.edit, size: 16),
-                      label: const Text("Tahrirlash", style: TextStyle(fontSize: 13)),
+                      label: const Text(
+                        "Tahrirlash",
+                        style: TextStyle(fontSize: 13),
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.blue,
                         side: BorderSide(color: Colors.blue.shade200),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
                     ),
@@ -114,7 +122,11 @@ class NazoratUserCardWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
                     children: [
-                      const Icon(Icons.person_outline, size: 24, color: Colors.blue),
+                      const Icon(
+                        Icons.person_outline,
+                        size: 24,
+                        color: Colors.blue,
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Column(
@@ -122,11 +134,17 @@ class NazoratUserCardWidget extends StatelessWidget {
                           children: [
                             Text(
                               user.officers[0].fullName,
-                              style: const TextStyle(fontSize: 14, color: Colors.black87),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
                             ),
                             Text(
                               user.officers[0].position,
-                              style: const TextStyle(fontSize: 12, color: Colors.black87),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                              ),
                             ),
                           ],
                         ),
@@ -136,7 +154,10 @@ class NazoratUserCardWidget extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           user.officers[0].phone!,
-                          style: const TextStyle(fontSize: 14, color: Colors.blue),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue,
+                          ),
                         ),
                       ],
                     ],
@@ -147,18 +168,6 @@ class NazoratUserCardWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _defaultAvatar() {
-    return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Icon(Icons.person, size: 40, color: Colors.blue),
     );
   }
 
@@ -177,18 +186,21 @@ class NazoratUserCardWidget extends StatelessWidget {
 
   Widget _buildCardButton(IconData icon, String label, Color color) {
     return OutlinedButton.icon(
-      onPressed: () {},
+      onPressed: null,
       icon: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: Icon(icon, size: 16),
       ),
       label: Padding(
         padding: const EdgeInsets.only(right: 8),
-        child: Text(label, style: const TextStyle(fontSize: 13)),
+        child: Text(
+          label,
+          style: const TextStyle(fontSize: 13, color: Colors.grey),
+        ),
       ),
       style: OutlinedButton.styleFrom(
-        foregroundColor: color,
-        side: BorderSide(color: Colors.grey.shade300),
+        foregroundColor: Colors.grey,
+        side: BorderSide(color: Colors.grey),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 8),
       ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:yoshlar/data/model/category.dart';
 import 'package:yoshlar/logic/dashboard/dashboard_cubit.dart';
 import 'package:yoshlar/logic/dashboard/dashboard_state.dart';
 import 'package:yoshlar/presentation/nazorat/main/diagramma.dart';
+import 'package:yoshlar/presentation/nazorat/main/widgets/yoshlar_item_filter.dart';
 
 class NazoratMainScreen extends StatefulWidget {
   const NazoratMainScreen({super.key});
@@ -28,7 +31,8 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                 Text(state.message, textAlign: TextAlign.center),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => context.read<DashboardCubit>().loadDashboard(),
+                  onPressed: () =>
+                      context.read<DashboardCubit>().loadDashboard(),
                   child: const Text("Qayta yuklash"),
                 ),
               ],
@@ -95,113 +99,198 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
   }
 
   Widget _buildMainStats(DashboardLoaded state) {
-    return SizedBox(
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 3,
-        crossAxisSpacing: 30,
-        mainAxisSpacing: 30,
-        childAspectRatio: 2,
-        children: [
-          _statCard("${state.stats.jamiYoshlar}", "Jami yoshlar", Icons.people, Colors.blue),
-          _statCard("${state.stats.ogilBolalar}", "O'g'il bolalar", Icons.male, Colors.blue),
-          _statCard("${state.stats.qizBolalar}", "Qiz bolalar", Icons.female, Colors.purple),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double width = constraints.maxWidth;
+        bool isMobile = width < 600;
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 3,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: isMobile ? 8 : 24,
+            mainAxisSpacing: isMobile ? 8 : 24,
+
+            // 👇 Height aniq boshqariladi
+            mainAxisExtent: isMobile ? 140 : 180,
+          ),
+          itemBuilder: (context, index) {
+            final items = [
+              {
+                "value": "${state.stats.jamiYoshlar}",
+                "title": "Jami yoshlar",
+                "icon": Icons.people,
+                "color": Colors.blue,
+                "index": 0,
+              },
+              {
+                "value": "${state.stats.ogilBolalar}",
+                "title": "Erkaklar",
+                "icon": Icons.male,
+                "color": Colors.blue,
+                "index": 1,
+              },
+              {
+                "value": "${state.stats.qizBolalar}",
+                "title": "Ayollar",
+                "icon": Icons.female,
+                "color": Colors.purple,
+                "index": 2,
+              },
+            ];
+
+            final item = items[index];
+
+            return _statCard(
+              item["value"] as String,
+              item["title"] as String,
+              item["icon"] as IconData,
+              item["color"] as Color,
+              width,
+              item["index"] as int,
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _statCard(String value, String title, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, color: Colors.black87),
-          ),
-        ],
+  Widget _statCard(
+    String value,
+    String title,
+    IconData icon,
+    Color color,
+    double width,
+    int index,
+  ) {
+    bool isMobile = width < 600;
+
+    return GestureDetector(
+      onTap: () {
+        String gender = index == 0
+            ? ""
+            : index == 1
+            ? "Erkak"
+            : "Ayol";
+        context.pushNamed(
+          MainYoshlarFilterScreen.routeName,
+          extra: {"gender": gender},
+        );
+      },
+
+      child: Container(
+        padding: EdgeInsets.all(isMobile ? 8 : 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: isMobile ? 18 : 24),
+            SizedBox(height: isMobile ? 2 : 6),
+            Text(
+              value,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: isMobile ? 14 : 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              title,
+
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isMobile ? 10 : 12,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildCategoryGrid(DashboardLoaded state) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: state.categories.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 5,
-      ),
-      itemBuilder: (context, index) {
-        final cat = state.categories[index];
-        return Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.02),
-                blurRadius: 10,
-              ),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double width = constraints.maxWidth;
+        bool isMobile = width < 600;
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: state.categories.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: isMobile ? 8 : 16,
+            mainAxisSpacing: isMobile ? 8 : 16,
+
+            // 👇 height aniq beriladi
+            mainAxisExtent: isMobile ? 80 : 65,
           ),
-          child: Row(
-            children: [
-              Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  "${cat.youthsCount}",
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${index + 1}. ${cat.name}",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 14, color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          itemBuilder: (context, index) {
+            final cat = state.categories[index];
+            return _categoryCard(cat, isMobile);
+          },
         );
       },
+    );
+  }
+
+  Widget _categoryCard(CategoryModel cat, bool isMobile) {
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 8 : 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: isMobile ? 36 : 40,
+            width: isMobile ? 36 : 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: FittedBox(
+              child: Text(
+                "${cat.youthsCount}",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: isMobile ? 16 : 18,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: isMobile ? 8 : 12),
+
+          Expanded(
+            child: Text(
+              cat.name,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: isMobile ? 12 : 14,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

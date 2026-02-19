@@ -1,11 +1,10 @@
 import 'dart:async';
+import 'dart:js_interop';
 import 'dart:typed_data';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
 import 'package:web/web.dart' as web;
-import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
 
 class WebCameraCaptureDialog extends StatefulWidget {
   const WebCameraCaptureDialog({super.key});
@@ -65,7 +64,9 @@ class _WebCameraCaptureDialogState extends State<WebCameraCaptureDialog> {
         audio: false.toJS,
       );
 
-      final stream = await web.window.navigator.mediaDevices.getUserMedia(constraints).toDart;
+      final stream = await web.window.navigator.mediaDevices
+          .getUserMedia(constraints)
+          .toDart;
       video.srcObject = stream;
 
       _video = video;
@@ -76,7 +77,9 @@ class _WebCameraCaptureDialogState extends State<WebCameraCaptureDialog> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _error = "Kamera ochilmadi. Ruxsat berilganligini tekshiring.");
+        setState(
+          () => _error = "Kamera ochilmadi. Ruxsat berilganligini tekshiring.",
+        );
       }
     }
   }
@@ -103,7 +106,8 @@ class _WebCameraCaptureDialogState extends State<WebCameraCaptureDialog> {
   }
 
   Uint8List _base64ToBytes(String base64) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     final lookup = List<int>.filled(256, -1);
     for (int i = 0; i < chars.length; i++) {
       lookup[chars.codeUnitAt(i)] = i;
@@ -192,39 +196,40 @@ class _WebCameraCaptureDialogState extends State<WebCameraCaptureDialog> {
                         padding: const EdgeInsets.all(16),
                         child: Text(
                           _error!,
-                          style: const TextStyle(color: Colors.red, fontSize: 14),
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
                     )
                   : !_isReady
-                      ? const Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CircularProgressIndicator(color: Colors.white),
-                              SizedBox(height: 12),
-                              Text(
-                                "Kamera yuklanmoqda...",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ],
+                  ? const Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(color: Colors.white),
+                          SizedBox(height: 12),
+                          Text(
+                            "Kamera yuklanmoqda...",
+                            style: TextStyle(color: Colors.white70),
                           ),
-                        )
-                      : Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: HtmlElementView(viewType: _viewId),
-                            ),
-                            // Yuz ramkasi (face overlay)
-                            Positioned.fill(
-                              child: CustomPaint(
-                                painter: _FaceOverlayPainter(),
-                              ),
-                            ),
-                          ],
+                        ],
+                      ),
+                    )
+                  : Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: HtmlElementView(viewType: _viewId),
                         ),
+                        // Yuz ramkasi (face overlay)
+                        Positioned.fill(
+                          child: CustomPaint(painter: _FaceOverlayPainter()),
+                        ),
+                      ],
+                    ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -295,9 +300,14 @@ class _FaceOverlayPainter extends CustomPainter {
     );
 
     // Tashqi qismni qoraytirish
-    final backgroundPath = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    final backgroundPath = Path()
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
     final ovalPath = Path()..addOval(ovalRect);
-    final overlayPath = Path.combine(PathOperation.difference, backgroundPath, ovalPath);
+    final overlayPath = Path.combine(
+      PathOperation.difference,
+      backgroundPath,
+      ovalPath,
+    );
 
     canvas.drawPath(
       overlayPath,

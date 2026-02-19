@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +31,9 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<OfficerCubit, OfficerState>(
       builder: (context, state) {
-        final officers = state is OfficerListLoaded ? state.officers : <OfficerModel>[];
+        final officers = state is OfficerListLoaded
+            ? state.officers
+            : <OfficerModel>[];
         final isLoading = state is OfficerLoading;
 
         return SingleChildScrollView(
@@ -45,11 +49,17 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                     children: [
                       const Text(
                         "Mas'ul xodimlar",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         "Jami: ${officers.length} nafar",
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
@@ -97,7 +107,8 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: officers.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     return _buildOfficerCard(officers[index]);
                   },
@@ -129,11 +140,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DebugNetworkImage(
-                imageUrl: officer.photo,
-                height: 80,
-                width: 80,
-              ),
+              DebugNetworkImage(imageUrl: officer.photo, height: 80, width: 80),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -152,9 +159,15 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                     ),
                     const SizedBox(height: 8),
                     if (officer.username != null)
-                      _buildInfoRow(Icons.person_outline, "@${officer.username}"),
+                      _buildInfoRow(
+                        Icons.person_outline,
+                        "@${officer.username}",
+                      ),
                     if (officer.region != null)
-                      _buildInfoRow(Icons.location_on_outlined, officer.region!.name),
+                      _buildInfoRow(
+                        Icons.location_on_outlined,
+                        officer.region!.name,
+                      ),
                     if (officer.phone != null)
                       _buildInfoRow(Icons.phone_outlined, officer.phone!),
                   ],
@@ -165,19 +178,32 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              _buildCardButton(Icons.edit_outlined, "Tahrirlash", Colors.blue, () {
-                context.pushNamed(
-                  AddOfficerScreen.editRouteName,
-                  extra: {'officer': officer},
-                );
-              }),
+              _buildCardButton(
+                Icons.edit_outlined,
+                "Tahrirlash",
+                Colors.blue,
+                () {
+                  context.pushNamed(
+                    AddOfficerScreen.editRouteName,
+                    extra: {'officer': officer},
+                  );
+                },
+              ),
               const SizedBox(width: 8),
-              _buildCardButton(Icons.people_outline, "Yoshlari (${officer.youthsCount})", Colors.black, () {
-                context.pushNamed(
-                  MasulYoshlarScreen.routeName,
-                  extra: {'officerId': officer.id, 'officerName': officer.fullName},
-                );
-              }),
+              _buildCardButton(
+                Icons.people_outline,
+                "Yoshlari (${officer.youthsCount})",
+                Colors.black,
+                () {
+                  context.pushNamed(
+                    MasulYoshlarScreen.routeName,
+                    extra: {
+                      'officerId': officer.id,
+                      'officerName': officer.fullName,
+                    },
+                  );
+                },
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -187,11 +213,16 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => _showResetPasswordDialog(officer),
                 icon: const Icon(Icons.key_outlined, size: 16),
-                label: const Text("Parol yangilash", style: TextStyle(fontSize: 13)),
+                label: const Text(
+                  "Parol yangilash",
+                  style: TextStyle(fontSize: 13),
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.orange.shade700,
                   side: BorderSide(color: Colors.orange.shade200),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               ),
@@ -202,29 +233,22 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => _showGenerateCredentialsDialog(officer),
                 icon: const Icon(Icons.person_add_outlined, size: 16),
-                label: const Text("Akkaunt yaratish", style: TextStyle(fontSize: 13)),
+                label: const Text(
+                  "Akkaunt yaratish",
+                  style: TextStyle(fontSize: 13),
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.green.shade700,
                   side: BorderSide(color: Colors.green.shade200),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
               ),
             ),
         ],
       ),
-    );
-  }
-
-  Widget _defaultAvatar() {
-    return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: const Icon(Icons.person, size: 40, color: Colors.blue),
     );
   }
 
@@ -244,7 +268,12 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     );
   }
 
-  Widget _buildCardButton(IconData icon, String label, Color color, VoidCallback onPressed) {
+  Widget _buildCardButton(
+    IconData icon,
+    String label,
+    Color color,
+    VoidCallback onPressed,
+  ) {
     return Expanded(
       child: OutlinedButton.icon(
         onPressed: onPressed,
@@ -325,7 +354,11 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                    SnackBar(
+                      content: Text(
+                        copied ? "Nusxalandi!" : "Nusxalab bo'lmadi",
+                      ),
+                    ),
                   );
                 }
               },
@@ -414,7 +447,11 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi")),
+                    SnackBar(
+                      content: Text(
+                        copied ? "Nusxalandi!" : "Nusxalab bo'lmadi",
+                      ),
+                    ),
                   );
                 }
               },

@@ -1,4 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:yoshlar/data/model/region.dart';
 
@@ -10,8 +10,6 @@ class RegionsBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (regions.isEmpty) return const SizedBox();
-
-    final maxY = regions.fold<int>(0, (max, r) => r.youthsCount > max ? r.youthsCount : max);
 
     return Container(
       height: 400,
@@ -30,91 +28,41 @@ class RegionsBarChart extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Expanded(
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: (maxY + 5).toDouble(),
-                barTouchData: BarTouchData(
-                  enabled: true,
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (group) => Colors.transparent,
-                    tooltipPadding: EdgeInsets.zero,
-                    tooltipMargin: 8,
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      return BarTooltipItem(
-                        rod.toY.round().toString(),
-                        const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) =>
-                          _bottomTitles(value, meta),
-                      reservedSize: 42,
-                    ),
-                  ),
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: true, reservedSize: 30),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                gridData: const FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                barGroups: _generateBarGroups(),
+            child: DChartBarO(
+              renderType: (group) => RenderType.barLane,
+              animate: true,
+              defaultInteractions: true,
+
+              configSeriesBarLane: ConfigSeriesBarLaneO(
+                showBarLabel: true,
+
+                // 🔥 measure ni chiqaramiz
+                labelAccessor: (group, data, index) {
+                  return data.measure.toString();
+                },
               ),
+              onChangedListener: (OrdinalData data) {
+                // 🔥 Bar ustiga bosganda nima bo'lishini xohlasangiz, shu yerga yozing
+              },
+              groupList: [
+                OrdinalGroup(
+                  id: 'id',
+                  data: regions
+                      .map(
+                        (e) => OrdinalData(
+                          domain: e.name.substring(0, 3).toUpperCase(),
+                          measure: e.youthsCount,
+                          measureLowerBound: e.youthsCount,
+                          measureUpperBound: e.youthsCount,
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  List<BarChartGroupData> _generateBarGroups() {
-    return List.generate(regions.length, (index) {
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            toY: regions[index].youthsCount.toDouble(),
-            color: const Color(0xFF3384C3),
-            width: 14,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-          ),
-        ],
-      );
-    });
-  }
-
-  Widget _bottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.grey,
-      fontSize: 10,
-      fontWeight: FontWeight.bold,
-    );
-    final index = value.toInt();
-    if (index < 0 || index >= regions.length) return const SizedBox();
-
-    String text = regions[index].name;
-    if (text.length > 3) text = text.substring(0, 3).toUpperCase();
-
-    return SideTitleWidget(
-      space: 10,
-      meta: meta,
-      child: Text(text, style: style),
     );
   }
 }
