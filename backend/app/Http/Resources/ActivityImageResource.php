@@ -12,7 +12,7 @@ class ActivityImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => asset('storage/' . $this->path),
+            'url' => $this->path,
             'created_at' => $this->created_at,
         ];
     }

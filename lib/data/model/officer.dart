@@ -1,4 +1,5 @@
 import 'package:yoshlar/data/model/region.dart';
+import 'package:yoshlar/data/service/api_client.dart';
 
 class OfficerModel {
   final int id;
@@ -37,7 +38,7 @@ class OfficerModel {
           : null,
       regionId: json['region_id'],
       phone: json['phone'],
-      photo: json['photo'],
+      photo: ApiClient.resolveImageUrl(json['photo']),
       youthsCount: json['youthsCount'] ?? 0,
     );
   }

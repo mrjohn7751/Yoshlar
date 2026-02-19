@@ -1,3 +1,5 @@
+import 'package:yoshlar/data/service/api_client.dart';
+
 class AuthUser {
   final int id;
   final String name;
@@ -34,10 +36,10 @@ class AuthUser {
       phone: json['phone'],
       role: json['role'] ?? '',
       photo: json['photo'] == true,
-      photoUrl: json['photo_url'],
+      photoUrl: ApiClient.resolveImageUrl(json['photo_url']),
       officerId: json['officer_id'],
       officerPhoto: json['officer_photo'] == true,
-      officerPhotoUrl: json['officer_photo_url'],
+      officerPhotoUrl: ApiClient.resolveImageUrl(json['officer_photo_url']),
     );
   }
 

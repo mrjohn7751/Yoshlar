@@ -12,6 +12,14 @@ class ApiClient {
   static const String baseUrl = 'http://yoshlarnazorati.uz/api';
   static const String storageUrl = 'http://yoshlarnazorati.uz/storage';
 
+  /// Nisbiy yo'ldan to'liq rasm URL yasaydi.
+  /// Agar allaqachon to'liq URL bo'lsa, o'zgartirmaydi.
+  static String? resolveImageUrl(String? path) {
+    if (path == null || path.isEmpty) return null;
+    if (path.startsWith('http')) return path;
+    return '$storageUrl/$path';
+  }
+
   final FlutterSecureStorage _storage;
   void Function()? onUnauthorized;
   String? _token;

@@ -14,7 +14,7 @@ class YouthResource extends JsonResource
             'id' => $this->id,
             'name' => $this->full_name,
             'phone' => $this->phone,
-            'image' => $this->photo ? asset('storage/' . $this->photo) : null,
+            'image' => $this->photo,
             'birthDate' => $this->birth_date?->format('Y-m-d'),
             'gender' => $this->gender,
             'location' => $this->address,

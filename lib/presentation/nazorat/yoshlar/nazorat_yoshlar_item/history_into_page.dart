@@ -255,17 +255,19 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
             crossAxisSpacing: 8,
             childAspectRatio: 4 / 3,
             children: images.map((img) {
-              final url = img.url.startsWith('http')
-                  ? img.url
-                  : '${ApiClient.storageUrl}/${img.url}';
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: NetworkImage(url),
-                    fit: BoxFit.cover,
-                  ),
+                  image: img.url.isNotEmpty
+                      ? DecorationImage(
+                          image: NetworkImage(img.url),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
+                child: img.url.isEmpty
+                    ? const Center(child: Icon(Icons.broken_image, color: Colors.grey))
+                    : null,
               );
             }).toList(),
           ),

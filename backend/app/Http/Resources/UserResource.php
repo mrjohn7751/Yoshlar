@@ -18,9 +18,9 @@ class UserResource extends JsonResource
             'role' => $this->role,
             'officer_id' => $this->officer?->id,
             'photo' => $this->photo ? true : false,
-            'photo_url' => $this->photo ? asset('storage/' . $this->photo) : null,
+            'photo_url' => $this->photo,
             'officer_photo' => $this->officer?->photo ? true : false,
-            'officer_photo_url' => $this->officer?->photo ? asset('storage/' . $this->officer->photo) : null,
+            'officer_photo_url' => $this->officer?->photo,
             'created_at' => $this->created_at,
         ];
     }

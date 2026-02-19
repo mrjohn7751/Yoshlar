@@ -1,6 +1,7 @@
 import 'package:yoshlar/data/model/category.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/model/region.dart';
+import 'package:yoshlar/data/service/api_client.dart';
 
 class UserModel {
   final int? id;
@@ -52,7 +53,7 @@ class UserModel {
       id: json['id'],
       name: json['name'] ?? '',
       phone: json['phone'],
-      image: json['image'],
+      image: ApiClient.resolveImageUrl(json['image']),
       birthDate: json['birthDate'] ?? '',
       gender: json['gender'] ?? '',
       location: json['location'] ?? '',

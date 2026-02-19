@@ -1,4 +1,5 @@
 import 'package:yoshlar/data/model/officer.dart';
+import 'package:yoshlar/data/service/api_client.dart';
 
 enum ActivityStatus { bajarilgan, rejalashtirilgan }
 
@@ -11,7 +12,7 @@ class ActivityImage {
   factory ActivityImage.fromJson(Map<String, dynamic> json) {
     return ActivityImage(
       id: json['id'],
-      url: json['url'] ?? '',
+      url: ApiClient.resolveImageUrl(json['url']) ?? '',
     );
   }
 }
