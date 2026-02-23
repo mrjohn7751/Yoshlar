@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yoshlar/data/service/activity_service.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/auth_service.dart';
+import 'package:yoshlar/data/service/cache_service.dart';
 import 'package:yoshlar/data/service/dashboard_service.dart';
 import 'package:yoshlar/data/service/face_compare_service.dart';
 import 'package:yoshlar/data/service/officer_service.dart';
@@ -20,13 +22,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const storage = FlutterSecureStorage();
   final apiClient = ApiClient(storage);
+  final prefs = await SharedPreferences.getInstance();
+  final cacheService = CacheService(prefs);
   await apiClient.init();
-  runApp(MyApp(apiClient: apiClient));
+  runApp(MyApp(apiClient: apiClient, cacheService: cacheService));
 }
 
 class MyApp extends StatefulWidget {
   final ApiClient apiClient;
-  const MyApp({super.key, required this.apiClient});
+  final CacheService cacheService;
+  const MyApp({super.key, required this.apiClient, required this.cacheService});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -53,7 +58,7 @@ class _MyAppState extends State<MyApp> {
     _activityService = ActivityService(widget.apiClient);
     _dashboardService = DashboardService(widget.apiClient);
     _faceCompareService = FaceCompareService(widget.apiClient);
-    _authCubit = AuthCubit(_authService);
+    _authCubit = AuthCubit(_authService, widget.cacheService);
     _appRouter = AppRouter(_authCubit);
 
     widget.apiClient.onUnauthorized = () => _authCubit.forceLogout();
@@ -71,7 +76,7 @@ class _MyAppState extends State<MyApp> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: _authCubit),
-          BlocProvider(create: (_) => DashboardCubit(_dashboardService)),
+          BlocProvider(create: (_) => DashboardCubit(_dashboardService, widget.cacheService)),
           BlocProvider(create: (_) => YouthListCubit(_youthService)),
           BlocProvider(create: (_) => YouthDetailCubit(_youthService, _activityService)),
           BlocProvider(create: (_) => ActivityDetailCubit(_activityService)),

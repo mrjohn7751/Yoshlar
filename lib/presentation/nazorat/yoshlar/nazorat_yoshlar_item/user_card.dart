@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/user.dart';
+import 'package:yoshlar/data/service/api_client.dart';
+import 'package:yoshlar/logic/youth/youth_list_cubit.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/add_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/nazorat_yoshlar_history.dart';
 import 'package:yoshlar/presentation/widgets/debug_image.dart';
@@ -113,6 +116,25 @@ class NazoratUserCardWidget extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showDeleteDialog(context, user),
+                      icon: const Icon(Icons.delete_outline, size: 16),
+                      label: const Text(
+                        "O'chirish",
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        side: const BorderSide(color: Colors.red),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -169,6 +191,49 @@ class NazoratUserCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _showDeleteDialog(BuildContext context, UserModel user) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Yoshlarni o'chirish"),
+        content: Text(
+          "${user.name} o'chirilsinmi? Bu amalni ortga qaytarib bo'lmaydi.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text("Bekor qilish"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text("O'chirish"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      await context.read<YouthListCubit>().deleteYouth(user.id!);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Yoshlar muvaffaqiyatli o'chirildi")),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+        );
+      }
+    }
   }
 
   Widget _infoRow(IconData icon, String text) {

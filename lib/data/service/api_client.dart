@@ -8,9 +8,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
-  // Production: yoshlarnazorati.uz, Local: localhost:3000
-  static const String baseUrl = 'http://yoshlarnazorati.uz/api';
-  static const String storageUrl = 'http://yoshlarnazorati.uz/storage';
+  static const String baseUrl = 'https://yoshlarnazorat.uz/api';
+  static const String storageUrl = 'https://yoshlarnazorat.uz/storage';
 
   /// Nisbiy yo'ldan to'liq rasm URL yasaydi.
   /// Agar allaqachon to'liq URL bo'lsa, o'zgartirmaydi.

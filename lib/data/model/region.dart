@@ -16,4 +16,10 @@ class RegionModel {
       youthsCount: json['youthsCount'] ?? 0,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'youthsCount': youthsCount,
+      };
 }

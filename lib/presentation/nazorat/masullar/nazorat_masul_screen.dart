@@ -247,6 +247,26 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 ),
               ),
             ),
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _showDeleteOfficerDialog(officer),
+              icon: const Icon(Icons.delete_outline, size: 16),
+              label: const Text(
+                "O'chirish",
+                style: TextStyle(fontSize: 13),
+              ),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red,
+                side: const BorderSide(color: Colors.red),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -469,6 +489,49 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
           ],
         ),
       );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+        );
+      }
+    }
+  }
+
+  Future<void> _showDeleteOfficerDialog(OfficerModel officer) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Mas'ulni o'chirish"),
+        content: Text(
+          "${officer.fullName} o'chirilsinmi? Bu amalni ortga qaytarib bo'lmaydi.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text("Bekor qilish"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text("O'chirish"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await context.read<OfficerCubit>().deleteOfficer(officer.id);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Mas'ul muvaffaqiyatli o'chirildi")),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

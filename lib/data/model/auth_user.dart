@@ -49,4 +49,18 @@ class AuthUser {
 
   bool get isRahbariyat => role == 'rahbariyat';
   bool get isMasul => role == 'masul';
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'username': username,
+        'email': email,
+        'phone': phone,
+        'role': role,
+        'photo': photo,
+        'photo_url': photoUrl,
+        'officer_id': officerId,
+        'officer_photo': officerPhoto,
+        'officer_photo_url': officerPhotoUrl,
+      };
 }

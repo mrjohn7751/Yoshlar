@@ -36,6 +36,26 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
   String? _selectedRiskLevel;
   bool _isSubmitting = false;
 
+  static const List<String> _educationItems = [
+    "Maktab o'quvchisi",
+    "Litsey o'quvchisi",
+    "Kollej o'quvchisi",
+    "Texnikum o'quvchisi",
+    "Oliy ta'lim talabasi",
+    "Bitirgan",
+    "O'rta",
+    "O'rta maxsus",
+    "Oliy",
+    "Boshqa",
+  ];
+
+  static const List<String> _employmentItems = [
+    "Ishsiz",
+    "Ishlaydi",
+    "Ta'lim oladi",
+    "Boshqa",
+  ];
+
   Uint8List? _photoBytes;
   String? _existingPhotoUrl;
   final ImagePicker _picker = ImagePicker();
@@ -77,8 +97,12 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       _birthDateController.text = youth.birthDate;
       _locationController.text = youth.location;
       _selectedGender = youth.gender.isNotEmpty ? youth.gender : "Erkak";
-      _selectedEducation = youth.status.isNotEmpty ? youth.status : "O'rta";
-      _selectedEmployment = youth.activity.isNotEmpty ? youth.activity : null;
+      _selectedEducation = youth.status.isNotEmpty && _educationItems.contains(youth.status)
+          ? youth.status
+          : null;
+      _selectedEmployment = youth.activity.isNotEmpty && _employmentItems.contains(youth.activity)
+          ? youth.activity
+          : null;
       _selectedRiskLevel = youth.riskLevel.isNotEmpty ? youth.riskLevel : "";
 
       // Set region
@@ -318,17 +342,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               Expanded(
                 child: _buildDropdown(
                   label: "Ta'lim holati",
-                  items: [
-                    "Maktab oʼquvchisi",
-                    "Litsey o'quvchisi",
-                    "Kollej o'quvchisi",
-                    "Texnikum o'quvchisi",
-                    "Oliy ta'lim talabasi",
-                    "O'rta",
-                    "O'rta maxsus",
-                    "Oliy",
-                    "Boshqa",
-                  ],
+                  items: _educationItems,
                   value: _selectedEducation,
                   onChanged: (val) => setState(() => _selectedEducation = val),
                 ),
@@ -337,7 +351,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               Expanded(
                 child: _buildDropdown(
                   label: "Bandlik holati",
-                  items: ["Ishsiz", "Ishlaydi", "Ta'lim oladi", "Boshqa"],
+                  items: _employmentItems,
                   value: _selectedEmployment,
                   onChanged: (val) => setState(() => _selectedEmployment = val),
                 ),

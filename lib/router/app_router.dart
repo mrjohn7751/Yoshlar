@@ -40,23 +40,25 @@ class AppRouter {
       // Splash va login sahifalariga ruxsat
       if (isOnSplash || isOnLogin) return null;
 
-      // Agar auth tekshirilmagan bo'lsa, splash ga yo'naltirish
-      if (authState is! AuthAuthenticated) {
+      // Agar foydalanuvchi tizimdan chiqqan bo'lsa, splash ga yo'naltirish
+      if (authState is AuthUnauthenticated) {
         return '/';
       }
 
-      // Role-based route guard
-      final user = authState.user;
-      final location = state.matchedLocation;
+      // Role-based route guard (faqat authenticated bo'lganda)
+      if (authState is AuthAuthenticated) {
+        final user = authState.user;
+        final location = state.matchedLocation;
 
-      // Masul rahbariyat sahifalariga kira olmaydi
-      if (user.isMasul && location.startsWith('/nazorat_dashboard')) {
-        return '/main';
-      }
+        // Masul rahbariyat sahifalariga kira olmaydi
+        if (user.isMasul && location.startsWith('/nazorat_dashboard')) {
+          return '/main';
+        }
 
-      // Rahbariyat masul sahifalariga kira olmaydi
-      if (user.isRahbariyat && location.startsWith('/main')) {
-        return '/nazorat_dashboard';
+        // Rahbariyat masul sahifalariga kira olmaydi
+        if (user.isRahbariyat && location.startsWith('/main')) {
+          return '/nazorat_dashboard';
+        }
       }
 
       return null;

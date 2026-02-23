@@ -44,13 +44,20 @@ class UserModel {
     this.description,
   });
 
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     final categoriesData = json['categories'] as List<dynamic>? ?? [];
     final officersData = json['officers'] as List<dynamic>? ?? [];
     final tagsData = json['tags'] as List<dynamic>? ?? [];
 
     return UserModel(
-      id: json['id'],
+      id: _parseInt(json['id']),
       name: json['name'] ?? '',
       phone: json['phone'],
       image: ApiClient.resolveImageUrl(json['image']),
@@ -60,7 +67,7 @@ class UserModel {
       region: json['region'] != null
           ? RegionModel.fromJson(json['region'])
           : null,
-      regionId: json['region_id'],
+      regionId: _parseInt(json['region_id']),
       status: json['status'] ?? '',
       activity: json['activity'] ?? '',
       riskLevel: json['riskLevel'] ?? '',
@@ -72,7 +79,7 @@ class UserModel {
       officers: officersData
           .map((e) => OfficerModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      activitiesCount: json['activitiesCount'] ?? 0,
+      activitiesCount: _parseInt(json['activitiesCount']) ?? 0,
       description: json['description'],
     );
   }
