@@ -32614,7 +32614,7 @@ s=J.cK(a)
 if(s.length===0)return null
 if(!B.c.p(s,"/"))return null
 if(B.c.bA(s,"http"))return s
-return"https://yoshlarnazorat.uz/storage/"+s},
+return"https://yoshlarnazorati.uz/storage/"+s},
 ue(a,b){return new A.F9(a)},
 eZ(a){if(a instanceof A.F9)return a.a
 if(a instanceof A.Cl)return"So'rov vaqti tugadi. Qaytadan urinib ko'ring."
@@ -112269,7 +112269,7 @@ d0(a,b){return this.a9y(0,b)},
 a9y(a,b){var s=0,r=A.w(t.P),q,p=this
 var $async$d0=A.r(function(c,d){if(c===1)return A.t(d,r)
 for(;;)switch(s){case 0:s=3
-return A.o(A.brR(A.dN("https://yoshlarnazorat.uz/api"+b,0,null),p.gDs()).mp(0,B.fa),$async$d0)
+return A.o(A.brR(A.dN("https://yoshlarnazorati.uz/api"+b,0,null),p.gDs()).mp(0,B.fa),$async$d0)
 case 3:q=p.u6(d)
 s=1
 break
@@ -112279,7 +112279,7 @@ j6(a,b){return this.aKt(a,b)},
 QV(a){return this.j6(a,null)},
 aKt(a,b){var s=0,r=A.w(t.P),q,p=this,o,n
 var $async$j6=A.r(function(c,d){if(c===1)return A.t(d,r)
-for(;;)switch(s){case 0:o=A.dN("https://yoshlarnazorat.uz/api"+a,0,null)
+for(;;)switch(s){case 0:o=A.dN("https://yoshlarnazorati.uz/api"+a,0,null)
 n=p.gDs()
 s=3
 return A.o(A.bsG(o,b!=null?B.b_.vb(b,null):null,n).mp(0,B.fa),$async$j6)
@@ -112291,7 +112291,7 @@ return A.v($async$j6,r)},
 HQ(a,b,c){return this.aKJ(0,b,c)},
 aKJ(a,b,c){var s=0,r=A.w(t.P),q,p=this,o,n,m
 var $async$HQ=A.r(function(d,e){if(d===1)return A.t(e,r)
-for(;;)switch(s){case 0:o=A.dN("https://yoshlarnazorat.uz/api"+b,0,null)
+for(;;)switch(s){case 0:o=A.dN("https://yoshlarnazorati.uz/api"+b,0,null)
 n=p.gDs()
 m=B.b_.vb(c,null)
 s=3
@@ -112305,7 +112305,7 @@ zx(a,b){return this.aDN(0,b)},
 aDN(a,b){var s=0,r=A.w(t.P),q,p=this
 var $async$zx=A.r(function(c,d){if(c===1)return A.t(d,r)
 for(;;)switch(s){case 0:s=3
-return A.o(A.bbh(A.dN("https://yoshlarnazorat.uz/api"+b,0,null),p.gDs()).mp(0,B.fa),$async$zx)
+return A.o(A.bbh(A.dN("https://yoshlarnazorati.uz/api"+b,0,null),p.gDs()).mp(0,B.fa),$async$zx)
 case 3:q=p.u6(d)
 s=1
 break
@@ -112317,7 +112317,7 @@ Hr(a,b,c){return this.ps(a,b,c,"photo")},
 aIC(a,b,c){return this.ps(a,null,b,c)},
 aID(a1,a2,a3,a4){var s=0,r=A.w(t.P),q,p=this,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0
 var $async$ps=A.r(function(a5,a6){if(a5===1)return A.t(a6,r)
-for(;;)switch(s){case 0:b=A.b_S("POST",A.dN("https://yoshlarnazorat.uz/api"+a1,0,null))
+for(;;)switch(s){case 0:b=A.b_S("POST",A.dN("https://yoshlarnazorati.uz/api"+a1,0,null))
 a=b.r
 a.m(0,"Accept","application/json")
 o=p.c
@@ -112347,7 +112347,7 @@ return A.v($async$ps,r)},
 AE(a,b,c){return this.aIE(a,b,c)},
 aIE(a,a0,a1){var s=0,r=A.w(t.P),q,p=this,o,n,m,l,k,j,i,h,g,f,e,d,c,b
 var $async$AE=A.r(function(a2,a3){if(a2===1)return A.t(a3,r)
-for(;;)switch(s){case 0:d=A.b_S("POST",A.dN("https://yoshlarnazorat.uz/api"+a,0,null))
+for(;;)switch(s){case 0:d=A.b_S("POST",A.dN("https://yoshlarnazorati.uz/api"+a,0,null))
 c=d.r
 c.m(0,"Accept","application/json")
 o=p.c
@@ -112655,7 +112655,7 @@ A.W7.prototype={
 z0(a,b){return this.aBY(a,b)},
 aBY(a,b){var s=0,r=A.w(t.P),q,p=this,o,n,m,l,k,j,i
 var $async$z0=A.r(function(c,d){if(c===1)return A.t(d,r)
-for(;;)switch(s){case 0:k=A.b_S("POST",A.dN("https://yoshlarnazorat.uz/api/face-compare",0,null))
+for(;;)switch(s){case 0:k=A.b_S("POST",A.dN("https://yoshlarnazorati.uz/api/face-compare",0,null))
 j=k.r
 j.m(0,"Accept","application/json")
 o=p.a.c
