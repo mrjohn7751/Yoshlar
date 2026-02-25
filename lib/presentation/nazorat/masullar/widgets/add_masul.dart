@@ -27,7 +27,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  String? _selectedPosition;
+  final _positionController = TextEditingController();
   String? _selectedRegion;
   bool _isSubmitting = false;
 
@@ -42,7 +42,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
       final officer = widget.existingOfficer!;
       _nameController.text = officer.fullName;
       _phoneController.text = officer.phone ?? '';
-      _selectedPosition = officer.position;
+      _positionController.text = officer.position;
       _selectedRegion = officer.region?.name;
       _existingPhotoUrl = officer.photo;
     }
@@ -68,6 +68,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _positionController.dispose();
     super.dispose();
   }
 
@@ -122,18 +123,10 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                       controller: _nameController,
                     ),
                     const SizedBox(height: 16),
-                    _buildDropdown(
+                    _buildInputField(
                       label: "Lavozim *",
-                      hint: "Lavozimni tanlang",
-                      items: [
-                        "Bosh mutaxassis",
-                        "Hudud prokurori",
-                        "Mutaxassis",
-                        "Inspektor",
-                      ],
-                      value: _selectedPosition,
-                      onChanged: (val) =>
-                          setState(() => _selectedPosition = val),
+                      hint: "Lavozimni kiriting",
+                      controller: _positionController,
                     ),
                     const SizedBox(height: 16),
                     _buildDropdown(
@@ -458,7 +451,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
   Future<void> _saveData() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (_nameController.text.isEmpty || _selectedPosition == null) {
+    if (_nameController.text.isEmpty || _positionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Majburiy maydonlarni to'ldiring")),
       );
@@ -474,7 +467,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
     try {
       final data = {
         'fullName': _nameController.text,
-        'position': _selectedPosition,
+        'position': _positionController.text,
         'region': _selectedRegion,
         'phone': _phoneController.text,
       };

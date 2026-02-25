@@ -28,25 +28,30 @@ class DashboardCubit extends Cubit<DashboardState> {
         ));
       }
 
-      // 2. API dan yangi ma'lumot olish
+      // 2. API dan yangi ma'lumot olish (pagination bilan)
       final results = await Future.wait([
         _dashboardService.getStats(),
-        _dashboardService.getRegions(),
-        _dashboardService.getCategories(),
+        _dashboardService.getRegionsPaginated(page: 1, perPage: 10),
+        _dashboardService.getCategoriesPaginated(page: 1, perPage: 10),
       ]);
 
-      final regions = results[1] as dynamic;
-      final categories = results[2] as dynamic;
+      final stats = results[0] as DashboardStats;
+      final regionResult = results[1] as PaginatedResult;
+      final categoryResult = results[2] as PaginatedResult;
 
       // 3. Keshga saqlash
-      await _cacheService.cacheRegions(regions);
-      await _cacheService.cacheCategories(categories);
+      await _cacheService.cacheRegions(regionResult.data.cast());
+      await _cacheService.cacheCategories(categoryResult.data.cast());
 
       // 4. Yangi ma'lumot bilan yangilash
       emit(DashboardLoaded(
-        stats: results[0] as dynamic,
-        regions: regions,
-        categories: categories,
+        stats: stats,
+        regions: regionResult.data.cast(),
+        categories: categoryResult.data.cast(),
+        regionsCurrentPage: regionResult.currentPage,
+        regionsLastPage: regionResult.lastPage,
+        categoriesCurrentPage: categoryResult.currentPage,
+        categoriesLastPage: categoryResult.lastPage,
       ));
     } catch (e) {
       // Xato bo'lsa, keshdan ko'rsatishga harakat qilish
@@ -62,6 +67,60 @@ class DashboardCubit extends Cubit<DashboardState> {
       } else {
         emit(DashboardError(safeErrorMessage(e)));
       }
+    }
+  }
+
+  Future<void> loadMoreRegions() async {
+    final currentState = state;
+    if (currentState is! DashboardLoaded) return;
+    if (!currentState.hasMoreRegions || currentState.isLoadingMoreRegions) return;
+
+    emit(currentState.copyWith(isLoadingMoreRegions: true));
+
+    try {
+      final result = await _dashboardService.getRegionsPaginated(
+        page: currentState.regionsCurrentPage + 1,
+        perPage: 10,
+      );
+
+      final updatedRegions = [...currentState.regions, ...result.data];
+      await _cacheService.cacheRegions(updatedRegions);
+
+      emit(currentState.copyWith(
+        regions: updatedRegions,
+        regionsCurrentPage: result.currentPage,
+        regionsLastPage: result.lastPage,
+        isLoadingMoreRegions: false,
+      ));
+    } catch (e) {
+      emit(currentState.copyWith(isLoadingMoreRegions: false));
+    }
+  }
+
+  Future<void> loadMoreCategories() async {
+    final currentState = state;
+    if (currentState is! DashboardLoaded) return;
+    if (!currentState.hasMoreCategories || currentState.isLoadingMoreCategories) return;
+
+    emit(currentState.copyWith(isLoadingMoreCategories: true));
+
+    try {
+      final result = await _dashboardService.getCategoriesPaginated(
+        page: currentState.categoriesCurrentPage + 1,
+        perPage: 10,
+      );
+
+      final updatedCategories = [...currentState.categories, ...result.data];
+      await _cacheService.cacheCategories(updatedCategories);
+
+      emit(currentState.copyWith(
+        categories: updatedCategories,
+        categoriesCurrentPage: result.currentPage,
+        categoriesLastPage: result.lastPage,
+        isLoadingMoreCategories: false,
+      ));
+    } catch (e) {
+      emit(currentState.copyWith(isLoadingMoreCategories: false));
     }
   }
 }

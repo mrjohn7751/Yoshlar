@@ -200,37 +200,43 @@ class YouthController extends Controller
         $failed = 0;
         $errors = [];
 
-        DB::beginTransaction();
+        foreach ($rows as $index => $row) {
+            $rowNum = $index + 1;
 
-        try {
-            foreach ($rows as $index => $row) {
-                $rowNum = $index + 1;
+            $validator = Validator::make($row, [
+                'name' => 'required|string|max:255',
+                'phone' => 'nullable|string|max:20',
+                'gender' => 'required|in:Erkak,Ayol',
+                'birthDate' => 'required|date',
+                'region' => 'nullable|string',
+                'location' => 'nullable|string',
+                'status' => 'nullable|string|max:255',
+                'activity' => 'nullable|string|max:255',
+                'riskLevel' => 'nullable|string|max:255',
+                'tags' => 'nullable|array',
+                'tags.*' => 'string',
+            ]);
 
-                $validator = Validator::make($row, [
-                    'name' => 'required|string|max:255',
-                    'phone' => 'nullable|string|max:20',
-                    'gender' => 'required|in:Erkak,Ayol',
-                    'birthDate' => 'required|date',
-                    'region' => 'nullable|string',
-                    'location' => 'nullable|string',
-                    'status' => 'nullable|string|max:255',
-                    'activity' => 'nullable|string|max:255',
-                    'riskLevel' => 'nullable|string|max:255',
-                    'tags' => 'nullable|array',
-                    'tags.*' => 'string',
-                ]);
+            if ($validator->fails()) {
+                $failed++;
+                $errors[] = [
+                    'row' => $rowNum,
+                    'name' => $row['name'] ?? '—',
+                    'message' => $validator->errors()->first(),
+                ];
+                continue;
+            }
 
-                if ($validator->fails()) {
-                    $failed++;
-                    $errors[] = [
-                        'row' => $rowNum,
-                        'name' => $row['name'] ?? '—',
-                        'message' => $validator->errors()->first(),
-                    ];
-                    continue;
-                }
-
+            try {
                 $data = $this->mapFrontendFields($validator->validated());
+
+                // region_id topilmasa, birinchi regionni qo'yamiz
+                if (empty($data['region_id'])) {
+                    $firstRegion = Region::first();
+                    if ($firstRegion) {
+                        $data['region_id'] = $firstRegion->id;
+                    }
+                }
 
                 // Resolve category tags
                 $categoryIds = [];
@@ -246,14 +252,14 @@ class YouthController extends Controller
                 }
 
                 $success++;
+            } catch (\Exception $e) {
+                $failed++;
+                $errors[] = [
+                    'row' => $rowNum,
+                    'name' => $row['name'] ?? '—',
+                    'message' => $e->getMessage(),
+                ];
             }
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Import xatolik bilan to\'xtatildi.',
-            ], 500);
         }
 
         return response()->json([

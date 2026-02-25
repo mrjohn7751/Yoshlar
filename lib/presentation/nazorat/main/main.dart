@@ -59,8 +59,22 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                     const SizedBox(height: 24),
                     _buildSectionTitle("Toifalar bo'yicha"),
                     _buildCategoryGrid(state),
+                    if (state.hasMoreCategories)
+                      _buildLoadMoreButton(
+                        isLoading: state.isLoadingMoreCategories,
+                        onPressed: () => context
+                            .read<DashboardCubit>()
+                            .loadMoreCategories(),
+                      ),
                     const SizedBox(height: 20),
                     RegionsBarChart(regions: state.regions),
+                    if (state.hasMoreRegions)
+                      _buildLoadMoreButton(
+                        isLoading: state.isLoadingMoreRegions,
+                        onPressed: () => context
+                            .read<DashboardCubit>()
+                            .loadMoreRegions(),
+                      ),
                   ],
                 ),
               ),
@@ -240,6 +254,31 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildLoadMoreButton({
+    required bool isLoading,
+    required VoidCallback onPressed,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Center(
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : TextButton.icon(
+                onPressed: onPressed,
+                icon: const Icon(Icons.expand_more, size: 20),
+                label: const Text("Ko'proq yuklash"),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue.shade700,
+                ),
+              ),
+      ),
     );
   }
 
