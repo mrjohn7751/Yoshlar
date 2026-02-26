@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/web.dart';
 
 /// Rasm yuklash widgeti. Rasm bo'lmasa default avatar ko'rsatadi.
 class DebugNetworkImage extends StatelessWidget {
@@ -50,7 +49,6 @@ class DebugNetworkImage extends StatelessWidget {
           );
         },
         errorBuilder: (context, error, stackTrace) {
-          Logger().e('Loading image from URL: $error');
           return _defaultAvatar();
         },
       ),

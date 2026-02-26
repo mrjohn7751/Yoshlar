@@ -38,22 +38,17 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   static const List<String> _educationItems = [
     "Maktab o'quvchisi",
-    "Litsey o'quvchisi",
-    "Kollej o'quvchisi",
-    "Texnikum o'quvchisi",
+    "Litsey, Kollej, Texnikum o'quvchisi",
     "Oliy ta'lim talabasi",
-    "Bitirgan",
     "O'rta",
     "O'rta maxsus",
     "Oliy",
-    "Boshqa",
   ];
 
   static const List<String> _employmentItems = [
     "Ishsiz",
     "Ishlaydi",
     "Ta'lim oladi",
-    "Boshqa",
   ];
 
   Uint8List? _photoBytes;
@@ -97,10 +92,12 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       _birthDateController.text = youth.birthDate;
       _locationController.text = youth.location;
       _selectedGender = youth.gender.isNotEmpty ? youth.gender : "Erkak";
-      _selectedEducation = youth.status.isNotEmpty && _educationItems.contains(youth.status)
+      _selectedEducation =
+          youth.status.isNotEmpty && _educationItems.contains(youth.status)
           ? youth.status
           : null;
-      _selectedEmployment = youth.activity.isNotEmpty && _employmentItems.contains(youth.activity)
+      _selectedEmployment =
+          youth.activity.isNotEmpty && _employmentItems.contains(youth.activity)
           ? youth.activity
           : null;
       _selectedRiskLevel = youth.riskLevel.isNotEmpty ? youth.riskLevel : "";

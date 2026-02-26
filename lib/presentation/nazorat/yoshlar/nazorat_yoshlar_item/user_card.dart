@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/user.dart';
 import 'package:yoshlar/data/service/api_client.dart';
+import 'package:yoshlar/data/util/call_launcher.dart';
 import 'package:yoshlar/logic/youth/youth_list_cubit.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/add_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/nazorat_yoshlar_history.dart';
@@ -36,9 +37,9 @@ class NazoratUserCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 80,
                 width: double.infinity,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DebugNetworkImage(
                       imageUrl: user.image,
@@ -53,20 +54,86 @@ class NazoratUserCardWidget extends StatelessWidget {
                           Text(
                             user.name,
                             style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
+
                           const SizedBox(height: 8),
-                          Text(
-                            " \u2022 Tug'ulgan sana: ${user.birthDate}\n \u2022 Jinsi: ${user.gender}",
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w500,
+                          GestureDetector(
+                            onTap: () {
+                              makePhoneCall(user.phone ?? "+998905382288");
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.call, size: 16, color: Colors.blue),
+                                Text(
+                                  " ${user.phone}",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month,
+                                size: 16,
+                                color: Colors.blue,
+                              ),
+                              Text(
+                                " ${user.birthDate}",
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                    ),
+
+                    Spacer(),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context.pushNamed(
+                              AddYouthScreen.editRouteName,
+                              extra: {'youth': user},
+                            );
+                          },
+                          icon: const Icon(Icons.edit, size: 16),
+
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.blue,
+                            side: BorderSide(color: Colors.blue.shade200),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: () => _showDeleteDialog(context, user),
+                          icon: const Icon(Icons.delete_outline, size: 16),
+
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -91,52 +158,6 @@ class NazoratUserCardWidget extends StatelessWidget {
                       .toList(),
                 ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        context.pushNamed(
-                          AddYouthScreen.editRouteName,
-                          extra: {'youth': user},
-                        );
-                      },
-                      icon: const Icon(Icons.edit, size: 16),
-                      label: const Text(
-                        "Tahrirlash",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.blue,
-                        side: BorderSide(color: Colors.blue.shade200),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _showDeleteDialog(context, user),
-                      icon: const Icon(Icons.delete_outline, size: 16),
-                      label: const Text(
-                        "O'chirish",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.red,
-                        side: const BorderSide(color: Colors.red),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 4),
               if (user.officers.isNotEmpty) ...[
                 const Divider(),
@@ -174,11 +195,18 @@ class NazoratUserCardWidget extends StatelessWidget {
                       if (user.officers[0].phone != null) ...[
                         const Icon(Icons.call, size: 18, color: Colors.blue),
                         const SizedBox(width: 4),
-                        Text(
-                          user.officers[0].phone!,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.blue,
+                        GestureDetector(
+                          onTap: () {
+                            makePhoneCall(
+                              user.officers[0].phone ?? "+998905382288",
+                            );
+                          },
+                          child: Text(
+                            user.officers[0].phone!,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
                       ],

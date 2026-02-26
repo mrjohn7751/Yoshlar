@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:yoshlar/data/model/user.dart';
-import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/youth_service.dart';
+import 'package:yoshlar/data/util/call_launcher.dart';
 import 'package:yoshlar/presentation/widgets/debug_image.dart';
 
 class UserCardWidget extends StatelessWidget {
@@ -55,13 +53,40 @@ class UserCardWidget extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+
                         const SizedBox(height: 8),
-                        Text(
-                          " \u2022 Tug'ulgan sana: ${user.birthDate}\n \u2022 Jinsi: ${user.gender}",
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w500,
+                        GestureDetector(
+                          onTap: () {
+                            makePhoneCall(user.phone ?? "+998905382288");
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.call, size: 16, color: Colors.blue),
+                              Text(
+                                " ${user.phone}",
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_month,
+                              size: 16,
+                              color: Colors.blue,
+                            ),
+                            Text(
+                              " ${user.birthDate}",
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -88,87 +113,40 @@ class UserCardWidget extends StatelessWidget {
                     )
                     .toList(),
               ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      context.pushNamed(
-                        'masul_edit_youth',
-                        extra: {'youth': user},
-                      );
-                    },
-                    icon: const Icon(Icons.edit, size: 16),
-                    label: const Text(
-                      "Tahrirlash",
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.blue,
-                      side: BorderSide(color: Colors.blue.shade200),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                    ),
-                  ),
-                ),
-                if (youthService != null) ...[
-                  const SizedBox(width: 8),
-                  OutlinedButton.icon(
-                    onPressed: () => _pickAndUploadPhoto(context),
-                    icon: const Icon(Icons.camera_alt, size: 16),
-                    label: const Text("Rasm", style: TextStyle(fontSize: 13)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.green,
-                      side: BorderSide(color: Colors.green.shade200),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
           ],
         ),
       ),
     );
   }
 
-  Future<void> _pickAndUploadPhoto(BuildContext context) async {
-    final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      maxHeight: 800,
-      imageQuality: 85,
-    );
-    if (image == null) return;
+  // Future<void> _pickAndUploadPhoto(BuildContext context) async {
+  //   final picker = ImagePicker();
+  //   final XFile? image = await picker.pickImage(
+  //     source: ImageSource.gallery,
+  //     maxWidth: 800,
+  //     maxHeight: 800,
+  //     imageQuality: 85,
+  //   );
+  //   if (image == null) return;
 
-    final bytes = await image.readAsBytes();
+  //   final bytes = await image.readAsBytes();
 
-    try {
-      await youthService!.updateYouthPhoto(user.id!, bytes);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Rasm muvaffaqiyatli yangilandi!")),
-        );
-        onPhotoUpdated?.call();
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
-        );
-      }
-    }
-  }
+  //   try {
+  //     await youthService!.updateYouthPhoto(user.id!, bytes);
+  //     if (context.mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text("Rasm muvaffaqiyatli yangilandi!")),
+  //       );
+  //       onPhotoUpdated?.call();
+  //     }
+  //   } catch (e) {
+  //     if (context.mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+  //       );
+  //     }
+  //   }
+  // }
 
   Widget _infoRow(IconData icon, String text) {
     return Padding(

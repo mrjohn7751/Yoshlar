@@ -31,8 +31,9 @@ class RegionsBarChart extends StatelessWidget {
             child: DChartBarO(
               renderType: (group) => RenderType.barLane,
               animate: true,
-              defaultInteractions: true,
-
+              defaultInteractions: false,
+              allowSliding: false,
+              arrangeVertically: false,
               configSeriesBarLane: ConfigSeriesBarLaneO(
                 showBarLabel: true,
 
@@ -41,9 +42,7 @@ class RegionsBarChart extends StatelessWidget {
                   return data.measure.toString();
                 },
               ),
-              onChangedListener: (OrdinalData data) {
-                // 🔥 Bar ustiga bosganda nima bo'lishini xohlasangiz, shu yerga yozing
-              },
+              domainAxis: const DomainAxisO(showAxisLine: true),
               groupList: [
                 OrdinalGroup(
                   id: 'id',

@@ -140,7 +140,8 @@ class _ProcessBodyState extends State<ProcessBody> {
                             ),
                           );
                         }
-                        return _buildProcessCard(activities[index]);
+                        final activityLIst = activities.reversed.toList();
+                        return _buildProcessCard(activityLIst[index]);
                       },
                     ),
             ),

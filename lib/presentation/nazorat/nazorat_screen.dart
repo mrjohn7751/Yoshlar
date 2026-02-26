@@ -5,10 +5,10 @@ import 'package:yoshlar/logic/auth/auth_cubit.dart';
 import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/logic/dashboard/dashboard_cubit.dart';
 import 'package:yoshlar/presentation/auth/auth_page.dart';
+import 'package:yoshlar/presentation/nazorat/history/password_reset_history.dart';
 import 'package:yoshlar/presentation/nazorat/jarayonlar/nazorat_jarayon_screen.dart';
 import 'package:yoshlar/presentation/nazorat/main/main.dart';
 import 'package:yoshlar/presentation/nazorat/masullar/nazorat_masul_screen.dart';
-import 'package:yoshlar/presentation/nazorat/history/password_reset_history.dart';
 import 'package:yoshlar/presentation/nazorat/profile/nazorat_profile_screen.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar.dart';
 
@@ -62,16 +62,10 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           GestureDetector(
             onTap: () {
-              context.read<AuthCubit>().logout();
+              _currentIndex = 0;
+              setState(() {});
             },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(Icons.logout, color: Colors.white, size: 20),
-            ),
+            child: Image.asset('assets/images/logo.png', height: 36),
           ),
           const SizedBox(width: 10),
           const Text(
@@ -98,15 +92,36 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: CircleAvatar(
                   radius: 18,
                   backgroundColor: Colors.blue.shade50,
-                  backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                  backgroundImage: photoUrl != null
+                      ? NetworkImage(photoUrl)
+                      : null,
                   child: photoUrl == null
-                      ? Icon(Icons.person, color: Colors.blue.shade700, size: 20)
+                      ? Icon(
+                          Icons.person,
+                          color: Colors.blue.shade700,
+                          size: 20,
+                        )
                       : null,
                 ),
               );
             },
           ),
         ),
+        const SizedBox(width: 3),
+        GestureDetector(
+          onTap: () {
+            context.read<AuthCubit>().logout();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.logout, color: Colors.white, size: 20),
+          ),
+        ),
+        const SizedBox(width: 10),
       ],
     );
   }

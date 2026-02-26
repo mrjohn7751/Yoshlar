@@ -20,6 +20,23 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
   List<String> genderItems = ["Barcha jinslar", "Erkak", "Ayol"];
   String selectedGender = "Barcha jinslar";
 
+  List<String> regionItems = [
+    "Jizzax shahar",
+    "Arnasoy tumani",
+    "Baxmal tumani",
+    "G'allaorol tumani",
+    "Do'stlik tumani",
+    "Sharof Rashidov tumani",
+    "Zomin tumani",
+    "Zarbdor tumani",
+    "Zafarobod tumani",
+    "Mirzacho'l tumani",
+    "Paxtakor tumani",
+    "Forish tumani",
+    "Yangiobod tumani",
+  ];
+  String selectedRegion = "Barcha hududlar";
+
   List<OfficerModel> _officers = [];
   int? _selectedOfficerId;
 
@@ -75,11 +92,17 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
                         children: [
                           const Text(
                             "Jami yoshlar",
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Text(
                             "Jami: ${state is YouthListLoaded ? state.total : '...'} nafar",
-                            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 13,
+                            ),
                           ),
                         ],
                       ),
@@ -137,6 +160,7 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
                       val == "Barcha jinslar" ? null : val,
                     );
                   }),
+                  _buildRegionDropdown(),
                 ],
               ),
               const SizedBox(height: 8),
@@ -191,19 +215,28 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
           child: DropdownButton<int?>(
             value: _selectedOfficerId,
             isExpanded: true,
-            icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600, size: 20),
+            icon: Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.grey.shade600,
+              size: 20,
+            ),
             dropdownColor: Colors.white,
             style: const TextStyle(color: Colors.black87, fontSize: 13),
-            hint: const Text("Barcha mas'ullar", style: TextStyle(fontSize: 13)),
+            hint: const Text(
+              "Barcha mas'ullar",
+              style: TextStyle(fontSize: 13),
+            ),
             items: [
               const DropdownMenuItem<int?>(
                 value: null,
                 child: Text("Barcha mas'ullar"),
               ),
-              ..._officers.map((o) => DropdownMenuItem<int?>(
-                    value: o.id,
-                    child: Text(o.fullName, overflow: TextOverflow.ellipsis),
-                  )),
+              ..._officers.map(
+                (o) => DropdownMenuItem<int?>(
+                  value: o.id,
+                  child: Text(o.fullName, overflow: TextOverflow.ellipsis),
+                ),
+              ),
             ],
             onChanged: (val) {
               setState(() => _selectedOfficerId = val);
@@ -215,7 +248,61 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
     );
   }
 
-  Widget _buildDropdown(List<String> items, String selected, ValueChanged<String?> onChanged) {
+  Widget _buildRegionDropdown() {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(right: 4, left: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<int?>(
+            value: selectedRegion == "Barcha hududlar"
+                ? null
+                : regionItems.indexOf(selectedRegion),
+            isExpanded: true,
+            icon: Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.grey.shade600,
+              size: 20,
+            ),
+            dropdownColor: Colors.white,
+            style: const TextStyle(color: Colors.black87, fontSize: 13),
+            hint: const Text("Barcha hududlar", style: TextStyle(fontSize: 13)),
+            items: [
+              const DropdownMenuItem<int?>(
+                value: null,
+                child: Text("Barcha hududlar"),
+              ),
+              ...regionItems.map(
+                (o) => DropdownMenuItem<int?>(
+                  value: regionItems.indexOf(o),
+                  child: Text(o, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+            ],
+            onChanged: (val) {
+              setState(
+                () => selectedRegion = val == null
+                    ? "Barcha hududlar"
+                    : regionItems[val],
+              );
+              context.read<YouthListCubit>().setRegionFilter(selectedRegion);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(
+    List<String> items,
+    String selected,
+    ValueChanged<String?> onChanged,
+  ) {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(right: 4, left: 4),

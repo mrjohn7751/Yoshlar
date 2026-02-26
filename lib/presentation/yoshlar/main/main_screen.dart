@@ -1,8 +1,11 @@
+// ignore_for_file: unnecessary_underscores
+
 import 'package:easy_search_bar_2/easy_search_bar_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/service/youth_service.dart';
+import 'package:yoshlar/data/util/call_launcher.dart';
 import 'package:yoshlar/logic/auth/auth_cubit.dart';
 import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/logic/officer/officer_cubit.dart';
@@ -109,7 +112,10 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(height: 12),
                     const Text(
                       "Bosh sahifa",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -143,7 +149,10 @@ class _MainScreenState extends State<MainScreen> {
                           onTap: () {
                             context.pushNamed(
                               HistoryPage.routeName,
-                              extra: {'youthId': user.id, 'youthName': user.name},
+                              extra: {
+                                'youthId': user.id,
+                                'youthName': user.name,
+                              },
                             );
                           },
                           child: UserCardWidget(
@@ -205,11 +214,37 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   email,
                   style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    if (authState is AuthAuthenticated) {
+                      makePhoneCall(authState.user.phone ?? "");
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone, size: 14, color: Colors.grey.shade600),
+                      const SizedBox(width: 4),
+                      Text(
+                        authState is AuthAuthenticated
+                            ? authState.user.phone ?? ""
+                            : "***",
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

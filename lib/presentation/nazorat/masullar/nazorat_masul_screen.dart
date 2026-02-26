@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/officer.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/officer_service.dart';
+import 'package:yoshlar/data/util/call_launcher.dart';
 import 'package:yoshlar/data/util/clipboard_helper.dart';
 import 'package:yoshlar/logic/officer/officer_cubit.dart';
 import 'package:yoshlar/logic/officer/officer_state.dart';
@@ -169,7 +170,15 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                         officer.region!.name,
                       ),
                     if (officer.phone != null)
-                      _buildInfoRow(Icons.phone_outlined, officer.phone!),
+                      GestureDetector(
+                        onTap: () {
+                          makePhoneCall(officer.phone ?? "+998905382288");
+                        },
+                        child: _buildInfoRow(
+                          Icons.phone_outlined,
+                          officer.phone!,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -207,65 +216,66 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          if (officer.username != null)
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _showResetPasswordDialog(officer),
-                icon: const Icon(Icons.key_outlined, size: 16),
-                label: const Text(
-                  "Parol yangilash",
-                  style: TextStyle(fontSize: 13),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.orange.shade700,
-                  side: BorderSide(color: Colors.orange.shade200),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+          Row(
+            children: [
+              if (officer.username != null)
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showResetPasswordDialog(officer),
+                    icon: const Icon(Icons.key_outlined, size: 16),
+                    label: const Text(
+                      "Parol yangilash",
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.orange.shade700,
+                      side: BorderSide(color: Colors.orange.shade200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                ),
-              ),
-            )
-          else
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _showGenerateCredentialsDialog(officer),
-                icon: const Icon(Icons.person_add_outlined, size: 16),
-                label: const Text(
-                  "Akkaunt yaratish",
-                  style: TextStyle(fontSize: 13),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.green.shade700,
-                  side: BorderSide(color: Colors.green.shade200),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                )
+              else
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showGenerateCredentialsDialog(officer),
+                    icon: const Icon(Icons.person_add_outlined, size: 16),
+                    label: const Text(
+                      "Akkaunt yaratish",
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.green.shade700,
+                      side: BorderSide(color: Colors.green.shade200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _showDeleteOfficerDialog(officer),
+                  icon: const Icon(Icons.delete_outline, size: 16),
+                  label: const Text(
+                    "O'chirish",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
                 ),
               ),
-            ),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _showDeleteOfficerDialog(officer),
-              icon: const Icon(Icons.delete_outline, size: 16),
-              label: const Text(
-                "O'chirish",
-                style: TextStyle(fontSize: 13),
-              ),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.red,
-                side: const BorderSide(color: Colors.red),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-              ),
-            ),
+            ],
           ),
         ],
       ),

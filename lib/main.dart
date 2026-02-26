@@ -79,15 +79,22 @@ class _MyAppState extends State<MyApp> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: _authCubit),
-          BlocProvider(create: (_) => DashboardCubit(_dashboardService, widget.cacheService)),
+          BlocProvider(
+            create: (_) =>
+                DashboardCubit(_dashboardService, widget.cacheService),
+          ),
           BlocProvider(create: (_) => YouthListCubit(_youthService)),
-          BlocProvider(create: (_) => YouthDetailCubit(_youthService, _activityService)),
+          BlocProvider(
+            create: (_) => YouthDetailCubit(_youthService, _activityService),
+          ),
           BlocProvider(create: (_) => ActivityDetailCubit(_activityService)),
-          BlocProvider(create: (_) => OfficerCubit(_officerService, _youthService)),
+          BlocProvider(
+            create: (_) => OfficerCubit(_officerService, _youthService),
+          ),
           BlocProvider(create: (_) => ActivityListCubit(_activityService)),
         ],
         child: MaterialApp.router(
-          title: 'Yoshlar App',
+          title: 'Nazoratdagi yoshlar',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

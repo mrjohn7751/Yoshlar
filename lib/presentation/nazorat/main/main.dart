@@ -62,19 +62,17 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                     if (state.hasMoreCategories)
                       _buildLoadMoreButton(
                         isLoading: state.isLoadingMoreCategories,
-                        onPressed: () => context
-                            .read<DashboardCubit>()
-                            .loadMoreCategories(),
+                        onPressed: () =>
+                            context.read<DashboardCubit>().loadMoreCategories(),
                       ),
                     const SizedBox(height: 20),
                     RegionsBarChart(regions: state.regions),
-                    if (state.hasMoreRegions)
-                      _buildLoadMoreButton(
-                        isLoading: state.isLoadingMoreRegions,
-                        onPressed: () => context
-                            .read<DashboardCubit>()
-                            .loadMoreRegions(),
-                      ),
+                    // if (state.hasMoreRegions)
+                    //   _buildLoadMoreButton(
+                    //     isLoading: state.isLoadingMoreRegions,
+                    //     onPressed: () =>
+                    //         context.read<DashboardCubit>().loadMoreRegions(),
+                    //   ),
                   ],
                 ),
               ),
