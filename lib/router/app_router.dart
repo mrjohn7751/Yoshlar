@@ -194,6 +194,17 @@ class AppRouter {
             },
           ),
           GoRoute(
+            name: 'masul_history_into_page',
+            path: 'history_into_page',
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              return NazoratHistoryIntoPage(
+                activityId: extra?['activityId'] as int?,
+                youthName: extra?['youthName'] as String?,
+              );
+            },
+          ),
+          GoRoute(
             name: HistoryPage.routeName,
             path: 'history',
             routes: [

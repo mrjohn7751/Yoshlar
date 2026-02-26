@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yoshlar/data/model/activity.dart';
-import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/history_into_page.dart';
+import 'package:yoshlar/logic/auth/auth_cubit.dart';
+import 'package:yoshlar/logic/auth/auth_state.dart';
 
 class ActivityCard extends StatelessWidget {
   final Activity activity;
@@ -14,8 +16,12 @@ class ActivityCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (activity.id != null) {
+          final authState = context.read<AuthCubit>().state;
+          final routeName = (authState is AuthAuthenticated && authState.user.isMasul)
+              ? 'masul_history_into_page'
+              : 'history_into_page';
           context.pushNamed(
-            NazoratHistoryIntoPage.routeName,
+            routeName,
             extra: {'activityId': activity.id, 'youthName': youthName},
           );
         }
