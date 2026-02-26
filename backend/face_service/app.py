@@ -138,8 +138,8 @@ def compare_faces():
             [officer_encoding], selfie_encoding
         )[0]
 
-        matched = face_distance <= MATCH_TOLERANCE
-        similarity = round(max(0, (1 - face_distance)) * 100, 1)
+        matched = bool(face_distance <= MATCH_TOLERANCE)
+        similarity = round(float(max(0, (1 - face_distance))) * 100, 1)
 
         if matched:
             msg = f"Yuz tasdiqlandi ({similarity}% o'xshashlik)"
