@@ -62,6 +62,9 @@ class _MyAppState extends State<MyApp> {
     _appRouter = AppRouter(_authCubit);
 
     widget.apiClient.onUnauthorized = () => _authCubit.forceLogout();
+
+    // Darhol auth tekshirish - splash kerak emas
+    _authCubit.checkAuth();
   }
 
   @override

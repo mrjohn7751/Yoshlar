@@ -16,7 +16,6 @@ import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/add_yo
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/history_into_page.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/import_yoshlar.dart';
 import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/nazorat_yoshlar_history.dart';
-import 'package:yoshlar/presentation/splash/splash_page.dart';
 import 'package:yoshlar/presentation/yoshlar/main/add_activity/add_activity.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_item_screen.dart/history_screen.dart';
 import 'package:yoshlar/presentation/yoshlar/main/main_screen.dart';
@@ -30,28 +29,20 @@ class AppRouter {
   GoRouter router() => GoRouter(
     debugLogDiagnostics: false,
     navigatorKey: navigatorKey,
-    initialLocation: '/',
+    initialLocation: '/login',
     refreshListenable: _AuthRefreshNotifier(authCubit),
     redirect: (context, state) {
       final authState = authCubit.state;
-      final isOnSplash = state.matchedLocation == '/';
       final isOnLogin = state.matchedLocation == '/login';
 
-      // Splash va login sahifalariga ruxsat
-      if (isOnSplash || isOnLogin) return null;
-
-      // Auth hali tekshirilmagan bo'lsa (hard refresh), splash ga yo'naltirish
-      if (authState is AuthInitial) {
-        return '/';
-      }
-
-      // Agar foydalanuvchi tizimdan chiqqan bo'lsa, splash ga yo'naltirish
-      if (authState is AuthUnauthenticated) {
-        return '/';
-      }
-
-      // Role-based route guard (faqat authenticated bo'lganda)
+      // Authenticated bo'lsa login dan dashboard/main ga yo'naltirish
       if (authState is AuthAuthenticated) {
+        if (isOnLogin) {
+          return authState.user.isRahbariyat
+              ? '/nazorat_dashboard'
+              : '/main';
+        }
+
         final user = authState.user;
         final location = state.matchedLocation;
 
@@ -64,6 +55,13 @@ class AppRouter {
         if (user.isRahbariyat && location.startsWith('/main')) {
           return '/nazorat_dashboard';
         }
+
+        return null;
+      }
+
+      // Auth tekshirilmagan yoki chiqilgan bo'lsa - login ga
+      if (!isOnLogin) {
+        return '/login';
       }
 
       return null;
@@ -73,11 +71,6 @@ class AppRouter {
         name: LoginPage.routeName,
         path: '/login',
         builder: (context, state) => LoginPage(),
-      ),
-      GoRoute(
-        name: SplashPage.routeName,
-        path: '/',
-        builder: (context, state) => SplashPage(),
       ),
       GoRoute(
         name: DashboardPage.routeName,
