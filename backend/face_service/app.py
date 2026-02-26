@@ -4,8 +4,8 @@ import io
 
 import cv2
 import numpy as np
+import face_recognition
 from flask import Flask, request, jsonify
-from deepface import DeepFace
 from PIL import Image
 
 app = Flask(__name__)
@@ -15,23 +15,22 @@ STORAGE_PATH = os.path.join(os.path.dirname(__file__), '..', 'storage', 'app', '
 API_KEY = os.environ.get('FACE_SERVICE_KEY', 'yoshlar-face-secret-2024')
 MIN_IMAGE_SIZE = 100
 BLUR_THRESHOLD = 50.0
-MODEL_NAME = 'ArcFace'
-DETECTOR_BACKEND = 'opencv'
-
-# Anti-spoofing mavjudligini tekshirish (torch kerak)
-ANTI_SPOOFING_AVAILABLE = False
-try:
-    import torch
-    ANTI_SPOOFING_AVAILABLE = True
-    print("Anti-spoofing moduli mavjud (torch o'rnatilgan)")
-except ImportError:
-    print("OGOHLANTIRISH: torch o'rnatilmagan - anti-spoofing ishlamaydi. 'pip install torch' bilan o'rnating.")
+MATCH_TOLERANCE = 0.5  # Past = qattiqroq (0.4-0.6 oralig'i yaxshi)
 
 
 def verify_api_key():
     """Laravel dan kelgan API key ni tekshirish"""
     key = request.headers.get('X-API-Key', '')
     return hmac.compare_digest(key, API_KEY)
+
+
+def load_image(source):
+    """Fayldan yoki bytesdan rasmni yuklash (RGB formatda)"""
+    if isinstance(source, str):
+        img = Image.open(source).convert('RGB')
+    else:
+        img = Image.open(io.BytesIO(source)).convert('RGB')
+    return np.array(img)
 
 
 def check_image_quality(image_np):
@@ -46,6 +45,25 @@ def check_image_quality(image_np):
         return "Rasm xiralashgan. Aniqroq rasm yuboring."
 
     return None
+
+
+def get_face_encoding(image_np, label="Rasm"):
+    """Rasmdan yuz encoding olish. Yuz topilmasa None qaytaradi."""
+    # face_recognition kutubxonasi yuz joylashuvini topadi
+    face_locations = face_recognition.face_locations(image_np, model='hog')
+
+    if len(face_locations) == 0:
+        return None, f"{label}dan yuz aniqlanmadi. Yuzingiz aniq ko'rinishini ta'minlang."
+
+    if len(face_locations) > 1:
+        return None, f"{label}da bir nechta yuz aniqlandi. Faqat bitta yuz bo'lishi kerak."
+
+    # Birinchi (yagona) yuzning encodingini olish - 128 o'lchamli vektor
+    encodings = face_recognition.face_encodings(image_np, face_locations)
+    if len(encodings) == 0:
+        return None, f"{label}dan yuz xususiyatlari olinmadi."
+
+    return encodings[0], None
 
 
 @app.route('/health', methods=['GET'])
@@ -86,12 +104,10 @@ def compare_faces():
         }), 404
 
     try:
-        # Selfie ni yuklash
+        # 1. Selfie ni yuklash va sifatini tekshirish
         selfie_bytes = selfie_file.read()
-        selfie_pil = Image.open(io.BytesIO(selfie_bytes)).convert('RGB')
-        selfie_np = np.array(selfie_pil)
+        selfie_np = load_image(selfie_bytes)
 
-        # 1. Rasm sifatini tekshirish
         quality_error = check_image_quality(selfie_np)
         if quality_error:
             return jsonify({
@@ -99,134 +115,54 @@ def compare_faces():
                 'message': quality_error
             }), 400
 
-        # 2. Selfie da yuz borligini va anti-spoofing tekshirish
-        try:
-            selfie_faces = DeepFace.extract_faces(
-                img_path=selfie_np,
-                detector_backend=DETECTOR_BACKEND,
-                anti_spoofing=ANTI_SPOOFING_AVAILABLE,
-                enforce_detection=True
-            )
-        except ValueError as ve:
-            err_msg = str(ve).lower()
-            if 'torch' in err_msg or 'anti spoofing' in err_msg:
-                # torch yo'q - anti-spoofing'siz qayta urinish
-                selfie_faces = DeepFace.extract_faces(
-                    img_path=selfie_np,
-                    detector_backend=DETECTOR_BACKEND,
-                    anti_spoofing=False,
-                    enforce_detection=True
-                )
-            else:
-                return jsonify({
-                    'match': False,
-                    'message': "Selfiedan yuz aniqlanmadi. Yuzingiz aniq ko'rinishini ta'minlang."
-                }), 400
-        except Exception:
+        # 2. Selfiedan yuz encoding olish
+        selfie_encoding, selfie_error = get_face_encoding(selfie_np, "Selfie")
+        if selfie_error:
             return jsonify({
                 'match': False,
-                'message': "Selfiedan yuz aniqlanmadi. Yuzingiz aniq ko'rinishini ta'minlang."
+                'message': selfie_error
             }), 400
 
-        if not selfie_faces:
+        # 3. Mas'ul rasmidan yuz encoding olish
+        officer_np = load_image(full_path)
+        officer_encoding, officer_error = get_face_encoding(officer_np, "Mas'ul rasmi")
+        if officer_error:
             return jsonify({
                 'match': False,
-                'message': "Selfiedan yuz aniqlanmadi."
+                'message': officer_error
             }), 400
 
-        # Bir nechta yuz tekshiruvi
-        real_faces = [f for f in selfie_faces if f.get('confidence', 0) > 0.5]
-        if len(real_faces) > 1:
-            return jsonify({
-                'match': False,
-                'message': "Rasmda bir nechta yuz aniqlandi. Faqat bitta yuz bo'lishi kerak."
-            }), 400
+        # 4. Yuzlarni solishtirish
+        # face_distance: 0 = bir xil odam, 1 = butunlay boshqa
+        face_distance = face_recognition.face_distance(
+            [officer_encoding], selfie_encoding
+        )[0]
 
-        # Anti-spoofing: soxta rasm tekshiruvi (tiriklik aniqlash)
-        face_data = real_faces[0] if real_faces else selfie_faces[0]
-        is_real = face_data.get('is_real', None)
-        antispoof_score = face_data.get('antispoof_score', None)
+        matched = face_distance <= MATCH_TOLERANCE
+        similarity = round(max(0, (1 - face_distance)) * 100, 1)
 
-        if is_real is False:
-            return jsonify({
-                'match': False,
-                'is_real': False,
-                'antispoof_score': antispoof_score,
-                'message': "Soxta rasm aniqlandi! Iltimos, haqiqiy yuzingizni kameraga ko'rsating. "
-                           "Telefon ekranidagi yoki qog'ozdagi rasm qabul qilinmaydi."
-            }), 403
-
-        # 3. Officer rasmida yuz borligini tekshirish
-        try:
-            officer_faces = DeepFace.extract_faces(
-                img_path=full_path,
-                detector_backend=DETECTOR_BACKEND,
-                enforce_detection=True
-            )
-            if not officer_faces:
-                return jsonify({
-                    'match': False,
-                    'message': "Mas'ul rasmidan yuz aniqlanmadi."
-                }), 400
-        except ValueError:
-            return jsonify({
-                'match': False,
-                'message': "Mas'ul rasmidan yuz aniqlanmadi."
-            }), 400
-
-        # 4. Yuzlarni solishtirish (ArcFace modeli bilan)
-        result = DeepFace.verify(
-            img1_path=full_path,
-            img2_path=selfie_np,
-            model_name=MODEL_NAME,
-            detector_backend=DETECTOR_BACKEND,
-            anti_spoofing=False  # Yuqorida alohida tekshirdik
-        )
-
-        distance = result.get('distance', 1.0)
-        threshold = result.get('threshold', 0.68)
-        verified = result.get('verified', False)
-
-        # Similarity foizini hisoblash
-        # ArcFace cosine distance: 0 = bir xil, 1 = butunlay boshqa
-        similarity = round(max(0, (1 - distance)) * 100, 1)
-
-        if verified:
+        if matched:
             msg = f"Yuz tasdiqlandi ({similarity}% o'xshashlik)"
         else:
             msg = f"Yuz mos kelmadi ({similarity}% o'xshashlik). Yetarli darajada o'xshash emas."
 
         return jsonify({
-            'match': verified,
-            'distance': round(distance, 4),
-            'threshold': round(threshold, 4),
+            'match': matched,
+            'distance': round(float(face_distance), 4),
+            'threshold': MATCH_TOLERANCE,
             'similarity': similarity,
             'is_real': True,
             'message': msg
         })
 
     except Exception as e:
-        error_msg = str(e).lower()
-        if 'spoof' in error_msg or 'fake' in error_msg:
-            return jsonify({
-                'match': False,
-                'is_real': False,
-                'message': "Soxta rasm aniqlandi! Haqiqiy yuzingizni ko'rsating."
-            }), 403
-
         return jsonify({
             'match': False,
-            'message': "Yuz solishtirish xatosi yuz berdi. Qaytadan urinib ko'ring."
+            'message': f"Yuz solishtirish xatosi: {str(e)}"
         }), 500
 
 
 if __name__ == '__main__':
-    # Modellarni oldindan yuklash (birinchi so'rov sekin bo'lmasligi uchun)
-    print("Modellar yuklanmoqda...")
-    try:
-        DeepFace.build_model(MODEL_NAME)
-        print(f"{MODEL_NAME} modeli tayyor.")
-    except Exception as e:
-        print(f"Model yuklashda xato: {e}")
-
-    app.run(host='127.0.0.1', port=5001, debug=False)
+    print("Face service ishga tushmoqda...")
+    print(f"Tolerance: {MATCH_TOLERANCE}")
+    app.run(host='127.0.0.1', port=5000, debug=False)
