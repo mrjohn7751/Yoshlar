@@ -40,7 +40,7 @@ venv/
 __pycache__/
 /*.pyc
 .env
-
+nginx.txt.php
 
 # Symbolication related
 app.*.symbols

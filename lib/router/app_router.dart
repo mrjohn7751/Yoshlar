@@ -40,6 +40,11 @@ class AppRouter {
       // Splash va login sahifalariga ruxsat
       if (isOnSplash || isOnLogin) return null;
 
+      // Auth hali tekshirilmagan bo'lsa (hard refresh), splash ga yo'naltirish
+      if (authState is AuthInitial) {
+        return '/';
+      }
+
       // Agar foydalanuvchi tizimdan chiqqan bo'lsa, splash ga yo'naltirish
       if (authState is AuthUnauthenticated) {
         return '/';
