@@ -306,21 +306,40 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
             crossAxisSpacing: 8,
             childAspectRatio: 4 / 3,
             children: images.map((img) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  image: img.url.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(img.url),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                ),
-                child: img.url.isEmpty
-                    ? const Center(
+              if (img.url.isEmpty) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.broken_image, color: Colors.grey),
+                  ),
+                );
+              }
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  img.url,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(
+                      color: Colors.grey.shade100,
+                      child: const Center(
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stack) {
+                    return Container(
+                      color: Colors.grey.shade100,
+                      child: const Center(
                         child: Icon(Icons.broken_image, color: Colors.grey),
-                      )
-                    : null,
+                      ),
+                    );
+                  },
+                ),
               );
             }).toList(),
           ),

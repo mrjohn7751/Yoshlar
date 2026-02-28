@@ -43,10 +43,12 @@
 	</array>
   <key>NSPhotoLibraryUsageDescription</key>
   <string>Ushbu ilova faoliyat hisobotiga rasm biriktirish uchun galereyadan foydalanishga ruxsat so'raydi.</string>
+  <key>NSPhotoLibraryAddOnlyUsageDescription</key>
+  <string>Ushbu ilova rasmlarni saqlash uchun galereyadan foydalanishga ruxsat so'raydi.</string>
   <key>NSCameraUsageDescription</key>
   <string>Ushbu ilova faoliyat suratini olish uchun kameradan foydalanishga ruxsat so'raydi.</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>Ushbu ilova video yozib olishda mikrofondan foydalanishga ruxsat so'raydi.</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Ushbu ilova faoliyat joylashuvini aniqlash uchun lokatsiyadan foydalanishga ruxsat so'raydi.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
