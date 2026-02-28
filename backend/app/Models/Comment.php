@@ -11,6 +11,7 @@ class Comment extends Model
 
     protected $fillable = [
         'body',
+        'user_id',
     ];
 
     public function activity()

@@ -67,6 +67,10 @@ class ActivityService {
     );
   }
 
+  Future<void> deleteActivity(int activityId) async {
+    await _client.delete('/activities/$activityId');
+  }
+
   Future<List<Comment>> getComments(int activityId, {bool all = true}) async {
     final response = await _client.get('/activities/$activityId/comments${all ? '?all=true' : ''}');
     final data = response['data'] as List<dynamic>;

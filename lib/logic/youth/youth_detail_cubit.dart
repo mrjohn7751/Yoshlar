@@ -71,4 +71,8 @@ class ActivityDetailCubit extends Cubit<ActivityDetailState> {
     await _activityService.addComment(_currentActivityId!, body);
     loadActivityDetail(_currentActivityId!);
   }
+
+  Future<void> deleteActivity(int activityId) async {
+    await _activityService.deleteActivity(activityId);
+  }
 }

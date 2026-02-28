@@ -77,6 +77,20 @@ class ActivityController extends Controller
         ]);
     }
 
+    public function destroy(Activity $activity): JsonResponse
+    {
+        // Rasmlarni diskdan o'chirish
+        foreach ($activity->images as $image) {
+            Storage::disk('public')->delete($image->path);
+        }
+
+        $activity->delete();
+
+        return response()->json([
+            'message' => 'Faoliyat muvaffaqiyatli o\'chirildi.',
+        ]);
+    }
+
     public function uploadImages(Activity $activity): JsonResponse
     {
         // Masul faqat o'z activity-siga rasm yuklashi mumkin

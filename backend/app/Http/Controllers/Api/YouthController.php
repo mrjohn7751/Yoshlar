@@ -23,7 +23,24 @@ class YouthController extends Controller
             ->withCount('activities');
 
         if ($request->filled('region')) {
-            $query->where('region_id', $request->region);
+            $regionValue = $request->region;
+            if (is_numeric($regionValue)) {
+                $query->where('region_id', $regionValue);
+            } else {
+                $region = Region::where('name', $regionValue)->first();
+                if ($region) {
+                    $query->where('region_id', $region->id);
+                } else {
+                    // Nom to'liq mos kelmasa, LIKE bilan qidiramiz
+                    $region = Region::where('name', 'like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $regionValue) . '%')->first();
+                    if ($region) {
+                        $query->where('region_id', $region->id);
+                    } else {
+                        // Hech narsa topilmasa, bo'sh natija qaytsin
+                        $query->where('region_id', 0);
+                    }
+                }
+            }
         }
 
         if ($request->filled('gender')) {

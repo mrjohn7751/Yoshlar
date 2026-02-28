@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', 'rahbariyat', 'throttle:api'])->group(functio
 
     // Activities (barcha jarayonlar - pagination bilan)
     Route::get('/activities', [ActivityController::class, 'index']);
+    Route::delete('/activities/{activity}', [ActivityController::class, 'destroy']);
 
     // Youths (yaratish, tahrirlash, o'chirish)
     Route::post('/youths/import', [YouthController::class, 'import']);

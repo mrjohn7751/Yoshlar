@@ -197,6 +197,12 @@ class OfficerController extends Controller
 
     public function attachYouths(AttachYouthsRequest $request, Officer $officer): JsonResponse
     {
+        // Avval bu yoshlarni boshqa masullardan ajratamiz (1 yosh = 1 masul)
+        DB::table('youth_officer')
+            ->whereIn('youth_id', $request->youth_ids)
+            ->delete();
+
+        // Keyin yangi masulga biriktiramiz
         $officer->youths()->syncWithoutDetaching($request->youth_ids);
 
         return response()->json([

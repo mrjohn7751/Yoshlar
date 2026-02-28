@@ -32,9 +32,8 @@ class CommentController extends Controller
     {
         $comment = $activity->comments()->create([
             'body' => $request->body,
+            'user_id' => auth()->id(),
         ]);
-        $comment->user_id = auth()->id();
-        $comment->save();
 
         $comment->load('user');
 

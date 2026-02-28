@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:yoshlar/data/util/clipboard_helper.dart';
+import 'package:yoshlar/logic/auth/auth_cubit.dart';
+import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/logic/youth/youth_detail_cubit.dart';
 import 'package:yoshlar/logic/youth/youth_detail_state.dart';
 
@@ -54,6 +56,19 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Builder(builder: (context) {
+            final authState = context.watch<AuthCubit>().state;
+            if (authState is AuthAuthenticated && authState.user.isRahbariyat) {
+              return IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                tooltip: "Faoliyatni o'chirish",
+                onPressed: () => _showDeleteDialog(context),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
+        ],
       ),
       body: BlocBuilder<ActivityDetailCubit, ActivityDetailState>(
         builder: (context, state) {
@@ -428,6 +443,58 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                 }
               },
               icon: const Icon(Icons.send, color: Colors.white, size: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Faoliyatni o'chirish"),
+        content: const Text(
+          "Haqiqatan ham bu faoliyatni o'chirmoqchimisiz? Bu amalni qaytarib bo'lmaydi.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Bekor qilish"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              if (widget.activityId != null) {
+                try {
+                  await context
+                      .read<ActivityDetailCubit>()
+                      .deleteActivity(widget.activityId!);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Faoliyat muvaffaqiyatli o'chirildi"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.pop(context, true);
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Xatolik: $e"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            child: const Text(
+              "O'chirish",
+              style: TextStyle(color: Colors.red),
             ),
           ),
         ],

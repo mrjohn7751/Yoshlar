@@ -83,8 +83,7 @@ class OfficerCubit extends Cubit<OfficerState> {
 
   Future<List<UserModel>> getUnattachedYouths(int officerId) async {
     final allYouths = await _youthService.getAllYouths();
-    final officerYouths = await _officerService.getOfficerYouths(officerId);
-    final officerYouthIds = officerYouths.map((y) => y.id).toSet();
-    return allYouths.where((y) => !officerYouthIds.contains(y.id)).toList();
+    // Faqat hech qaysi masulga biriktirilmagan yoshlarni ko'rsatamiz
+    return allYouths.where((y) => y.officers.isEmpty).toList();
   }
 }

@@ -290,7 +290,9 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
                     ? "Barcha hududlar"
                     : regionItems[val],
               );
-              context.read<YouthListCubit>().setRegionFilter(selectedRegion);
+              context.read<YouthListCubit>().setRegionFilter(
+                val == null ? null : regionItems[val],
+              );
             },
           ),
         ),
