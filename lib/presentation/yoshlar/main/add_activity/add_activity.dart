@@ -9,7 +9,7 @@ import 'package:yoshlar/data/service/location_service.dart';
 import 'package:yoshlar/logic/auth/auth_cubit.dart';
 import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/logic/youth/youth_detail_cubit.dart';
-import 'package:yoshlar/presentation/widgets/web_camera_dialog.dart';
+import 'package:yoshlar/presentation/widgets/camera_capture.dart';
 
 class AddActivityPage extends StatefulWidget {
   static const routeName = 'add_activity';
@@ -75,7 +75,11 @@ class _AddActivityPageState extends State<AddActivityPage> {
       return;
     }
 
-    final List<XFile> images = await _picker.pickMultiImage();
+    final List<XFile> images = await _picker.pickMultiImage(
+      maxWidth: 1280,
+      maxHeight: 1280,
+      imageQuality: 70,
+    );
     if (images.isNotEmpty) {
       final remaining = _maxImages - _selectedImages.length;
       final toAdd = images.take(remaining).toList();
@@ -469,7 +473,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
         if (!mounted) return;
 
         // Web camera dialog orqali selfie olish
-        final Uint8List? selfieBytes = await WebCameraCaptureDialog.show(context);
+        final Uint8List? selfieBytes = await capturePhoto(context);
 
         if (selfieBytes == null) {
           if (mounted) {
