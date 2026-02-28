@@ -362,9 +362,12 @@ class _AddActivityPageState extends State<AddActivityPage> {
         const SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
-            onPressed: _isSubmitting ? null : _submit,
+            onPressed: (_isSubmitting || _selectedImages.length < _minImages)
+                ? null
+                : _submit,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3B82F6),
+              disabledBackgroundColor: Colors.grey.shade300,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -376,9 +379,11 @@ class _AddActivityPageState extends State<AddActivityPage> {
                     width: 20,
                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                   )
-                : const Text(
-                    "Yuborish",
-                    style: TextStyle(color: Colors.white),
+                : Text(
+                    _selectedImages.length < _minImages
+                        ? "Kamida $_minImages ta rasm kerak"
+                        : "Yuborish",
+                    style: const TextStyle(color: Colors.white),
                   ),
           ),
         ),

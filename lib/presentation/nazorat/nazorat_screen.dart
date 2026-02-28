@@ -47,7 +47,10 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: _buildAppBar(),
-        body: _pages[_currentIndex],
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
         bottomNavigationBar: _buildBottomNav(),
       ),
     );

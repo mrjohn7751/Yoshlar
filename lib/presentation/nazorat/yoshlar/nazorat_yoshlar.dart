@@ -16,7 +16,8 @@ class NazoratYoshlarScreen extends StatefulWidget {
   State<NazoratYoshlarScreen> createState() => _NazoratYoshlarScreenState();
 }
 
-class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
+class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
+    with AutomaticKeepAliveClientMixin {
   List<String> genderItems = ["Barcha jinslar", "Erkak", "Ayol"];
   String selectedGender = "Barcha jinslar";
 
@@ -43,6 +44,9 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
     context.read<YouthListCubit>().loadYouths();
@@ -66,125 +70,87 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+        _scrollController.position.maxScrollExtent - 300) {
       context.read<YouthListCubit>().loadMore();
     }
   }
 
+  void _checkIfNeedMore() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+      if (_scrollController.position.maxScrollExtent <= 0) {
+        context.read<YouthListCubit>().loadMore();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
-      body: BlocBuilder<YouthListCubit, YouthListState>(
+      body: BlocConsumer<YouthListCubit, YouthListState>(
+        listener: (context, state) {
+          if (state is YouthListLoaded && state.hasMorePages && !state.isLoadingMore) {
+            _checkIfNeedMore();
+          }
+        },
         builder: (context, state) {
-          return ListView(
+          final youths = state is YouthListLoaded ? state.youths : [];
+          final isLoading = state is YouthListLoading;
+          final isError = state is YouthListError;
+
+          // Header (3 ta) + yoshlar + footer (1 ta)
+          final itemCount = 3 + youths.length + 1;
+
+          return ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              const SizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Jami yoshlar",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "Jami: ${state is YouthListLoaded ? state.total : '...'} nafar",
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            context.pushNamed(ImportYouthScreen.routeName);
-                          },
-                          icon: const Icon(Icons.upload_file, size: 18),
-                          label: const Text("Excel Import"),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.blue,
-                            side: const BorderSide(color: Colors.blue),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            context.pushNamed(AddYouthScreen.routeName);
-                          },
-                          icon: const Icon(Icons.add, size: 18),
-                          label: const Text("Qo'shish"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  _buildOfficerDropdown(),
-                  _buildDropdown(genderItems, selectedGender, (val) {
-                    setState(() => selectedGender = val!);
-                    context.read<YouthListCubit>().setGenderFilter(
-                      val == "Barcha jinslar" ? null : val,
-                    );
-                  }),
-                  _buildRegionDropdown(),
-                ],
-              ),
-              const SizedBox(height: 8),
-              if (state is YouthListLoading)
-                const Padding(
+            itemCount: isLoading ? 4 : (isError ? 4 : itemCount),
+            itemBuilder: (context, index) {
+              // 0 - Title va tugmalar
+              if (index == 0) {
+                return _buildHeader(state);
+              }
+              // 1 - Filtrlar
+              if (index == 1) {
+                return _buildFilters();
+              }
+              // 2 - Bo'sh joy
+              if (index == 2) {
+                return const SizedBox(height: 8);
+              }
+
+              // Loading holati
+              if (isLoading && index == 3) {
+                return const Padding(
                   padding: EdgeInsets.all(32),
                   child: Center(child: CircularProgressIndicator()),
-                )
-              else if (state is YouthListError)
-                Padding(
+                );
+              }
+
+              // Error holati
+              if (isError && index == 3) {
+                return Padding(
                   padding: const EdgeInsets.all(32),
-                  child: Center(child: Text(state.message)),
-                )
-              else if (state is YouthListLoaded) ...[
-                ...state.youths.map(
-                  (user) => NazoratUserCardWidget(user: user),
-                ),
-                if (state.isLoadingMore)
-                  const Padding(
+                  child: Center(child: Text((state as YouthListError).message)),
+                );
+              }
+
+              // Yoshlar ro'yxati
+              final youthIndex = index - 3;
+              if (youthIndex < youths.length) {
+                return NazoratUserCardWidget(user: youths[youthIndex]);
+              }
+
+              // Footer - loading more yoki tugadi
+              if (state is YouthListLoaded) {
+                if (state.isLoadingMore) {
+                  return const Padding(
                     padding: EdgeInsets.all(16),
                     child: Center(child: CircularProgressIndicator()),
-                  )
-                else if (!state.hasMorePages && state.youths.isNotEmpty)
-                  const Padding(
+                  );
+                } else if (!state.hasMorePages && state.youths.isNotEmpty) {
+                  return const Padding(
                     padding: EdgeInsets.all(16),
                     child: Center(
                       child: Text(
@@ -192,12 +158,103 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen> {
                         style: TextStyle(color: Colors.grey, fontSize: 13),
                       ),
                     ),
-                  ),
-              ],
-            ],
+                  );
+                }
+              }
+              return const SizedBox.shrink();
+            },
           );
         },
       ),
+    );
+  }
+
+  Widget _buildHeader(YouthListState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Jami yoshlar",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "Jami: ${state is YouthListLoaded ? state.total : '...'} nafar",
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  context.pushNamed(ImportYouthScreen.routeName);
+                },
+                icon: const Icon(Icons.upload_file, size: 18),
+                label: const Text("Excel Import"),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  side: const BorderSide(color: Colors.blue),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context.pushNamed(AddYouthScreen.routeName);
+                },
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text("Qo'shish"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildFilters() {
+    return Row(
+      children: [
+        _buildOfficerDropdown(),
+        _buildDropdown(genderItems, selectedGender, (val) {
+          setState(() => selectedGender = val!);
+          context.read<YouthListCubit>().setGenderFilter(
+            val == "Barcha jinslar" ? null : val,
+          );
+        }),
+        _buildRegionDropdown(),
+      ],
     );
   }
 
