@@ -41,7 +41,9 @@ __pycache__/
 /*.pyc
 .env
 nginx.txt.php
+build/6ab642d2d9d49c7c5f5a6d85fcef46b.cache.dill.track.dill
 
+build/f537d389bd7fe17e116f8b847863fcdd.cache.dill.track.dill
 # Symbolication related
 app.*.symbols
 
