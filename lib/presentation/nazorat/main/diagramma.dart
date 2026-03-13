@@ -23,7 +23,7 @@ class RegionsBarChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Hududlar kesimida",
+            "Ҳудудлар кесимида",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),

@@ -15,8 +15,8 @@ class MainYoshlarFilterScreen extends StatefulWidget {
 }
 
 class _MainYoshlarFilterScreenState extends State<MainYoshlarFilterScreen> {
-  List<String> genderItems = ["Barcha jinslar", "Erkak", "Ayol"];
-  String selectedGender = "Erkak";
+  List<String> genderItems = ["Барча жинслар", "Эркак", "Айол"];
+  String selectedGender = "Эркак";
 
   final ScrollController _scrollController = ScrollController();
 
@@ -63,14 +63,14 @@ class _MainYoshlarFilterScreenState extends State<MainYoshlarFilterScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Jami yoshlar",
+                            "Жами ёшлар",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "Jami: ${state is YouthListLoaded ? state.total : '...'} nafar",
+                            "Жами: ${state is YouthListLoaded ? state.total : '...'} нафар",
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 13,
@@ -110,7 +110,7 @@ class _MainYoshlarFilterScreenState extends State<MainYoshlarFilterScreen> {
                     padding: EdgeInsets.all(16),
                     child: Center(
                       child: Text(
-                        "Barcha yoshlar ko'rsatildi",
+                        "Барча ёшлар кўрсатилди",
                         style: TextStyle(color: Colors.grey, fontSize: 13),
                       ),
                     ),

@@ -114,11 +114,11 @@ class _PasswordResetHistoryScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Parol tiklash tarixi",
+                    "Парол тиклаш тарихи",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "Yuz orqali tiklangan parollar",
+                    "Юз орқали тикланган пароллар",
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                 ],
@@ -139,13 +139,13 @@ class _PasswordResetHistoryScreenState
                       const SizedBox(height: 12),
                       ElevatedButton(
                         onPressed: _loadLogs,
-                        child: const Text("Qayta yuklash"),
+                        child: const Text("Қайта юклаш"),
                       ),
                     ],
                   ),
                 )
               : _logs.isEmpty
-              ? const Center(child: Text("Parol tiklash tarixi mavjud emas"))
+              ? const Center(child: Text("Парол тиклаш тарихи мавжуд эмас"))
               : RefreshIndicator(
                   onRefresh: _loadLogs,
                   child: ListView.separated(
@@ -166,7 +166,7 @@ class _PasswordResetHistoryScreenState
                           padding: const EdgeInsets.all(16),
                           child: Center(
                             child: Text(
-                              "Barcha yozuvlar ko'rsatildi",
+                              "Барча ёзувлар кўрсатилди",
                               style: TextStyle(
                                 color: Colors.grey.shade500,
                                 fontSize: 13,

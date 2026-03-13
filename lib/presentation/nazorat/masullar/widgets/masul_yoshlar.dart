@@ -56,14 +56,14 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Yoshlarni ajratish"),
+        title: const Text("Ёшларни ажратиш"),
         content: Text(
-          "${_selectedYouthIds.length} ta yoshlar mas'uldan ajratilsinmi?",
+          "${_selectedYouthIds.length} та ёшлар мас'улдан ажратилсинми?",
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text("Bekor qilish"),
+            child: const Text("Бекор қилиш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -71,7 +71,7 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text("Ajratish"),
+            child: const Text("Ажратиш"),
           ),
         ],
       ),
@@ -81,22 +81,22 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
 
     try {
       await context.read<OfficerCubit>().detachYouths(
-            widget.officerId!,
-            _selectedYouthIds.toList(),
-          );
+        widget.officerId!,
+        _selectedYouthIds.toList(),
+      );
       if (mounted) {
         setState(() {
           _isSelectMode = false;
           _selectedYouthIds.clear();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Yoshlar muvaffaqiyatli ajratildi")),
+          const SnackBar(content: Text("Ёшлар муваффақиятли ажратилди")),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
@@ -119,7 +119,7 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            widget.officerName ?? "Nazoratdagi yoshlar",
+            widget.officerName ?? "Ёшлар назорати",
             style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,
@@ -128,15 +128,22 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
           ),
           actions: [
             IconButton(
-              icon: Icon(
-                _isSelectMode ? Icons.close : Icons.remove_circle_outline,
-                color: _isSelectMode ? Colors.red : Colors.black,
+              icon: Image.asset(
+                _isSelectMode
+                    ? "assets/images/delete_user.png"
+                    : "assets/images/delete_user.png",
+                width: 32,
+                height: 32,
               ),
-              tooltip: _isSelectMode ? "Bekor qilish" : "Ajratish",
+              tooltip: _isSelectMode ? "Бекор қилиш" : "Ажратиш",
               onPressed: _toggleSelectMode,
             ),
             IconButton(
-              icon: const Icon(Icons.person_add, color: Colors.black),
+              icon: Image.asset(
+                "assets/images/add_user.png",
+                width: 32,
+                height: 32,
+              ),
               onPressed: () {
                 context.pushNamed(
                   AttachYouthScreen.routeName,
@@ -155,7 +162,7 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
                 backgroundColor: Colors.red,
                 icon: const Icon(Icons.link_off, color: Colors.white),
                 label: Text(
-                  "Ajratish (${_selectedYouthIds.length})",
+                  "Ажратиш (${_selectedYouthIds.length})",
                   style: const TextStyle(color: Colors.white),
                 ),
               )
@@ -170,7 +177,7 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
             }
             if (state is OfficerYouthsLoaded) {
               if (state.youths.isEmpty) {
-                return const Center(child: Text("Yoshlar topilmadi"));
+                return const Center(child: Text("Ёшлар топилмади"));
               }
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -226,10 +233,7 @@ class _MasulYoshlarScreenState extends State<MasulYoshlarScreen> {
                   ),
                   Text(
                     "${youth.gender} • ${youth.birthDate}",
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
                 ],
               ),

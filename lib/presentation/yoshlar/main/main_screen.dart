@@ -62,13 +62,14 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: EasySearchBar2(
           title: const Text(
-            'Nazoratdagi yoshlar',
+            'Ёшлар назорати',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,
               fontSize: 18,
             ),
           ),
+          leading: Image.asset('assets/images/logo.png', height: 36),
           backgroundColor: Colors.white,
           elevation: 0.5,
           iconTheme: const IconThemeData(color: Colors.black),
@@ -76,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
           onSuggestionTap: (data) {},
           searchBackgroundColor: Colors.white,
           searchCursorColor: Colors.blue,
-          searchHintText: "Ism bo'yicha qidiruv...",
+          searchHintText: "Исм бўйича қидирув...",
           actions: [
             GestureDetector(
               onTap: () => context.pushNamed(ProfileScreen.routeName),
@@ -111,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     const SizedBox(height: 12),
                     const Text(
-                      "Bosh sahifa",
+                      "Бош саҳифа",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -119,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      "Ma'sul shaxs haqida ma'lumot",
+                      "Маъсул шахс ҳақида маълумот",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -130,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
                     _buildOfficerInfoCard(authState),
                     const SizedBox(height: 8),
                     const Text(
-                      "Yoshlar ro'yxati",
+                      "Ёшлар рўйхати",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

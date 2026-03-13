@@ -85,9 +85,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.isEditing
-                  ? "Mas'ulni tahrirlash"
-                  : "Yangi mas'ul qo'shish",
+              widget.isEditing ? "Масъулни таҳрирлаш" : "Янги масъул қўшиш",
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -97,7 +95,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
             Text(
               widget.isEditing
                   ? widget.existingOfficer!.fullName
-                  : "Mas'ul xodim ma'lumotlarini kiriting",
+                  : "Масъул ходим маълумотларини киритинг",
               style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
@@ -114,38 +112,38 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
               _buildImageUpload(),
               const SizedBox(height: 20),
               _buildCardWrapper(
-                title: "Shaxsiy ma'lumotlar",
+                title: "Шахсий маълумотлар",
                 child: Column(
                   children: [
                     _buildInputField(
-                      label: "F.I.Sh *",
-                      hint: "To'liq ism-sharif",
+                      label: "Ф.И.Ш *",
+                      hint: "Тўлиқ исм-шариф",
                       controller: _nameController,
                     ),
                     const SizedBox(height: 16),
                     _buildInputField(
-                      label: "Lavozim *",
-                      hint: "Lavozimni kiriting",
+                      label: "Лавозим *",
+                      hint: "Лавозимни киритинг",
                       controller: _positionController,
                     ),
                     const SizedBox(height: 16),
                     _buildDropdown(
-                      label: "Hudud *",
-                      hint: "Hududni tanlang",
+                      label: "Ҳудуд *",
+                      hint: "Ҳудудни танланг",
                       items: [
-                        "Jizzax shahar",
-                        "Arnasoy tumani",
-                        "Baxmal tumani",
-                        "G'allaorol tumani",
-                        "Do'stlik tumani",
-                        "Sharof Rashidov tumani",
-                        "Zomin tumani",
-                        "Zarbdor tumani",
-                        "Zafarobod tumani",
-                        "Mirzacho'l tumani",
-                        "Paxtakor tumani",
-                        "Forish tumani",
-                        "Yangiobod tumani",
+                        "Жиззах шаҳар",
+                        "Aрнасой тумани",
+                        "Бахмал тумани",
+                        "Ғаллаорол тумани",
+                        "Дўстлик тумани",
+                        "Шароф Рашидов тумани",
+                        "Зомин тумани",
+                        "Зарбдор тумани",
+                        "Зафаробод тумани",
+                        "Мирзачўл тумани",
+                        "Пахтакор тумани",
+                        "Фориш тумани",
+                        "Янгиобод тумани",
                       ],
                       value: _selectedRegion,
                       onChanged: (val) => setState(() => _selectedRegion = val),
@@ -157,7 +155,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                   widget.existingOfficer?.username != null) ...[
                 const SizedBox(height: 16),
                 _buildCardWrapper(
-                  title: "Kirish ma'lumotlari",
+                  title: "Кириш маълумотлари",
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -194,11 +192,11 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
               ],
               const SizedBox(height: 16),
               _buildCardWrapper(
-                title: "Aloqa ma'lumotlari",
+                title: "Aлоқа маълумотлари",
                 child: Column(
                   children: [
                     _buildInputField(
-                      label: "Telefon raqam *",
+                      label: "Телефон рақам *",
                       hint: "+998901234567",
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
@@ -207,7 +205,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                         if (val != null && val.isNotEmpty) {
                           final phoneRegex = RegExp(r'^\+?998\d{9}$');
                           if (!phoneRegex.hasMatch(val.trim())) {
-                            return "Noto'g'ri format. Masalan: +998901234567";
+                            return "Нотўғри формат. Масалан: +998901234567";
                           }
                         }
                         return null;
@@ -280,7 +278,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
           child: Text(
-            hasImage ? "Rasmni almashtirish" : "Rasm yuklash",
+            hasImage ? "Расмни алмаштириш" : "Расм юклаш",
             style: const TextStyle(color: Colors.black87, fontSize: 13),
           ),
         ),
@@ -413,7 +411,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
               ),
             ),
             child: const Text(
-              "Bekor qilish",
+              "Бекор қилиш",
               style: TextStyle(color: Colors.black87),
             ),
           ),
@@ -432,7 +430,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
                       strokeWidth: 2,
                     ),
                   )
-                : Text(widget.isEditing ? "Yangilash" : "Saqlash"),
+                : Text(widget.isEditing ? "Янгилаш" : "Сақлаш"),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF3384C3),
               foregroundColor: Colors.white,
@@ -453,7 +451,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
 
     if (_nameController.text.isEmpty || _positionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Majburiy maydonlarni to'ldiring")),
+        const SnackBar(content: Text("Мажбурий майдонларни тўлдиринг")),
       );
       return;
     }
@@ -479,7 +477,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
           photoBytes: _photoBytes,
         );
         messenger.showSnackBar(
-          const SnackBar(content: Text("Mas'ul muvaffaqiyatli yangilandi!")),
+          const SnackBar(content: Text("Масъул муваффақиятли янгиланди!")),
         );
         navigator.pop();
       } else {
@@ -499,7 +497,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
       if (mounted) {
         setState(() => _isSubmitting = false);
         messenger.showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
@@ -510,37 +508,37 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: const Text("Mas'ul yaratildi"),
+        title: const Text("Масъул яратилди"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Quyidagi ma'lumotlarni mas'ulga yuboring:",
+              "Қуйидаги маълумотларни масъулга юборинг:",
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 16),
-            _credentialRow("Foydalanuvchi nomi", username),
+            _credentialRow("Фойдаланувчи номи", username),
             const SizedBox(height: 8),
-            _credentialRow("Parol", password),
+            _credentialRow("nПарол", password),
           ],
         ),
         actions: [
           TextButton.icon(
             onPressed: () async {
               final copied = await copyToClipboard(
-                "Foydalanuvchi nomi: $username\nParol: $password",
+                "Фойдаланувчи номи: $username\nПарол: $password",
               );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(copied ? "Nusxalandi!" : "Nusxalab bo'lmadi"),
+                    content: Text(copied ? "Нусхаланди!" : "Нусхалаб бўлмади"),
                   ),
                 );
               }
             },
             icon: const Icon(Icons.copy, size: 18),
-            label: const Text("Nusxalash"),
+            label: const Text("Нусхалаш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -548,7 +546,7 @@ class _AddOfficerScreenState extends State<AddOfficerScreen> {
               backgroundColor: const Color(0xFF3384C3),
               foregroundColor: Colors.white,
             ),
-            child: const Text("Yopish"),
+            child: const Text("Ёпиш"),
           ),
         ],
       ),

@@ -1,6 +1,6 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:yoshlar/data/service/api_client.dart';
 import 'package:yoshlar/data/service/youth_service.dart';
 import 'package:yoshlar/data/util/excel_parser.dart';
@@ -56,7 +56,9 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
     setState(() => _isImporting = true);
 
     try {
-      final response = await context.read<YouthService>().bulkImportYouths(_parsedRows);
+      final response = await context.read<YouthService>().bulkImportYouths(
+        _parsedRows,
+      );
       final results = response['results'] as Map<String, dynamic>?;
 
       setState(() {
@@ -75,7 +77,10 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
       setState(() => _isImporting = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Xatolik: ${safeErrorMessage(e)}'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Xatolik: ${safeErrorMessage(e)}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -115,15 +120,19 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
               ),
               child: Column(
                 children: [
-                  Icon(Icons.upload_file, size: 64, color: Colors.blue.shade300),
+                  Icon(
+                    Icons.upload_file,
+                    size: 64,
+                    color: Colors.blue.shade300,
+                  ),
                   const SizedBox(height: 16),
                   const Text(
-                    "Excel faylni yuklang",
+                    "Ехcел файлни юкланг",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Ustunlar tartibi: F.I.Sh, Telefon, Jinsi, Tug'ilgan sana,\nTuman, Manzil, Ta'lim, Bandlik",
+                    "Устунлар тартиби: Ф.И.Ш, Телефон, Жинси, Туғилган сана,\nТуман, Манзил, Таълим, Бандлик",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                   ),
@@ -131,12 +140,17 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                   ElevatedButton.icon(
                     onPressed: _pickFile,
                     icon: const Icon(Icons.folder_open),
-                    label: const Text("Excel faylni tanlang"),
+                    label: const Text("Ехcел файлни танланг"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ],
@@ -164,10 +178,16 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_fileName ?? '', style: const TextStyle(fontWeight: FontWeight.w600)),
                     Text(
-                      '${_parsedRows.length} ta qator tayyor, ${_parseErrors.length} ta xatolik',
-                      style: TextStyle(color: Colors.grey.shade700, fontSize: 13),
+                      _fileName ?? '',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      '${_parsedRows.length} та қатор тайёр, ${_parseErrors.length} та хатолик',
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -179,7 +199,7 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                   _parseErrors = [];
                   _fileName = null;
                 }),
-                child: const Text("Boshqa fayl"),
+                child: const Text("Бошқа файл"),
               ),
             ],
           ),
@@ -195,17 +215,25 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "O'tkazib yuborilgan qatorlar:",
-                  style: TextStyle(fontWeight: FontWeight.w600, color: Colors.orange.shade800),
+                  "О'tkazib yuborilgan қаторлар:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.orange.shade800,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                ..._parseErrors.map((e) => Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        "${e.row}-qator: ${e.message}",
-                        style: TextStyle(fontSize: 13, color: Colors.orange.shade900),
+                ..._parseErrors.map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      "${e.row}-қатор: ${e.message}",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.orange.shade900,
                       ),
-                    )),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -213,38 +241,89 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
         // Data table
         Expanded(
           child: _parsedRows.isEmpty
-              ? const Center(child: Text("Import qilinadigan ma'lumot topilmadi"))
+              ? const Center(
+                  child: Text("Импорт қилинадиган маълумот топилмади"),
+                )
               : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: SingleChildScrollView(
                     child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
+                      headingRowColor: WidgetStateProperty.all(
+                        Colors.grey.shade100,
+                      ),
                       columnSpacing: 16,
                       columns: const [
-                        DataColumn(label: Text('#', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('F.I.Sh', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Telefon', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Jinsi', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Sana', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Tuman', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Manzil', style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text("Ta'lim", style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Text('Bandlik', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(
+                          label: Text(
+                            '#',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Ф.И.Ш',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Телефон',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Жинси',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Сана',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Туман',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Манзил',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            "Таълим",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Бандлик',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ],
                       rows: _parsedRows.asMap().entries.map((entry) {
                         final i = entry.key;
                         final r = entry.value;
-                        return DataRow(cells: [
-                          DataCell(Text('${i + 1}')),
-                          DataCell(Text(r['name'] ?? '')),
-                          DataCell(Text(r['phone'] ?? '')),
-                          DataCell(Text(r['gender'] ?? '')),
-                          DataCell(Text(r['birthDate'] ?? '')),
-                          DataCell(Text(r['region'] ?? '')),
-                          DataCell(Text(r['location'] ?? '')),
-                          DataCell(Text(r['status'] ?? '')),
-                          DataCell(Text(r['activity'] ?? '')),
-                        ]);
+                        return DataRow(
+                          cells: [
+                            DataCell(Text('${i + 1}')),
+                            DataCell(Text(r['name'] ?? '')),
+                            DataCell(Text(r['phone'] ?? '')),
+                            DataCell(Text(r['gender'] ?? '')),
+                            DataCell(Text(r['birthDate'] ?? '')),
+                            DataCell(Text(r['region'] ?? '')),
+                            DataCell(Text(r['location'] ?? '')),
+                            DataCell(Text(r['status'] ?? '')),
+                            DataCell(Text(r['activity'] ?? '')),
+                          ],
+                        );
                       }).toList(),
                     ),
                   ),
@@ -256,7 +335,13 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 4, offset: const Offset(0, -2))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade200,
+                blurRadius: 4,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
           child: SizedBox(
             width: double.infinity,
@@ -266,15 +351,20 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: _isImporting
                   ? const SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
                     )
-                  : Text("Import qilish (${_parsedRows.length} ta)"),
+                  : Text("Импорт қилиш (${_parsedRows.length} та)"),
             ),
           ),
         ),
@@ -295,16 +385,16 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            "Import yakunlandi",
+            "Импорт якунланди",
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _resultCard("Muvaffaqiyatli", _successCount, Colors.green),
+              _resultCard("Муваффақиятли", _successCount, Colors.green),
               const SizedBox(width: 16),
-              _resultCard("Xatolik", _failedCount, Colors.red),
+              _resultCard("Xatolик", _failedCount, Colors.red),
             ],
           ),
           const SizedBox(height: 24),
@@ -315,7 +405,10 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Xatoliklar:", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                  const Text(
+                    "Хатоликлар:",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
                   const SizedBox(height: 8),
                   Expanded(
                     child: ListView.builder(
@@ -337,7 +430,10 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                                 backgroundColor: Colors.red.shade100,
                                 child: Text(
                                   '${err['row']}',
-                                  style: TextStyle(fontSize: 12, color: Colors.red.shade800),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.red.shade800,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -347,11 +443,16 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                                   children: [
                                     Text(
                                       err['name'] ?? '—',
-                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                     Text(
                                       err['message'] ?? '',
-                                      style: TextStyle(fontSize: 13, color: Colors.red.shade700),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.red.shade700,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -377,9 +478,11 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-              child: const Text("Tayyor"),
+              child: const Text("Тайёр"),
             ),
           ),
         ],
@@ -399,7 +502,11 @@ class _ImportYouthScreenState extends State<ImportYouthScreen> {
         children: [
           Text(
             '$count',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
           const SizedBox(height: 4),
           Text(label, style: TextStyle(color: color.shade700, fontSize: 13)),

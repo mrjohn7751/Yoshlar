@@ -77,14 +77,14 @@ class _ProcessBodyState extends State<ProcessBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Ishlash jarayonlari",
+                            "Ишлаш жараёнлари",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            "Jami: $total ta jarayon",
+                            "Жами: $total та жараён",
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 13,
@@ -108,7 +108,7 @@ class _ProcessBodyState extends State<ProcessBody> {
                   : state is ActivityListError
                   ? Center(child: Text(state.message))
                   : activities.isEmpty
-                  ? const Center(child: Text("Jarayonlar topilmadi"))
+                  ? const Center(child: Text("Жараёнлар топилмади"))
                   : ListView.separated(
                       controller: _scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -131,7 +131,7 @@ class _ProcessBodyState extends State<ProcessBody> {
                             padding: EdgeInsets.all(16),
                             child: Center(
                               child: Text(
-                                "Barcha jarayonlar ko'rsatildi",
+                                "Барча жараёнлар кўрсатилди",
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 13,
@@ -164,14 +164,14 @@ class _ProcessBodyState extends State<ProcessBody> {
           value: _selectedOfficerId,
           isExpanded: true,
           hint: const Text(
-            "Barcha mas'ullar",
+            "Барча мас'уллар",
             style: TextStyle(fontSize: 14, color: Colors.black87),
           ),
           icon: const Icon(Icons.filter_list, size: 20),
           items: [
             const DropdownMenuItem<int?>(
               value: null,
-              child: Text("Barcha mas'ullar"),
+              child: Text("Барча мас'уллар"),
             ),
             ..._officers.map(
               (o) => DropdownMenuItem<int?>(
@@ -190,8 +190,8 @@ class _ProcessBodyState extends State<ProcessBody> {
   }
 
   Widget _buildProcessCard(Activity activity) {
-    final officerName = activity.officer?.fullName ?? "Noma'lum";
-    final youthName = activity.youthName ?? "Noma'lum";
+    final officerName = activity.officer?.fullName ?? "Номаълум";
+    final youthName = activity.youthName ?? "Номаълум";
 
     return GestureDetector(
       onTap: () {

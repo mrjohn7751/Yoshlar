@@ -35,6 +35,8 @@ dependencies:
   excel: ^4.0.6
   file_picker: ^8.0.0
   shared_preferences: ^2.2.3
+  graphic: ^2.7.0
+  pie_chart: ^5.4.0
 
   ###### awesome_dialog: ^3.3.0
 

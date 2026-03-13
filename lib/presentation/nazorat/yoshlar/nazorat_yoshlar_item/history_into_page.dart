@@ -6,6 +6,7 @@ import 'package:yoshlar/logic/auth/auth_cubit.dart';
 import 'package:yoshlar/logic/auth/auth_state.dart';
 import 'package:yoshlar/logic/youth/youth_detail_cubit.dart';
 import 'package:yoshlar/logic/youth/youth_detail_state.dart';
+import 'package:yoshlar/presentation/nazorat/yoshlar/nazorat_yoshlar_item/image_show.dart';
 
 class NazoratHistoryIntoPage extends StatefulWidget {
   static const String routeName = 'history_into_page';
@@ -57,17 +58,20 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
           ),
         ),
         actions: [
-          Builder(builder: (context) {
-            final authState = context.watch<AuthCubit>().state;
-            if (authState is AuthAuthenticated && authState.user.isRahbariyat) {
-              return IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red),
-                tooltip: "Faoliyatni o'chirish",
-                onPressed: () => _showDeleteDialog(context),
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+          Builder(
+            builder: (context) {
+              final authState = context.watch<AuthCubit>().state;
+              if (authState is AuthAuthenticated &&
+                  authState.user.isRahbariyat) {
+                return IconButton(
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  tooltip: "Faoliyatni o'chirish",
+                  onPressed: () => _showDeleteDialog(context),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
       body: BlocBuilder<ActivityDetailCubit, ActivityDetailState>(
@@ -90,10 +94,10 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-                        _buildInfoCard("Sarlavha", activity.title),
+                        _buildInfoCard("Сарлавҳа", activity.title),
                         const SizedBox(height: 16),
                         _buildInfoCard(
-                          "Tavsif",
+                          "Тавсиф",
                           activity.description.isNotEmpty
                               ? activity.description
                               : "-",
@@ -170,7 +174,7 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Lokatsiya",
+            "Локация",
             style: TextStyle(color: Colors.grey, fontSize: 13),
           ),
           const SizedBox(height: 12),
@@ -189,16 +193,17 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               ),
               IconButton(
                 icon: const Icon(Icons.copy, size: 18, color: Colors.grey),
-                tooltip: "Nusxalash",
+                tooltip: "Нусхалаш",
                 onPressed: () async {
                   final copied = await copyToClipboard('$lat,$lng');
                   if (context.mounted) {
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
                           copied
-                              ? "Koordinatalar nusxalandi"
-                              : "Nusxalab bo'lmadi",
+                              ? "Координаталар нусхаланди"
+                              : "Нусхалаб бўлмади",
                         ),
                       ),
                     );
@@ -219,7 +224,7 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               ),
               icon: const Icon(Icons.map, size: 16),
               label: const Text(
-                "Google Maps da ochish",
+                "Гоогле Мапс да очиш",
                 style: TextStyle(fontSize: 13),
               ),
               style: OutlinedButton.styleFrom(
@@ -245,7 +250,7 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Mas'ul xodim",
+            "Масъул ходим",
             style: TextStyle(color: Colors.grey, fontSize: 13),
           ),
           const SizedBox(height: 12),
@@ -292,56 +297,62 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               Icon(Icons.image_outlined, size: 18, color: Colors.grey),
               SizedBox(width: 8),
               Text(
-                "Rasmlar",
+                "Расмлар",
                 style: TextStyle(color: Colors.grey, fontSize: 13),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 4 / 3,
-            children: images.map((img) {
-              if (img.url.isEmpty) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.broken_image, color: Colors.grey),
-                  ),
-                );
+          LayoutBuilder(
+            builder: (context, constraints) {
+              // Ekran kengligiga qarab ustunlar sonini aniqlaymiz
+              int crossAxisCount = 2; // Mobil uchun default
+              if (constraints.maxWidth > 1200) {
+                crossAxisCount = 6; // Katta monitorlar uchun
+              } else if (constraints.maxWidth > 800) {
+                crossAxisCount = 4;
               }
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  img.url,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    if (progress == null) return child;
-                    return Container(
-                      color: Colors.grey.shade100,
-                      child: const Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stack) {
-                    return Container(
-                      color: Colors.grey.shade100,
-                      child: const Center(
-                        child: Icon(Icons.broken_image, color: Colors.grey),
-                      ),
-                    );
-                  },
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: images.length,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent:
+                      150, // Vebda kichikroq kataklar (taxminan 150px)
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 1, // Kvadrat shakli
                 ),
+                itemBuilder: (context, index) {
+                  final img = images[index];
+                  return GestureDetector(
+                    // SHU YERDA FUNKSIYANI CHAQIRAMIZ
+                    onTap: () => openImageGallery(context, images, index),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.grey[100],
+                        image: img.url.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(img.url),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: img.url.isEmpty
+                          ? const Center(
+                              child: Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                              ),
+                            )
+                          : null,
+                    ),
+                  );
+                },
               );
-            }).toList(),
+            },
           ),
         ],
       ),
@@ -360,20 +371,20 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               const Icon(Icons.message, size: 18, color: Colors.grey),
               const SizedBox(width: 8),
               Text(
-                "Izohlar (${comments.length})",
+                "Изоҳлар (${comments.length})",
                 style: const TextStyle(color: Colors.grey, fontSize: 13),
               ),
             ],
           ),
           const SizedBox(height: 12),
           if (comments.isEmpty)
-            const Text("Izohlar yo'q", style: TextStyle(color: Colors.grey))
+            const Text("Изоҳлар йўқ", style: TextStyle(color: Colors.grey))
           else
             ...comments.map(
               (c) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: _buildCommentItem(
-                  c.user?.name ?? "Noma'lum",
+                  c.user?.name ?? "Номаълум",
                   c.createdAt,
                   c.body,
                 ),
@@ -430,7 +441,7 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
             child: TextField(
               controller: _commentController,
               decoration: InputDecoration(
-                hintText: "Izoh yozing...",
+                hintText: "Изоҳ ёзинг...",
                 hintStyle: const TextStyle(fontSize: 14),
                 filled: true,
                 fillColor: const Color(0xFFF8FAFC),
@@ -487,9 +498,9 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
               Navigator.pop(ctx);
               if (widget.activityId != null) {
                 try {
-                  await context
-                      .read<ActivityDetailCubit>()
-                      .deleteActivity(widget.activityId!);
+                  await context.read<ActivityDetailCubit>().deleteActivity(
+                    widget.activityId!,
+                  );
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -511,10 +522,7 @@ class _NazoratHistoryIntoPageState extends State<NazoratHistoryIntoPage> {
                 }
               }
             },
-            child: const Text(
-              "O'chirish",
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text("O'chirish", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

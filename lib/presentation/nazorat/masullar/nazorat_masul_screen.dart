@@ -49,14 +49,14 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Mas'ul xodimlar",
+                        "Масъул ходимлар",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        "Jami: ${officers.length} nafar",
+                        "Жами: ${officers.length} нафар",
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 13,
@@ -69,7 +69,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                       context.pushNamed(AddOfficerScreen.routeName);
                     },
                     icon: const Icon(Icons.add, size: 18),
-                    label: const Text("Qo'shish"),
+                    label: const Text("Қўшиш"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
@@ -83,7 +83,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               const SizedBox(height: 16),
               TextField(
                 decoration: InputDecoration(
-                  hintText: "Xodim nomi bo'yicha qidirish...",
+                  hintText: "Ходим номи бўйича қидириш...",
                   prefixIcon: const Icon(Icons.search, size: 20),
                   filled: true,
                   fillColor: Colors.white,
@@ -189,7 +189,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
             children: [
               _buildCardButton(
                 Icons.edit_outlined,
-                "Tahrirlash",
+                "Таҳрирлаш",
                 Colors.blue,
                 () {
                   context.pushNamed(
@@ -201,7 +201,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               const SizedBox(width: 8),
               _buildCardButton(
                 Icons.people_outline,
-                "Yoshlari (${officer.youthsCount})",
+                "Ёшлари (${officer.youthsCount})",
                 Colors.black,
                 () {
                   context.pushNamed(
@@ -224,7 +224,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                     onPressed: () => _showResetPasswordDialog(officer),
                     icon: const Icon(Icons.key_outlined, size: 16),
                     label: const Text(
-                      "Parol yangilash",
+                      "Паролни ўзгартириш",
                       style: TextStyle(fontSize: 13),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -243,7 +243,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                     onPressed: () => _showGenerateCredentialsDialog(officer),
                     icon: const Icon(Icons.person_add_outlined, size: 16),
                     label: const Text(
-                      "Akkaunt yaratish",
+                      "Аккаунт яратиш",
                       style: TextStyle(fontSize: 13),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -261,10 +261,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => _showDeleteOfficerDialog(officer),
                   icon: const Icon(Icons.delete_outline, size: 16),
-                  label: const Text(
-                    "O'chirish",
-                    style: TextStyle(fontSize: 13),
-                  ),
+                  label: const Text("Ўчириш", style: TextStyle(fontSize: 13)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
@@ -323,14 +320,14 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Akkaunt yaratish"),
+        title: const Text("Аккаунт яратиш"),
         content: Text(
-          "${officer.fullName} uchun login va parol generatsiya qilinsinmi?",
+          "${officer.fullName} учун логин ва парол генерация қилинсинми?",
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text("Bekor qilish"),
+            child: const Text("Бекор қилиш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -338,7 +335,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               backgroundColor: Colors.green.shade700,
               foregroundColor: Colors.white,
             ),
-            child: const Text("Yaratish"),
+            child: const Text("Яратиш"),
           ),
         ],
       ),
@@ -361,39 +358,41 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
         context: context,
         barrierDismissible: false,
         builder: (ctx) => AlertDialog(
-          title: const Text("Akkaunt yaratildi"),
+          title: const Text("Аккаунт яратилди"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Quyidagi ma'lumotlarni mas'ulga yuboring:",
+                "Қуйидаги маълумотларни масулга юборинг:",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               const SizedBox(height: 16),
-              _credentialBox("Foydalanuvchi nomi", username),
+              _credentialBox("Фойдаланувчи номи", username),
               const SizedBox(height: 8),
-              _credentialBox("Parol", password),
+              _credentialBox("Парол", password),
             ],
           ),
           actions: [
             TextButton.icon(
               onPressed: () async {
                 final copied = await copyToClipboard(
-                  "Foydalanuvchi nomi: $username\nParol: $password",
+                  "Фойдаланувчи номи: $username\nПарол: $password",
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        copied ? "Nusxalandi!" : "Nusxalab bo'lmadi",
+                        copied
+                            ? "Нусха олиниш муваффақиятли!"
+                            : "Нусха олиниш муваффақиятсиз!",
                       ),
                     ),
                   );
                 }
               },
               icon: const Icon(Icons.copy, size: 18),
-              label: const Text("Nusxalash"),
+              label: const Text("Нусха олиш"),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(ctx).pop(),
@@ -401,7 +400,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 backgroundColor: const Color(0xFF3384C3),
                 foregroundColor: Colors.white,
               ),
-              child: const Text("Yopish"),
+              child: const Text("Ёпиш"),
             ),
           ],
         ),
@@ -409,7 +408,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
@@ -419,14 +418,14 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Parolni yangilash"),
+        title: const Text("Паролни ёнгилаш"),
         content: Text(
-          "${officer.fullName} uchun yangi parol generatsiya qilinsinmi?",
+          "${officer.fullName} учун янги парол генерация қилинсинми?",
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text("Bekor qilish"),
+            child: const Text("Бекор қилиш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -434,7 +433,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               backgroundColor: Colors.orange.shade700,
               foregroundColor: Colors.white,
             ),
-            child: const Text("Yangilash"),
+            child: const Text("Янгилаш"),
           ),
         ],
       ),
@@ -454,39 +453,39 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
         context: context,
         barrierDismissible: false,
         builder: (ctx) => AlertDialog(
-          title: const Text("Yangi kirish ma'lumotlari"),
+          title: const Text("Янги кириш маълумотлари"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Quyidagi ma'lumotlarni mas'ulga yuboring:",
+                "Қуйидаги маълумотларни масулга юборинг:",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
               const SizedBox(height: 16),
-              _credentialBox("Foydalanuvchi nomi", username),
+              _credentialBox("Фойдаланувчи номи", username),
               const SizedBox(height: 8),
-              _credentialBox("Yangi parol", password),
+              _credentialBox("Янги парол", password),
             ],
           ),
           actions: [
             TextButton.icon(
               onPressed: () async {
                 final copied = await copyToClipboard(
-                  "Foydalanuvchi nomi: $username\nParol: $password",
+                  "Фойдаланувчи номи: $username\nПарол: $password",
                 );
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        copied ? "Nusxalandi!" : "Nusxalab bo'lmadi",
+                        copied ? "Нусха олинилди!" : "Нусха олиб бўлмади",
                       ),
                     ),
                   );
                 }
               },
               icon: const Icon(Icons.copy, size: 18),
-              label: const Text("Nusxalash"),
+              label: const Text("Нусха олиш"),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(ctx).pop(),
@@ -494,7 +493,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
                 backgroundColor: const Color(0xFF3384C3),
                 foregroundColor: Colors.white,
               ),
-              child: const Text("Yopish"),
+              child: const Text("Ёпиш"),
             ),
           ],
         ),
@@ -502,7 +501,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
@@ -512,14 +511,14 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Mas'ulni o'chirish"),
+        title: const Text("Масулни ўчириш"),
         content: Text(
-          "${officer.fullName} o'chirilsinmi? Bu amalni ortga qaytarib bo'lmaydi.",
+          "${officer.fullName} ўчирилсинми? Bu amalни ортга қайтариб бўлмайди.",
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text("Bekor qilish"),
+            child: const Text("Бекор қилиш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -527,7 +526,7 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text("O'chirish"),
+            child: const Text("Ўчириш"),
           ),
         ],
       ),
@@ -539,13 +538,13 @@ class _NazoratMasulScreenState extends State<NazoratMasulScreen> {
       await context.read<OfficerCubit>().deleteOfficer(officer.id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Mas'ul muvaffaqiyatli o'chirildi")),
+          const SnackBar(content: Text("Масул муваффақиятли ўчирилди")),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }

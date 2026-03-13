@@ -38,7 +38,7 @@ class _NazoratYoshlarHistoryState extends State<NazoratYoshlarHistory> {
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
-            widget.youthName ?? "Yosh",
+            widget.youthName ?? "Ёш",
             style: const TextStyle(
               color: Colors.black,
               fontSize: 18,
@@ -61,13 +61,16 @@ class _NazoratYoshlarHistoryState extends State<NazoratYoshlarHistory> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Faoliyatlar tarixi",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      "Фаолиятлар тарихи",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Expanded(
                       child: state.activities.isEmpty
-                          ? const Center(child: Text("Faoliyatlar topilmadi"))
+                          ? const Center(child: Text("Фаолиятлар топилмади"))
                           : ListView.builder(
                               itemCount: state.activities.length,
                               itemBuilder: (context, index) {

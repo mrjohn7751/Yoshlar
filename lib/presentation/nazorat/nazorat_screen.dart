@@ -72,7 +72,7 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           const SizedBox(width: 10),
           const Text(
-            "Nazoratdagi Yoshlar",
+            "Ёшлар назорати",
             style: TextStyle(
               color: Colors.black,
               fontSize: 18,
@@ -153,27 +153,27 @@ class _DashboardPageState extends State<DashboardPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_outlined),
             activeIcon: Icon(Icons.dashboard),
-            label: 'Bosh sahifa',
+            label: 'Бош саҳифа',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people_outline),
             activeIcon: Icon(Icons.people),
-            label: 'Yoshlar',
+            label: 'Ёшлар',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_search_outlined),
             activeIcon: Icon(Icons.person_search),
-            label: "Mas'ullar",
+            label: "Масуллар",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment_outlined),
             activeIcon: Icon(Icons.assignment),
-            label: 'Jarayonlar',
+            label: 'Жарайонлар',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history_outlined),
             activeIcon: Icon(Icons.history),
-            label: 'Tarix',
+            label: 'Тарих',
           ),
         ],
       ),

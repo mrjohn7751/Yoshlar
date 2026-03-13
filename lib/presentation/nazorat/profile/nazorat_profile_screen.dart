@@ -72,11 +72,11 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
       await cubit.updateProfilePhoto(_selectedPhotoBytes!);
       setState(() => _selectedPhotoBytes = null);
       messenger.showSnackBar(
-        const SnackBar(content: Text("Rasm muvaffaqiyatli yuklandi!")),
+        const SnackBar(content: Text("Расм муваффақиятли юкланди!")),
       );
     } catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+        SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
       );
     } finally {
       if (mounted) setState(() => _isUploadingPhoto = false);
@@ -100,7 +100,8 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
 
       final authState = cubit.state;
       if (authState is AuthAuthenticated) {
-        if (_usernameController.text.trim() != (authState.user.username ?? '')) {
+        if (_usernameController.text.trim() !=
+            (authState.user.username ?? '')) {
           username = _usernameController.text.trim();
         }
       }
@@ -113,7 +114,7 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
 
       if (username == null && newPassword == null) {
         messenger.showSnackBar(
-          const SnackBar(content: Text("Hech narsa o'zgartirilmadi")),
+          const SnackBar(content: Text("Ҳеч нарса ўзгартирилмади")),
         );
         setState(() => _isSaving = false);
         return;
@@ -127,14 +128,14 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
       );
 
       messenger.showSnackBar(
-        const SnackBar(content: Text("Profil muvaffaqiyatli yangilandi!")),
+        const SnackBar(content: Text("Профил муваффақиятли янгиланди!")),
       );
       navigator.pop();
     } catch (e) {
       if (mounted) {
         setState(() => _isSaving = false);
         messenger.showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
@@ -150,7 +151,7 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Profil sozlamalari",
+          "Профил созламалари",
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -171,19 +172,19 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                   _buildPhotoCard(state),
                   const SizedBox(height: 16),
                   _buildCard(
-                    title: "Foydalanuvchi nomi",
+                    title: "Фойдаланувчи номи",
                     child: TextFormField(
                       controller: _usernameController,
-                      decoration: _inputDecoration("Foydalanuvchi nomi"),
+                      decoration: _inputDecoration("Фойдаланувчи номи"),
                       validator: (val) {
                         if (val == null || val.trim().isEmpty) {
-                          return "Foydalanuvchi nomi bo'sh bo'lishi mumkin emas";
+                          return "Фойдаланувчи номи бўш бўлиши мумкин эмас";
                         }
                         if (val.trim().length < 3) {
-                          return "Kamida 3 ta belgi";
+                          return "Камида 3 та белги";
                         }
                         if (!RegExp(r'^[a-z0-9.]+$').hasMatch(val.trim())) {
-                          return "Faqat kichik harflar, raqamlar va nuqta";
+                          return "Фақат кичик ҳарфлар, ракамлар ва нуқта";
                         }
                         return null;
                       },
@@ -191,21 +192,23 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                   ),
                   const SizedBox(height: 16),
                   _buildCard(
-                    title: "Parolni o'zgartirish",
+                    title: "Паролни ўзгартириш",
                     child: Column(
                       children: [
                         TextFormField(
                           controller: _currentPasswordController,
                           obscureText: _obscureCurrent,
                           decoration: _passwordDecoration(
-                            "Joriy parol",
+                            "Жорий парол",
                             _obscureCurrent,
-                            () => setState(() => _obscureCurrent = !_obscureCurrent),
+                            () => setState(
+                              () => _obscureCurrent = !_obscureCurrent,
+                            ),
                           ),
                           validator: (val) {
                             if (_newPasswordController.text.isNotEmpty &&
                                 (val == null || val.isEmpty)) {
-                              return "Joriy parolni kiriting";
+                              return "Жорий паролни киритинг";
                             }
                             return null;
                           },
@@ -215,13 +218,15 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                           controller: _newPasswordController,
                           obscureText: _obscureNew,
                           decoration: _passwordDecoration(
-                            "Yangi parol",
+                            "Янги парол",
                             _obscureNew,
                             () => setState(() => _obscureNew = !_obscureNew),
                           ),
                           validator: (val) {
-                            if (val != null && val.isNotEmpty && val.length < 8) {
-                              return "Kamida 8 ta belgi";
+                            if (val != null &&
+                                val.isNotEmpty &&
+                                val.length < 8) {
+                              return "Камида 8 та белги";
                             }
                             return null;
                           },
@@ -231,14 +236,16 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                           controller: _confirmPasswordController,
                           obscureText: _obscureConfirm,
                           decoration: _passwordDecoration(
-                            "Yangi parolni tasdiqlang",
+                            "Янги паролни тасдиқланг",
                             _obscureConfirm,
-                            () => setState(() => _obscureConfirm = !_obscureConfirm),
+                            () => setState(
+                              () => _obscureConfirm = !_obscureConfirm,
+                            ),
                           ),
                           validator: (val) {
                             if (_newPasswordController.text.isNotEmpty &&
                                 val != _newPasswordController.text) {
-                              return "Parollar mos kelmadi";
+                              return "Пароллар мос келмади";
                             }
                             return null;
                           },
@@ -270,7 +277,7 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                               ),
                             )
                           : const Text(
-                              "Saqlash",
+                              "Сақлаш",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -313,14 +320,14 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                         fit: BoxFit.cover,
                       )
                     : photoUrl != null
-                        ? Image.network(
-                            photoUrl,
-                            height: 110,
-                            width: 110,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _defaultAvatar(),
-                          )
-                        : _defaultAvatar(),
+                    ? Image.network(
+                        photoUrl,
+                        height: 110,
+                        width: 110,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _defaultAvatar(),
+                      )
+                    : _defaultAvatar(),
               ),
               Positioned(
                 bottom: 0,
@@ -371,7 +378,9 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
                         ),
                       )
                     : const Icon(Icons.cloud_upload, size: 18),
-                label: Text(_isUploadingPhoto ? "Yuklanmoqda..." : "Rasmni yuklash"),
+                label: Text(
+                  _isUploadingPhoto ? "Юкланмоқда..." : "Расмни юклаш",
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2E7D32),
                   foregroundColor: Colors.white,
@@ -441,7 +450,11 @@ class _NazoratProfileScreenState extends State<NazoratProfileScreen> {
     );
   }
 
-  InputDecoration _passwordDecoration(String hint, bool obscure, VoidCallback onToggle) {
+  InputDecoration _passwordDecoration(
+    String hint,
+    bool obscure,
+    VoidCallback onToggle,
+  ) {
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),

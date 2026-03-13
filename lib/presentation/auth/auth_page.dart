@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text.trim();
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login va parolni kiriting")),
+        const SnackBar(content: Text("Логин ва паролни киритинг")),
       );
       return;
     }
@@ -84,12 +84,12 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Sarlavhalar
                   const Text(
-                    "Yoshlar nazorati",
+                    "Ёшлар назорати",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    "Tizimga kirish uchun ma'lumotlaringizni kiriting",
+                    "Тизимга кириш учун маълумотларингизни киритинг",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey),
                   ),
@@ -97,14 +97,14 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Inputlar
                   CustomTextField(
-                    label: "Foydalanuvchi nomi",
+                    label: "Фойдаланувчи номи",
                     hintText: "username",
                     prefixIcon: Icons.person_outline,
                     controller: _emailController,
                   ),
                   const SizedBox(height: 20),
                   CustomTextField(
-                    label: "Parol",
+                    label: "Парол",
                     hintText: "******",
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   )
                                 : const Text(
-                                    "Tizimga kirish",
+                                    "Тизимга кириш",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Parolni unutdingizmi? "),
+                      const Text("Паролни унутдингизми? "),
                       TextButton(
                         onPressed: () => FaceResetDialog.show(context),
                         style: TextButton.styleFrom(
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: const Text(
-                          "Tiklash",
+                          "Тиклаш",
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,

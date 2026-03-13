@@ -28,7 +28,9 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
   Future<void> _loadUnattachedYouths() async {
     if (widget.officerId == null) return;
     try {
-      final youths = await context.read<OfficerCubit>().getUnattachedYouths(widget.officerId!);
+      final youths = await context.read<OfficerCubit>().getUnattachedYouths(
+        widget.officerId!,
+      );
       if (mounted) {
         setState(() {
           _unattachedYouths = youths.cast<UserModel>();
@@ -65,7 +67,7 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
               ),
             ),
             const Text(
-              "Yoshlarni biriktirish",
+              "Ёшларни бириктириш",
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
@@ -95,7 +97,7 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close, size: 18),
-                  label: const Text("Bekor qilish"),
+                  label: const Text("Бекор қилиш"),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.black87,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -121,7 +123,7 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
                           if (mounted) Navigator.pop(context);
                         },
                   icon: const Icon(Icons.check, size: 18),
-                  label: Text("Biriktirish (${_selectedIds.length})"),
+                  label: Text("Бириктириш (${_selectedIds.length})"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3384C3),
                     foregroundColor: Colors.white,
@@ -137,7 +139,7 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            "Biriktirilmagan yoshlar (${_unattachedYouths.length})",
+            "Бириктримаган ёшлар (${_unattachedYouths.length})",
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
         ],
@@ -147,7 +149,7 @@ class _AttachYouthScreenState extends State<AttachYouthScreen> {
 
   Widget _buildYouthList() {
     if (_unattachedYouths.isEmpty) {
-      return const Center(child: Text("Biriktirilmagan yoshlar yo'q"));
+      return const Center(child: Text("Бириктримаган ёшлар йўқ"));
     }
 
     return ListView.builder(

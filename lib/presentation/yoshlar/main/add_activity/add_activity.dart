@@ -34,7 +34,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
   // Location state
   double? _latitude;
   double? _longitude;
-  String _locationStatus = 'Aniqlanmoqda...';
+  String _locationStatus = 'Aниқланмоқда...';
   bool _locationLoading = true;
 
   static const int _minImages = 3;
@@ -53,14 +53,15 @@ class _AddActivityPageState extends State<AddActivityPage> {
         setState(() {
           _latitude = position.latitude;
           _longitude = position.longitude;
-          _locationStatus = '${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)}';
+          _locationStatus =
+              '${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)}';
           _locationLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _locationStatus = "Joylashuv aniqlanmadi";
+          _locationStatus = "Жойлашув аниқланмади";
           _locationLoading = false;
         });
       }
@@ -70,7 +71,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
   Future<void> _pickImages() async {
     if (_selectedImages.length >= _maxImages) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Maksimum $_maxImages ta rasm tanlash mumkin")),
+        SnackBar(content: Text("Максимум $_maxImages та расм танлаш мумкин")),
       );
       return;
     }
@@ -83,13 +84,19 @@ class _AddActivityPageState extends State<AddActivityPage> {
     if (images.isNotEmpty) {
       final remaining = _maxImages - _selectedImages.length;
       final toAdd = images.take(remaining).toList();
-      final bytesList = await Future.wait(toAdd.map((img) => img.readAsBytes()));
+      final bytesList = await Future.wait(
+        toAdd.map((img) => img.readAsBytes()),
+      );
       setState(() {
         _selectedImages.addAll(bytesList);
       });
       if (images.length > remaining) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Faqat $remaining ta rasm qo'shildi (maksimum $_maxImages)")),
+          SnackBar(
+            content: Text(
+              "Фақат $remaining та расм қўшилди (максимум $_maxImages)",
+            ),
+          ),
         );
       }
     }
@@ -120,29 +127,34 @@ class _AddActivityPageState extends State<AddActivityPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLabel("Sarlavha"),
-              _buildInputField("Faoliyat sarlavhasi", controller: _titleController),
-              const SizedBox(height: 20),
-              _buildLabel("Tavsif"),
+              _buildLabel("Сарлавҳа"),
               _buildInputField(
-                "Faoliyat haqida batafsil ma'lumot",
+                "Фаолият сарлавҳаси",
+                controller: _titleController,
+              ),
+              const SizedBox(height: 20),
+              _buildLabel("Тавсиф"),
+              _buildInputField(
+                "Фаолият ҳақида батафсил маълумот",
                 maxLines: 5,
                 controller: _descriptionController,
               ),
               const SizedBox(height: 20),
-              _buildLabel("Lokatsiya"),
+              _buildLabel("Локация"),
               const SizedBox(height: 8),
               _buildLocationSection(),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  _buildLabel("Rasmlar"),
+                  _buildLabel("Расмлар"),
                   const Spacer(),
                   Text(
-                    "${_selectedImages.length}/$_maxImages (kamida $_minImages ta)",
+                    "${_selectedImages.length}/$_maxImages (камида $_minImages та)",
                     style: TextStyle(
                       fontSize: 13,
-                      color: _selectedImages.length < _minImages ? Colors.red : Colors.green,
+                      color: _selectedImages.length < _minImages
+                          ? Colors.red
+                          : Colors.green,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -199,7 +211,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
               onPressed: () {
                 setState(() {
                   _locationLoading = true;
-                  _locationStatus = 'Aniqlanmoqda...';
+                  _locationStatus = 'Aниқланмоқда...';
                 });
                 _fetchLocation();
               },
@@ -230,7 +242,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
                 Icon(Icons.add_a_photo_outlined, color: Colors.blue.shade700),
                 const SizedBox(width: 10),
                 const Text(
-                  "Rasm qo'shish",
+                  "Расм қўшиш",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
               ],
@@ -302,7 +314,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Yangi faoliyat qo'shish",
+            "Янги фаолият қўшиш",
             style: TextStyle(
               color: Colors.black,
               fontSize: 18,
@@ -325,7 +337,11 @@ class _AddActivityPageState extends State<AddActivityPage> {
     );
   }
 
-  Widget _buildInputField(String hint, {int maxLines = 1, TextEditingController? controller}) {
+  Widget _buildInputField(
+    String hint, {
+    int maxLines = 1,
+    TextEditingController? controller,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -358,7 +374,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
               ),
             ),
             child: const Text(
-              "Bekor qilish",
+              "Бекор қилиш",
               style: TextStyle(color: Colors.black),
             ),
           ),
@@ -381,7 +397,10 @@ class _AddActivityPageState extends State<AddActivityPage> {
                 ? const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
                   )
                 : Text(
                     _selectedImages.length < _minImages
@@ -407,15 +426,15 @@ class _AddActivityPageState extends State<AddActivityPage> {
           ],
         ),
         content: const Text(
-          "Sizning profilingizga rasm yuklanmagan. "
-          "Faoliyat qo'shish uchun rahbariyat sizning rasmingizni yuklashi kerak. "
-          "Iltimos, rahbariyatga murojaat qiling.",
+          "Сизнинг профилингизга расм юкланмаган. "
+          "Фаолият қўшиш учун раҳбарият сизнинг расмингизни юклаши керак. "
+          "Илтимос, раҳбариятга мурожаат қилинг.",
           style: TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Tushundim"),
+            child: const Text("Тушундим"),
           ),
         ],
       ),
@@ -425,15 +444,19 @@ class _AddActivityPageState extends State<AddActivityPage> {
   Future<void> _submit() async {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Sarlavhani kiriting")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Сарлавҳани киритинг")));
       return;
     }
 
     if (_selectedImages.length < _minImages) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Kamida $_minImages ta rasm tanlang (hozir ${_selectedImages.length} ta)")),
+        SnackBar(
+          content: Text(
+            "Камида $_minImages та рasm танланг (ҳозир ${_selectedImages.length} та)",
+          ),
+        ),
       );
       return;
     }
@@ -479,7 +502,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
           if (mounted) {
             setState(() => _isSubmitting = false);
             messenger.showSnackBar(
-              const SnackBar(content: Text("Selfie talab qilinadi")),
+              const SnackBar(content: Text("Селфие талаб қилинади")),
             );
           }
           return;
@@ -495,7 +518,10 @@ class _AddActivityPageState extends State<AddActivityPage> {
             final simText = similarity != null ? ' (${similarity}%)' : '';
             messenger.showSnackBar(
               SnackBar(
-                content: Text(result['message'] ?? "Yuz mos kelmadi$simText. Kamida 70% talab qilinadi"),
+                content: Text(
+                  result['message'] ??
+                      "Юз мос келмади$simText. Камида 70% талаб қилинади",
+                ),
                 duration: const Duration(seconds: 4),
               ),
             );
@@ -506,7 +532,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
         if (mounted) {
           messenger.showSnackBar(
             SnackBar(
-              content: Text("Yuz tasdiqlandi (${similarity ?? ''}%)"),
+              content: Text("Юз тасдиқланди (${similarity ?? ''}%)"),
               duration: const Duration(seconds: 2),
               backgroundColor: Colors.green,
             ),
@@ -516,7 +542,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
 
       // 3. Faoliyat yuborish
       final now = DateTime.now();
-      final dateStr = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+      final dateStr =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
       final data = <String, dynamic>{
         'title': title,
@@ -536,7 +563,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
       );
       if (mounted) {
         messenger.showSnackBar(
-          const SnackBar(content: Text("Faoliyat muvaffaqiyatli qo'shildi!")),
+          const SnackBar(content: Text("Фаолият муваффақиятли қўшилди!")),
         );
         Navigator.pop(context);
       }
@@ -544,7 +571,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
       if (mounted) {
         setState(() => _isSubmitting = false);
         messenger.showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }

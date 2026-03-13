@@ -17,7 +17,8 @@ class ActivityCard extends StatelessWidget {
       onTap: () {
         if (activity.id != null) {
           final authState = context.read<AuthCubit>().state;
-          final routeName = (authState is AuthAuthenticated && authState.user.isMasul)
+          final routeName =
+              (authState is AuthAuthenticated && authState.user.isMasul)
               ? 'masul_history_into_page'
               : 'history_into_page';
           context.pushNamed(
@@ -69,7 +70,7 @@ class ActivityCard extends StatelessWidget {
               const SizedBox(height: 12),
               if (activity.result.isNotEmpty)
                 Text(
-                  "Natija: ${activity.result}",
+                  "Натижа: ${activity.result}",
                   style: const TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.w500,

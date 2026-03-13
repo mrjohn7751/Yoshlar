@@ -58,7 +58,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       final authState = cubit.state;
       if (authState is AuthAuthenticated) {
-        if (_usernameController.text.trim() != (authState.user.username ?? '')) {
+        if (_usernameController.text.trim() !=
+            (authState.user.username ?? '')) {
           username = _usernameController.text.trim();
         }
       }
@@ -85,7 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       messenger.showSnackBar(
-        const SnackBar(content: Text("Profil muvaffaqiyatli yangilandi!")),
+        const SnackBar(content: Text("Профил муваффақиятли янгиланди!")),
       );
       navigator.pop();
     } catch (e) {
@@ -108,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Profil sozlamalari",
+          "Профил созламалари",
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -121,9 +122,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: Form(
@@ -135,19 +136,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildPhotoCard(),
                 const SizedBox(height: 16),
                 _buildCard(
-                  title: "Foydalanuvchi nomi",
+                  title: "Фойдаланувчи номи",
                   child: TextFormField(
                     controller: _usernameController,
-                    decoration: _inputDecoration("Foydalanuvchi nomi"),
+                    decoration: _inputDecoration("Фойдаланувчи номи"),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return "Foydalanuvchi nomi bo'sh bo'lishi mumkin emas";
+                        return "Фойдаланувчи номи бўш бўлиши мумкин эмас";
                       }
                       if (val.trim().length < 3) {
-                        return "Kamida 3 ta belgi";
+                        return "Камидан 3 та белги";
                       }
                       if (!RegExp(r'^[a-z0-9.]+$').hasMatch(val.trim())) {
-                        return "Faqat kichik harflar, raqamlar va nuqta";
+                        return "Фақат кичик ҳарфлар, рақамлар ва нуқта";
                       }
                       return null;
                     },
@@ -155,21 +156,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildCard(
-                  title: "Parolni o'zgartirish",
+                  title: "Паролни ўзгартириш",
                   child: Column(
                     children: [
                       TextFormField(
                         controller: _currentPasswordController,
                         obscureText: _obscureCurrent,
                         decoration: _passwordDecoration(
-                          "Joriy parol",
+                          "Жорий парол",
                           _obscureCurrent,
-                          () => setState(() => _obscureCurrent = !_obscureCurrent),
+                          () => setState(
+                            () => _obscureCurrent = !_obscureCurrent,
+                          ),
                         ),
                         validator: (val) {
                           if (_newPasswordController.text.isNotEmpty &&
                               (val == null || val.isEmpty)) {
-                            return "Joriy parolni kiriting";
+                            return "Жорий паролни киритинг";
                           }
                           return null;
                         },
@@ -179,13 +182,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _newPasswordController,
                         obscureText: _obscureNew,
                         decoration: _passwordDecoration(
-                          "Yangi parol",
+                          "Янги парол",
                           _obscureNew,
                           () => setState(() => _obscureNew = !_obscureNew),
                         ),
                         validator: (val) {
                           if (val != null && val.isNotEmpty && val.length < 8) {
-                            return "Kamida 8 ta belgi";
+                            return "Камидан 8 та белги";
                           }
                           return null;
                         },
@@ -195,14 +198,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirm,
                         decoration: _passwordDecoration(
-                          "Yangi parolni tasdiqlang",
+                          "Янги паролни тасдиқланг",
                           _obscureConfirm,
-                          () => setState(() => _obscureConfirm = !_obscureConfirm),
+                          () => setState(
+                            () => _obscureConfirm = !_obscureConfirm,
+                          ),
                         ),
                         validator: (val) {
                           if (_newPasswordController.text.isNotEmpty &&
                               val != _newPasswordController.text) {
-                            return "Parollar mos kelmadi";
+                            return "Пароллар мос келмади";
                           }
                           return null;
                         },
@@ -234,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           )
                         : const Text(
-                            "Saqlash",
+                            "Сақлаш",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -280,7 +285,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue.shade50,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.person, size: 50, color: Colors.blue),
+                      child: const Icon(
+                        Icons.person,
+                        size: 50,
+                        color: Colors.blue,
+                      ),
                     ),
                   )
                 : Container(
@@ -290,7 +299,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.blue.shade50,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.person, size: 50, color: Colors.blue),
+                    child: const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.blue,
+                    ),
                   ),
           ),
           const SizedBox(height: 12),
@@ -315,11 +328,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 18),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: Colors.orange,
+                    size: 18,
+                  ),
                   SizedBox(width: 6),
                   Text(
-                    "Rasmingiz yuklanmagan",
-                    style: TextStyle(color: Colors.orange, fontSize: 13, fontWeight: FontWeight.w500),
+                    "Расмингиз юкланмаган",
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -371,7 +392,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  InputDecoration _passwordDecoration(String hint, bool obscure, VoidCallback onToggle) {
+  InputDecoration _passwordDecoration(
+    String hint,
+    bool obscure,
+    VoidCallback onToggle,
+  ) {
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),

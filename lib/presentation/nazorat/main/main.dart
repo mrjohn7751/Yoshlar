@@ -6,6 +6,7 @@ import 'package:yoshlar/data/model/category.dart';
 import 'package:yoshlar/logic/dashboard/dashboard_cubit.dart';
 import 'package:yoshlar/logic/dashboard/dashboard_state.dart';
 import 'package:yoshlar/presentation/nazorat/main/diagramma.dart';
+import 'package:yoshlar/presentation/nazorat/main/widgets/diagramma_talim.dart';
 import 'package:yoshlar/presentation/nazorat/main/widgets/yoshlar_item_filter.dart';
 
 class NazoratMainScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                 ElevatedButton(
                   onPressed: () =>
                       context.read<DashboardCubit>().loadDashboard(),
-                  child: const Text("Qayta yuklash"),
+                  child: const Text("Қайта юклаш"),
                 ),
               ],
             ),
@@ -54,10 +55,10 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                   children: [
                     _buildHeader(),
                     const SizedBox(height: 20),
-                    _buildSectionTitle("Asosiy ko'rsatkichlar"),
+                    _buildSectionTitle("Асосий кўрсаткичлар"),
                     _buildMainStats(state),
                     const SizedBox(height: 24),
-                    _buildSectionTitle("Toifalar bo'yicha"),
+                    _buildSectionTitle("Тоифалар бўйича"),
                     _buildCategoryGrid(state),
                     if (state.hasMoreCategories)
                       _buildLoadMoreButton(
@@ -67,6 +68,10 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
                       ),
                     const SizedBox(height: 20),
                     RegionsBarChart(regions: state.regions),
+                    const SizedBox(height: 20),
+
+                    MultiResponsivePiePage(),
+                    const SizedBox(height: 40),
                     // if (state.hasMoreRegions)
                     //   _buildLoadMoreButton(
                     //     isLoading: state.isLoadingMoreRegions,
@@ -89,11 +94,11 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Bosh sahifa",
+          "Бош саҳифа",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         Text(
-          "Nazoratdagi yoshlar statistikasi",
+          "Ёшлар назорати статистикаси",
           style: TextStyle(color: Colors.grey.shade600),
         ),
       ],
@@ -132,21 +137,21 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
             final items = [
               {
                 "value": "${state.stats.jamiYoshlar}",
-                "title": "Jami yoshlar",
+                "title": "Жами ёшлар",
                 "icon": Icons.people,
                 "color": Colors.blue,
                 "index": 0,
               },
               {
                 "value": "${state.stats.ogilBolalar}",
-                "title": "Erkaklar",
+                "title": "Еркаклар",
                 "icon": Icons.male,
                 "color": Colors.blue,
                 "index": 1,
               },
               {
                 "value": "${state.stats.qizBolalar}",
-                "title": "Ayollar",
+                "title": "Aёллар",
                 "icon": Icons.female,
                 "color": Colors.purple,
                 "index": 2,
@@ -271,7 +276,7 @@ class _NazoratMainScreenState extends State<NazoratMainScreen> {
             : TextButton.icon(
                 onPressed: onPressed,
                 icon: const Icon(Icons.expand_more, size: 20),
-                label: const Text("Ko'proq yuklash"),
+                label: const Text("Кўпроқ юклаш"),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue.shade700,
                 ),

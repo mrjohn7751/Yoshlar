@@ -37,18 +37,18 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
   bool _isSubmitting = false;
 
   static const List<String> _educationItems = [
-    "Maktab o'quvchisi",
-    "Litsey, Kollej, Texnikum o'quvchisi",
-    "Oliy ta'lim talabasi",
-    "O'rta",
-    "O'rta maxsus",
-    "Oliy",
+    "Мактаб ўқувчиси",
+    "Лицей, Коллеж, Техникум ўқувчиси",
+    "Олий таълим талабаси",
+    "Ўрта",
+    "Ўрта махсус",
+    "Олий",
   ];
 
   static const List<String> _employmentItems = [
-    "Ishsiz",
-    "Ishlaydi",
-    "Ta'lim oladi",
+    "Ишсиз",
+    "Ишлайди",
+    "Таълим олади",
   ];
 
   Uint8List? _photoBytes;
@@ -56,30 +56,30 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
   final ImagePicker _picker = ImagePicker();
 
   static const List<Map<String, dynamic>> _regions = [
-    {'id': 1, 'name': 'Jizzax shahar'},
-    {'id': 2, 'name': 'Arnasoy tumani'},
-    {'id': 3, 'name': 'Baxmal tumani'},
-    {'id': 4, 'name': "G'allaorol tumani"},
-    {'id': 5, 'name': "Do'stlik tumani"},
-    {'id': 6, 'name': 'Sharof Rashidov tumani'},
-    {'id': 7, 'name': 'Zomin tumani'},
-    {'id': 8, 'name': 'Zarbdor tumani'},
-    {'id': 9, 'name': 'Zafarobod tumani'},
-    {'id': 10, 'name': "Mirzacho'l tumani"},
+    {'id': 1, 'name': 'Жиззах шаҳар'},
+    {'id': 2, 'name': 'Aрнасой тумани'},
+    {'id': 3, 'name': 'Бахмал тумани'},
+    {'id': 4, 'name': "Ғаллаорол тумани"},
+    {'id': 5, 'name': "Дўстлик тумани"},
+    {'id': 6, 'name': 'Шароф Рашидов тумани'},
+    {'id': 7, 'name': 'Зомин тумани'},
+    {'id': 8, 'name': 'Зарбдор тумани'},
+    {'id': 9, 'name': 'Зафаробод тумани'},
+    {'id': 10, 'name': "Мирзачўл тумани"},
     {'id': 11, 'name': 'Paxtakor tumani'},
     {'id': 12, 'name': 'Forish tumani'},
     {'id': 13, 'name': 'Yangiobod tumani'},
   ];
 
   final Map<String, bool> _categories = {
-    "Probatsiya nazoratidagilar": false,
-    "Ilgari sudlanganlar": false,
-    "Yod g'oyalar ta'siriga tushganlar": false,
-    "Jinoyat sodir etgan voyaga yetmaganlar": false,
-    "Giyohvandlar va spirtli ichimliklar ruju quyganlar": false,
-    "Mehribonlik uyidan chiqqanlar": false,
-    "Agressiv xulq-atvorli yoshlar": false,
-    "Ma'muriy huquqbuzarlik sodir etganlar": false,
+    "Пробация назоратидагилар": false,
+    "Илгари судланганлар": false,
+    "Ёд ғоялар таъсирига тушганлар": false,
+    "Жиноят содир етган вояга йетмаганлар": false,
+    "Гиёҳвандлар ва спиртли ичимликлар ружу қуйганлар": false,
+    "Меҳрибонлик уйидан чиққанлар": false,
+    "Aгрессив хулқ-атворли ёшлар": false,
+    "Маъмурий ҳуқуқбузарлик содир етганлар": false,
   };
 
   @override
@@ -162,7 +162,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              isEdit ? "Yoshni tahrirlash" : "Yangi yosh qo'shish",
+              isEdit ? "Ёшни таҳрирлаш" : "Янги ёш қўшиш",
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -172,7 +172,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
             Text(
               isEdit
                   ? widget.existingYouth!.name
-                  : "Barcha majburiy maydonlarni to'ldiring",
+                  : "Барча мажбурий maydonларни тўлдириш",
               style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
@@ -259,7 +259,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
           child: Text(
-            hasImage ? "Rasmni almashtirish" : "Rasm yuklash",
+            hasImage ? "Расмни алмаштириш" : "Расм юклаш",
             style: const TextStyle(color: Colors.black87, fontSize: 13),
           ),
         ),
@@ -270,12 +270,12 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
   Widget _buildPersonalInfoSection() {
     return _buildCardWrapper(
       icon: Icons.person_outline,
-      title: "Shaxsiy ma'lumotlar",
+      title: "Шахсий маълумотлар",
       child: Column(
         children: [
           _buildTextField(
-            label: "F.I.Sh. *",
-            hint: "To'liq ism familiya",
+            label: "Ф.И.Ш. *",
+            hint: "Тўлиқ исм фамилия",
             controller: _nameController,
           ),
           const SizedBox(height: 16),
@@ -285,8 +285,8 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
             children: [
               Expanded(
                 child: _buildDropdown(
-                  label: "Jinsi *",
-                  items: ["Erkak", "Ayol"],
+                  label: "Жинси *",
+                  items: ["Еркак", "Aёл"],
                   value: _selectedGender,
                   onChanged: (val) => setState(() => _selectedGender = val),
                 ),
@@ -294,7 +294,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildDateField(
-                  label: "Tug'ilgan sana *",
+                  label: "Туғилган сана *",
                   hint: "2000-01-01",
                   controller: _birthDateController,
                 ),
@@ -308,19 +308,19 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   Widget _buildAddressSection() {
     return _buildCardWrapper(
-      title: "Yashash manzili",
+      title: "Яшаш манзили",
       child: Column(
         children: [
           _buildDropdown(
-            label: "Tuman *",
+            label: "Туман *",
             items: _regions.map((r) => r['name'] as String).toList(),
             value: _selectedRegion,
             onChanged: (val) => setState(() => _selectedRegion = val),
           ),
           const SizedBox(height: 16),
           _buildTextField(
-            label: "Manzil",
-            hint: "Mahalla, ko'cha, uy raqami",
+            label: "Манзил",
+            hint: "Маҳалла, кўча, уй рақами",
             controller: _locationController,
             maxLines: 2,
           ),
@@ -331,14 +331,14 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   Widget _buildEducationSection() {
     return _buildCardWrapper(
-      title: "Ta'lim va bandlik",
+      title: "Таълим ва бандлик",
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
                 child: _buildDropdown(
-                  label: "Ta'lim holati",
+                  label: "Таълим холати",
                   items: _educationItems,
                   value: _selectedEducation,
                   onChanged: (val) => setState(() => _selectedEducation = val),
@@ -347,7 +347,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: _buildDropdown(
-                  label: "Bandlik holati",
+                  label: "Бандлик ҳолати",
                   items: _employmentItems,
                   value: _selectedEmployment,
                   onChanged: (val) => setState(() => _selectedEmployment = val),
@@ -363,7 +363,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
 
   Widget _buildCategoriesSection() {
     return _buildCardWrapper(
-      title: "Yoshlar toifalari *",
+      title: "Ёшлар тоифалари *",
       child: Column(
         children: _categories.keys.map((String key) {
           return CheckboxListTile(
@@ -396,7 +396,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               ),
             ),
             child: const Text(
-              "Bekor qilish",
+              "Бекор қилиш",
               style: TextStyle(color: Colors.black),
             ),
           ),
@@ -422,7 +422,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
                     ),
                   )
                 : Text(
-                    widget.isEditing ? "Yangilash" : "Saqlash",
+                    widget.isEditing ? "Янгилаш" : "Сақлаш",
                     style: const TextStyle(color: Colors.white),
                   ),
           ),
@@ -472,7 +472,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Telefon raqam",
+          "Телефон рақам",
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
@@ -500,7 +500,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
             if (val != null && val.isNotEmpty) {
               final phoneRegex = RegExp(r'^\+?998\d{9}$');
               if (!phoneRegex.hasMatch(val.trim())) {
-                return "Noto'g'ri format. Masalan: +998901234567";
+                return "Нотўғри формат. Масалан: +998901234567";
               }
             }
             return null;
@@ -631,7 +631,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
               value: value,
               isExpanded: true,
               hint: Text(
-                "Tanlang",
+                "Танланг",
                 style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
               ),
               items: items
@@ -653,7 +653,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
         _birthDateController.text.isEmpty ||
         _selectedRegion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Majburiy maydonlarni to'ldiring")),
+        const SnackBar(content: Text("Мажбурий майдонларни тўлдиринг")),
       );
       return;
     }
@@ -711,8 +711,8 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
           SnackBar(
             content: Text(
               widget.isEditing
-                  ? "Yosh muvaffaqiyatli yangilandi!"
-                  : "Yosh muvaffaqiyatli qo'shildi!",
+                  ? "Ёш муваффақиятли янгиланди!"
+                  : "Ёш муваффақиятли қўшилди!",
             ),
           ),
         );
@@ -722,7 +722,7 @@ class _AddYouthScreenState extends State<AddYouthScreen> {
       if (mounted) {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }

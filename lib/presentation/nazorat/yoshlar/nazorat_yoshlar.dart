@@ -18,25 +18,25 @@ class NazoratYoshlarScreen extends StatefulWidget {
 
 class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
     with AutomaticKeepAliveClientMixin {
-  List<String> genderItems = ["Barcha jinslar", "Erkak", "Ayol"];
-  String selectedGender = "Barcha jinslar";
+  List<String> genderItems = ["Барча жинслар", "Еркак", "Aёл"];
+  String selectedGender = "Барча жинслар";
 
   List<String> regionItems = [
-    "Jizzax shahar",
-    "Arnasoy tumani",
-    "Baxmal tumani",
-    "G'allaorol tumani",
-    "Do'stlik tumani",
-    "Sharof Rashidov tumani",
-    "Zomin tumani",
-    "Zarbdor tumani",
-    "Zafarobod tumani",
-    "Mirzacho'l tumani",
-    "Paxtakor tumani",
-    "Forish tumani",
-    "Yangiobod tumani",
+    "Жиззах шаҳар",
+    "Aрнасой тумани",
+    "Бахмал тумани",
+    "Ғаллаорол тумани",
+    "Дўстлик тумани",
+    "Шароф Рашидов тумани",
+    "Зомин тумани",
+    "Зарбдор тумани",
+    "Зафаробод тумани",
+    "Мирзачўл тумани",
+    "Пахтакор тумани",
+    "Фориш тумани",
+    "Янгиобод тумани",
   ];
-  String selectedRegion = "Barcha hududlar";
+  String selectedRegion = "Барча ҳудудлар";
 
   List<OfficerModel> _officers = [];
   int? _selectedOfficerId;
@@ -90,7 +90,9 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
     return Scaffold(
       body: BlocConsumer<YouthListCubit, YouthListState>(
         listener: (context, state) {
-          if (state is YouthListLoaded && state.hasMorePages && !state.isLoadingMore) {
+          if (state is YouthListLoaded &&
+              state.hasMorePages &&
+              !state.isLoadingMore) {
             _checkIfNeedMore();
           }
         },
@@ -132,7 +134,7 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
               if (isError && index == 3) {
                 return Padding(
                   padding: const EdgeInsets.all(32),
-                  child: Center(child: Text((state as YouthListError).message)),
+                  child: Center(child: Text((state).message)),
                 );
               }
 
@@ -154,7 +156,7 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
                     padding: EdgeInsets.all(16),
                     child: Center(
                       child: Text(
-                        "Barcha yoshlar ko'rsatildi",
+                        "Барча ёшлар кўрсатилди",
                         style: TextStyle(color: Colors.grey, fontSize: 13),
                       ),
                     ),
@@ -182,17 +184,11 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
               children: [
                 const Text(
                   "Jami yoshlar",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   "Jami: ${state is YouthListLoaded ? state.total : '...'} nafar",
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                 ),
               ],
             ),
@@ -279,14 +275,11 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
             ),
             dropdownColor: Colors.white,
             style: const TextStyle(color: Colors.black87, fontSize: 13),
-            hint: const Text(
-              "Barcha mas'ullar",
-              style: TextStyle(fontSize: 13),
-            ),
+            hint: const Text("Барча масъуллар", style: TextStyle(fontSize: 13)),
             items: [
               const DropdownMenuItem<int?>(
                 value: null,
-                child: Text("Barcha mas'ullar"),
+                child: Text("Барча масъуллар"),
               ),
               ..._officers.map(
                 (o) => DropdownMenuItem<int?>(
@@ -317,7 +310,7 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
         ),
         child: DropdownButtonHideUnderline(
           child: DropdownButton<int?>(
-            value: selectedRegion == "Barcha hududlar"
+            value: selectedRegion == "Барча ҳудудлар"
                 ? null
                 : regionItems.indexOf(selectedRegion),
             isExpanded: true,
@@ -328,11 +321,11 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
             ),
             dropdownColor: Colors.white,
             style: const TextStyle(color: Colors.black87, fontSize: 13),
-            hint: const Text("Barcha hududlar", style: TextStyle(fontSize: 13)),
+            hint: const Text("Барча ҳудудлар", style: TextStyle(fontSize: 13)),
             items: [
               const DropdownMenuItem<int?>(
                 value: null,
-                child: Text("Barcha hududlar"),
+                child: Text("Барча ҳудудлар"),
               ),
               ...regionItems.map(
                 (o) => DropdownMenuItem<int?>(
@@ -344,7 +337,7 @@ class _NazoratYoshlarScreenState extends State<NazoratYoshlarScreen>
             onChanged: (val) {
               setState(
                 () => selectedRegion = val == null
-                    ? "Barcha hududlar"
+                    ? "Барча ҳудудлар"
                     : regionItems[val],
               );
               context.read<YouthListCubit>().setRegionFilter(

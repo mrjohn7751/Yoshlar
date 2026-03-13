@@ -63,7 +63,7 @@ class ActivityCard extends StatelessWidget {
               const SizedBox(height: 12),
               if (activity.description.isNotEmpty)
                 Text(
-                  "Tavsif: ${activity.description}",
+                  "Тавсиф: ${activity.description}",
                   style: const TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.w500,

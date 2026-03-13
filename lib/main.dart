@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (_) => ActivityListCubit(_activityService)),
         ],
         child: MaterialApp.router(
-          title: 'Nazoratdagi yoshlar',
+          title: 'Yoshlar nazorati',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

@@ -65,8 +65,11 @@ class _HistoryPageState extends State<HistoryPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          "Faoliyatlar tarixi",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          "Фаолиятлар тарихи",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         ElevatedButton.icon(
                           onPressed: () {
@@ -79,7 +82,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             );
                           },
                           icon: const Icon(Icons.add, size: 18),
-                          label: const Text("Yangi qo'shish"),
+                          label: const Text("Янги қўшиш"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF3B82F6),
                             foregroundColor: Colors.white,
@@ -93,7 +96,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     const SizedBox(height: 16),
                     Expanded(
                       child: state.activities.isEmpty
-                          ? const Center(child: Text("Faoliyatlar topilmadi"))
+                          ? const Center(child: Text("Фаолиятлар топилмади"))
                           : ListView.builder(
                               itemCount: state.activities.length,
                               itemBuilder: (context, index) {

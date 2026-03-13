@@ -225,14 +225,14 @@ class NazoratUserCardWidget extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Yoshlarni o'chirish"),
+        title: const Text("Ёшларни ўчириш"),
         content: Text(
-          "${user.name} o'chirilsinmi? Bu amalni ortga qaytarib bo'lmaydi.",
+          "${user.name} ўчирилсинми? Бу амални ортга қайтариб бўлмайди.",
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text("Bekor qilish"),
+            child: const Text("Бекор қилиш"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -240,7 +240,7 @@ class NazoratUserCardWidget extends StatelessWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text("O'chirish"),
+            child: const Text("Ўчириш"),
           ),
         ],
       ),
@@ -252,13 +252,13 @@ class NazoratUserCardWidget extends StatelessWidget {
       await context.read<YouthListCubit>().deleteYouth(user.id!);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Yoshlar muvaffaqiyatli o'chirildi")),
+          const SnackBar(content: Text("Ёшлар муваффақиятли ўчирилди")),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Xatolik: ${safeErrorMessage(e)}")),
+          SnackBar(content: Text("Хатолик: ${safeErrorMessage(e)}")),
         );
       }
     }
